@@ -20,6 +20,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - admonition
+  - tables
 
   - pymdownx.arithmatex:
       generic: true

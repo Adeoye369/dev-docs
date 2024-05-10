@@ -1,50 +1,68 @@
-# Welcome to Adeoyes Dev Docs
+# AI learning Docs
 
-This is mee working to MKDocs document
+## Matplob lib
 
-## Introduction to GL
+Intro to matplot library
 
-This is another intro you can have when working with OpenGL.
-Compile shader those what it says it compile the shaders and much more
+## Installation without Anaconda
 
-```c++ title="compile-shader.cpp" linenums="30" hl_lines="11 12 13 14"
-static unsigned int CompileShader(unsigned int type, const std::string& source) 
-{
-    GLuint shader_id = glCreateShader(type);
+I Will recommend installing anaconda, I will save you a lot of hassle late on.
+Installation involve first creating a virtual environment.
 
-    const char* shader_src = source.c_str();
-    glShaderSource(shader_id, 1, &shader_src, nullptr);
+Create a file `main.py`
 
-    glCompileShader(shader_id);
+```py
 
-    int success;
-    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
-    /* int length;
-    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &length);
-    char* msg = (char*)alloca(length * sizeof(char));
-    glGetShaderInfoLog(shader_id, length, &length, msg);*/
-    if (success == GL_FALSE) {
-        char msg[1024];
-        glGetShaderInfoLog(shader_id, 1024, NULL, msg);
+import matplotlib.pyplot as plt
+import numpy as np
 
-        std::cout << " VERTEX:  \n" << msg << "\n";
-    }
-    return shader_id;
-}// end CompileShader
+# Generate some linear data
+x = np.linspace(0, 10, 500)
+# y = np.sin(x) # calc. sine-wave of each
+y = np.exp2(x- 3)- 5*x - 11
+
+# Create a line plot
+plt.plot(x, y, label='Sine Function')
+plt.show()
 ```
 
-## Parse Fragment and Vertex Shader
+create a new virtual environment by opening the terminal,
 
-There are various approach to parse your shaders and you can start by creating things like `basic.shader` to serve as your default shader.
-
-* We start by creating a struct to hold the vertex and Fragment shader
-  
-```c++ linenums
-struct ShaderSource {
-    std::string VertSource;
-    std::string FragSource;
-};
+```bash
+>> python -m venv env1 # env1 is the dir name
+>> ./env1/Scripts/activate
 ```
 
+If you are running it for the first time, You will probably encounter an error. So go to your Powershell run as Adminstrator
 
+```cmd
+Set-ExecutionPolicy Unrestricted
+```
+Once you have done that a virtual environ of this structure is created
+![alt text](./ai-dev-docs/img/image.png)
 
+## Plotting Multiple Graph in one plot
+
+```python
+t = np.linspace(-10, 50, 50)
+
+# distance covered by A
+yA = 2 * t - 1
+
+# distance covered by B
+yB = t + 2
+
+fig, ax = plt.subplots()
+plt.title("Graph of yA and yB distance over time")
+plt.axhline(y=0, c='lightgray')
+plt.axvline(x=0 , c='lightgray')
+
+ax.set_xlim([-10, 20])
+ax.set_ylim([-10, 20])
+
+ax.plot( t,yA, c='blue', label="y = 2t - 1")
+ax.plot( t,yB, c='purple')
+
+plt.axhline(y=5, c='green', linestyle='--', linewidth='0.5')
+plt.axvline(x=3, c="green", linestyle='--', linewidth='0.5')
+```

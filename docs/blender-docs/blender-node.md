@@ -30,3 +30,4 @@ All the setup connected
 | CTR + RM Drag   | Cut Connect link|
 | ALT + RM Drag   | Lazy connect link|
 | SHT + RM Drag   | Create re-route node link|
+

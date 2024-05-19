@@ -241,7 +241,3 @@ This section is dedicated to this like spontaneous discovery or some form of bea
 ![alt text](img/sv_expo1.png)
 
 ![alt text](img/sv_expo2.png)
-
-![alt text](img/image.png)
-
-![alt text](img/image-1.png)

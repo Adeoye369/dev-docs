@@ -40,6 +40,12 @@ Set-ExecutionPolicy Unrestricted
 ```
 Once you have done that a virtual environ of this structure is created
 ![alt text](./ai-dev-docs/img/image.png)
+\
+\
+\
+\
+.
+
 
 ## Plotting Multiple Graph in one plot
 

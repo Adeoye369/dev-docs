@@ -315,3 +315,26 @@ for word in words:
 
 print(output)
 ```
+
+### Basics of function in Python:
+
+```python
+
+# There are four PARAMETERS in the function
+def student_details(name, nickname="", age=45, score=0):
+    print("============DETAILS=============")
+    print(f"My name is {name}")
+    print(f"My nickname is {nickname}")
+    print(f"I score {score} in my exam at age {age}\n")
+
+# using POSITIONAL arguments only
+student_details("segun", "sege", 31, 50.5)
+
+# using POSITIONAL arguments and KEYWORD arguments
+# Keyword argument is useful for clearity of what is being passed
+# ERROR will occur if A Positional arg. does not preceed keyword arg.
+student_details("Omotola", nickname="Tommy", age=13, score=110)
+
+# Order of KEYWORD args does not matter
+student_details(score = 0, name="kafayat",  age= 32, nickname="Kpbbp")
+```

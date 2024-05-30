@@ -316,7 +316,7 @@ for word in words:
 print(output)
 ```
 
-### Basics of function in Python:
+## Basics of function POSITION and KEYWORD ARGS
 
 ```python
 
@@ -325,7 +325,7 @@ def student_details(name, nickname="", age=45, score=0):
     print("============DETAILS=============")
     print(f"My name is {name}")
     print(f"My nickname is {nickname}")
-    print(f"I score {score} in my exam at age {age}\n")
+    print(f"I score {score} in my exam at age {age}\n") 
 
 # using POSITIONAL arguments only
 student_details("segun", "sege", 31, 50.5)
@@ -338,3 +338,25 @@ student_details("Omotola", nickname="Tommy", age=13, score=110)
 # Order of KEYWORD args does not matter
 student_details(score = 0, name="kafayat",  age= 32, nickname="Kpbbp")
 ```
+
+
+## Pathlib/Path and Modules in Python
+
+```py
+import ecommerce.cart.carter as ec
+import user_details.user.create_user as cu
+
+
+ec.py_carter()
+cu.user("Adeoye")
+print('===================')
+
+from pathlib import Path
+
+path = Path()
+for file in path.glob("**/*.py"):
+    print(file) 
+
+```
+
+![alt text](img/image-6.png)

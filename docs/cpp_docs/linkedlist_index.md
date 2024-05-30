@@ -1,6 +1,6 @@
-# Introduction to LinkedList
+# Introduction to nextedList
 
-This function demonstrate how you build and linked list both forward and Backward
+This function demonstrate how you build and nexted list both forward and Backward
 
 ```cpp
 #include <iostream>
@@ -8,7 +8,7 @@ This function demonstrate how you build and linked list both forward and Backwar
 template <class T>
 struct Node {
  T data{};
- Node* link{};
+ Node* next{};
 
  Node(T data) {
   this->data = data;
@@ -26,7 +26,7 @@ void printData(Node<int> *head) {
  std::cout << "=====Print value:=====\n";
  while (current != nullptr) {
   std::cout << " - " << current->data << " ";
-  current = current->link;
+  current = current->next;
  }
 }
 
@@ -42,7 +42,7 @@ void buildForward() {
 
   // create a NewNode
   newNode = new Node<int>(int(val));
-  newNode->link = nullptr;
+  newNode->next = nullptr;
 
   // insert a newNode
   if (first == nullptr) {
@@ -51,7 +51,7 @@ void buildForward() {
   }
   else {
    // Insert new node at end of last 
-   last->link = newNode;
+   last->next = newNode;
    last = newNode;
   }
 
@@ -85,7 +85,7 @@ void buildBackward() {
   }
   else {
    // Insert new node at the beginning of first
-   newNode->link = first;
+   newNode->next = first;
    first = newNode;
   }
 
@@ -115,9 +115,9 @@ int main() {
 Result :
 ![alt text](img/image.png)
 
-## Demonstration of use LinkedListIterator
+## Demonstration of use nextedListIterator
 
-Trying to see how this individual methods in the `LinkedListIterator` class plays out
+Trying to see how this individual methods in the `nextedListIterator` class plays out
 
 ```cpp
 #include <iostream>
@@ -129,7 +129,7 @@ Trying to see how this individual methods in the `LinkedListIterator` class play
 template <class T>
 struct Node {
  T data{};
- Node<T> *link{};
+ Node<T> *next{};
 
  Node(T data) {
   this->data = data;
@@ -147,20 +147,20 @@ void printData(Node<int>* head) {
  std::cout << "=====Print value:=====\n";
  while (current != nullptr) {
   std::cout << " - " << current->data << " ";
-  current = current->link;
+  current = current->next;
  }
  std::cout << "\n";
 }
 
-// A class that produces each element of a container such as a linkedList
+// A class that produces each element of a container such as a nextedList
 template <class T>
-class LinkedListIterator {
+class nextedListIterator {
 public: 
- LinkedListIterator() {
+ nextedListIterator() {
   current = nullptr;
  }
 
- LinkedListIterator(Node<T>* ptr) {
+ nextedListIterator(Node<T>* ptr) {
   current = ptr;
  }
 
@@ -171,20 +171,20 @@ public:
    return -1;
  }
 
- LinkedListIterator<T> operator++() {
-  current = current->link;
+ nextedListIterator<T> operator++() {
+  current = current->next;
   return *this;
  };
 
 
- bool operator==(const LinkedListIterator& right) const {
+ bool operator==(const nextedListIterator& right) const {
   return (current == right.current) ;
  }
- bool operator!=(const LinkedListIterator& right) const {
+ bool operator!=(const nextedListIterator& right) const {
   return (current != right.current) ;
  }
 private:
- Node<T>* current; // Point to the current node in linked list
+ Node<T>* current; // Point to the current node in nexted list
 };
 
 int main() {
@@ -197,32 +197,32 @@ int main() {
  
  // insert at back
  newNode = new Node<int>(50);
- last->link = newNode;
+ last->next = newNode;
  last = newNode;
 
  newNode = new Node<int>(45);
- last->link = newNode;
+ last->next = newNode;
  last = newNode;
 
  // inser in front
  newNode = new Node<int>(40);
- newNode->link = first;
+ newNode->next = first;
  first = newNode;
 
  newNode = new Node<int>(35);
- newNode->link = first;
+ newNode->next = first;
  first = newNode;
 
 
 
- LinkedListIterator <int> l1(first);
+ nextedListIterator <int> l1(first);
  printData(first);
  std::cout << "Print Current Data: " << *l1 << std::endl;
- ++l1; // increment the link
+ ++l1; // increment the next
  std::cout << "Print (next)Current Data: " << *l1 << std::endl;
 
- LinkedListIterator <int> l2(l1); // copy l1 into l3
- LinkedListIterator <int> l3; // 
+ nextedListIterator <int> l2(l1); // copy l1 into l3
+ nextedListIterator <int> l3; // 
 
  std::cout << "is l2 equals l1 => " << (l2 == l1) << "\n";
  std::cout << "is l3 equals l1 => " << (l3 == l1) << "\n";

@@ -44,3 +44,42 @@ for row in range(4, 7+1):
 # create a copy of the excel file
 wb.save('bookkeeping2.xlsx')
 ```
+
+## Drawing a Barchart of Values
+
+```python
+import openpyxl as xl
+from openpyxl.chart import BarChart, Reference
+
+wb = xl.load_workbook('bookkeeping.xlsx')
+
+income_sht = wb['INCOME']
+
+for row in range(4, 7+1):
+    # income amount
+    inc_amount = income_sht.cell(row, 3).value
+    print(inc_amount)
+
+    # corrected 'neccesity amount' 
+    necc_amount = float(inc_amount)* 0.5
+
+    # get 'neccesity col' and update it 
+    necc_cell = income_sht.cell(row, 4)
+    necc_cell.value = necc_amount
+
+# Get the rows and column to draw
+values_to_draw = Reference(income_sht, 
+                           min_row=4, max_row=8,
+                            min_col=4, max_col=4)
+
+# draw on the xl file
+chart = BarChart()
+chart.add_data(values_to_draw)
+income_sht.add_chart(chart, 'b12')
+
+# create a copy of the excel file
+wb.save('bookkeeping2.xlsx')
+```
+
+![alt text](<img/Screenshot 2024-05-31 053938.png>)
+

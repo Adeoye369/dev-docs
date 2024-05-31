@@ -242,7 +242,7 @@ print(n1, n2, n3)
 **Each key should be unique** in python dictionary.\
  Just like they way the words in a lang. dictionary are unique
 
- ```python
+```python
  
 customer = {
     "name" : "Simon Jessie",
@@ -267,11 +267,11 @@ print(customer.get("total_purchase"))
 # This returns 0.0, cause we are setting default value
 print(customer.get("total_purchase", 0.0))
 
- ```
+```
 
- ### Dictionary Demo Exercise - digit to word
+### Dictionary Demo Exercise - digit to word
 
- ```python
+```python
  input_data = input('phone number: ')
 
 number_to_words = {
@@ -291,11 +291,10 @@ for digit in input_data:
     word_number += number_to_words.get(digit, "*") + " "
 
 print(word_number)
- ```
+```
 
 result:
 ![alt text](img/image-5.png)
-
 
 ### Dictionary Demo Exercise - Emoji Converter
 
@@ -338,7 +337,6 @@ student_details("Omotola", nickname="Tommy", age=13, score=110)
 # Order of KEYWORD args does not matter
 student_details(score = 0, name="kafayat",  age= 32, nickname="Kpbbp")
 ```
-
 
 ## Pathlib/Path and Modules in Python
 

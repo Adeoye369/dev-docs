@@ -1,6 +1,284 @@
 # Documentation for my Python learning
 
-## basics
+## Basic Operator operation
+
+```bash
+>>> 12*2
+24
+
+>>> "Hi!"*3 
+'Hi!Hi!Hi!'
+
+>>> 37/7.5 # normal div. float
+4.933333333333334 
+
+>>> 37//7.5 # integer/floored division
+4.0
+
+>>> 37 % 7.5  # Modulo - reminder
+7.0 
+
+```
+
+## String concatenation and Replication
+
+Joing string with other strings by using the `+` operator and to join with other types, you will need to convert the type into string type by using the `str` in-built function
+
+```bash
+>>> "Omolara is " + str(43) 
+'Omolara is 43'
+```
+
+You can also multiply strings by an integer-type like so
+
+```bash
+>>> "Hi!"*3 
+'Hi!Hi!Hi!'
+```
+
+## Converting between types
+
+```bash
+>>> str(-3.24)
+'-3.24'
+
+>>> int(55.4)
+55
+
+>>> float('3.14')
+3.14
+```
+
+This is useful if for instance you are collecting integer data from the `input()` funtion. It always returns a string so you will need to parse the string into an integer. like so `age = int(input("what's your age?:"))`
+
+## Text and Number Equivalence
+
+Altough string value of a number is considered completely different, an integer can be equal to a float because python considered them both as number
+
+```bash
+>>> 24 == "24" 
+False
+
+>>> 24 == 24.0
+True
+
+>>> 24.0 == 00024.0000
+True
+```
+
+## Some other basic Built-in function
+
+we will talk a little bit about `round(), floor() and ceil()`
+
+- `round()` is the typical math rounding up or down to the nearest integer `round(34.4) = 34` and `round(34.6) = 35`
+- `floor()` on the other just round down irrespective of the closenes so  `floor(34.4) = 34` and `floor(34.6) = 34`
+- - `ceil()` r just round up irrespective of the closenes so  `ceil(34.1) = 35` and `ceil(34.6) = 35`
+
+```bash
+# round
+>>> round(45.2) 
+45
+>>> round(45.9) 
+46
+>>> round(45.5) 
+46
+
+>>> from math import floor, ceil
+# floor
+>>> floor(45.4)
+45
+>>> floor(45.9) 
+45
+>>> floor(45.999) 
+45
+
+# ceil
+>>> ceil(45.1)
+46
+>>> ceil(45.05) 
+46
+>>> ceil(45.9)  
+46
+```
+
+## Functions
+
+*Argument* - value being passed to a function in a function call
+
+*Parameter* - is a local variable in a function call bracket that arguments values are assigned to them
+
+### Working with Variables in Function
+
+- Case 1 - Using the global value in function\
+output: the global value
+
+```python
+
+val = "GLOBAL Value"
+
+def fun1():
+    print (val)
+
+fun1() # prints: "GLOBAL Value"
+```
+
+- Case 2 - Assign a value to a local variable with the same name\
+output: the local value
+
+```python
+
+val = "GLOBAL Value"
+
+def fun1():
+    val = "LOCAL Value"
+    print (val)
+
+fun1() # prints: "LOCAL Value"
+print(val) # prints: "GLOBAL Value"
+```
+
+- Case 3: Assign value to the global variable from inside a function
+  
+```python
+val = "GLOBAL Value"
+
+def fun1():
+    global val # val refer to global 'val'
+    val = "LOCAL Value"
+    print (val)
+
+fun1() # prints: "LOCAL Value"
+print(val) # prints: "LOCAL Value"
+
+```
+
+- Case 4: You can make a variable inside a function global and use it in other function
+
+```python
+def fun1():
+    global val_in_fun1
+    val_in_fun1 = "fun1() value"
+    fun2()
+
+def fun2():
+    print ("Fun2() val = ",val_in_fun1)
+
+fun1()
+print("Global val = ", val_in_fun1)
+
+# OUPUT:
+# Fun2() val =  fun1() value
+# Global val =  fun1() value
+```
+
+- Case 5: You CANNOT call a global function, then create a local variable.
+
+```python
+val = "GLOBAL Value"
+
+def fun1():
+    print(val) # Output ERROR
+    val = "LOCAL Value"
+
+
+fun1()
+print("Global val = ", val)
+```
+
+Other examples:
+
+```python
+
+val = "GLOBAL Value"
+
+def fun1():
+    global val 
+    val = "LOCAL Value"
+    print ("local 1 = ", val)
+    fun2()
+
+def fun2():
+    global val 
+    val = "LOCAL 2 Value"
+    print ("local 2 = ", val)
+
+fun1()
+print("Global val = ", val)
+
+```
+
+After all said and done its best practice to let function interact or send/receive value through each other from *parameters* and *return* values
+
+## Exception Handling
+
+Exception helps you avoid crashing out your program when its being run
+
+```python
+def divide(a, b):
+    try:
+        return a / b
+    
+    except ZeroDivisionError:
+        return "ZeroDivError:: Cannot have a divisor of Zero"
+
+    except TypeError:
+        return "TypeError::value must be integer or float"
+
+print(divide(6, b = 2))
+print(divide(12, 0))
+print(divide(11, 34))
+print(divide("112", 3))
+print(divide(88, 12))
+```
+
+Result:
+
+```bash
+3.0
+ZeroDivError:: Cannot have a divisor of Zero
+0.3235294117647059
+TypeError::value must be integer or float
+7.333333333333333
+```
+
+### A Short Program: Zigzag
+
+```python
+import time, sys
+
+# how many space to indent
+indent = 0 
+
+# Whether indent is increasing or not
+indentIncreasing = True 
+
+try:
+    while True: # while main prog is runnig
+        print(' ' * indent, end ='')
+        print("***********")
+        time.sleep(0.1) # pause for 0.1 of a second
+
+        if indentIncreasing:
+            # increase the number of spaces
+            indent += 1
+            if indent == 10:
+                # change direction:
+                indentIncreasing = False
+        else:
+            # Decrease the number of spaces:
+            indent -= 1
+            if indent == 0:
+                # change direction:
+                indentIncreasing = True
+
+
+except KeyboardInterrupt: # When user press CTRL + C
+    sys.exit()
+```
+
+![alt text](img/image-11.png)
+
+## basics with time and date
 
 Working with basics.
 (1.) `input()` and `print()`
@@ -85,7 +363,7 @@ for x in numbers:
 
 ```
 
-The Result is
+The Result is\
 ![alt text](img/image-2.png)
 
 ## List in Python
@@ -175,9 +453,9 @@ print(elist)
 elist.reverse() # sort order of descending
 print(elist)
 ```
+
 Result:
 ![alt text](img/image-4.png)
-
 
 ### Simple function to remove all occurence in a list
 

@@ -18,9 +18,6 @@ Result :
 
 `df.values` this returns all the records as two dimension arrays
 
-
-## Basic Example
-
 ### Loading the data
 
 ```python

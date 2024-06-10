@@ -366,55 +366,16 @@ for x in numbers:
 The Result is\
 ![alt text](img/image-2.png)
 
-## List in Python
-
-```python
-# Example of a 3-tensor list
-mat =[  
-    [[22, -11, 34],
-    [41, 0, -9],
-    [23, 1, 1]]
-    ,
-    [[22, -11, 34],
-    [41, 0, -9],
-    [23, 1, 1]]
-    ,
-    [[122, -11, 4],
-    [41, 0, -9],
-    [23, 1, 31]]
-    ]
-
-# looping through
-item = []
-for i in mat:
-    for j in i:
-        for k in j: 
-            item.append(k)
-
-# printing in different levels of indexes
-print(mat[1]) 
-print(mat[0][2])
-print(mat[2][0][1])
-
-
-
-print(item) # list all the item in 3 tensor           
-print(set(item)) # remove duplicate in list
-```
-
-result:
-![alt text](img/image-3.png)
-
 ### Some list methods
 
 ```python
 
 elist = [300, 540,  99 ,  1110, 10, 125, 44, 99]
 
-elist.append(1104) # latest energy
+elist.append(1104) # add to end
 print('append: ',elist)
 
-elist.insert(0, 51) # initial energy consumed
+elist.insert(0, 51) # add at the beginning
 print('insert: ',elist)
 
 elist.remove(99) # remove the first occurrence of item
@@ -500,18 +461,6 @@ def remove_duplicate(list_of_items):
 
 
 print(remove_duplicate(elist))
-
-```
-
-### Unpacking a list or tuple
-
-```python
-names = ['45',' 45, ', 'Adeoye', 55]
-
-# Unpacking a list or tuple
-n1, n2, n3, n4 = names
-
-print(n1, n2, n3)
 
 ```
 

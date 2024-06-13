@@ -349,3 +349,77 @@ messages =[
 
 print(messages[random.randint(0,len(messages)-1)])
 ```
+
+## Tuple and  list conversion 
+
+Example of a tuple
+
+```py
+people = ("Wale", "Ade", "kenny") # tuple example
+
+singe_val = (45,) # single val tuple
+```
+
+converting from list to tuple and vice-versa
+
+```py
+t_animal = tuple(["dog", "cat", "mouse"])
+print(t_animal)
+
+people = ("Wale", "Ade", "kenny")
+l_people = list(people)
+print(l_people) 
+
+```
+
+## Demonstration Pass by value and Ref
+
+![alt text](img/val_ref.png)
+
+For the list it works just like pass by reference it still maintain the same reference.
+
+you can use `id(variable_name)` to reference the memory address of the variable.
+
+```py
+>>> val1 = 34
+
+>>> id(val1)
+140734562428744
+```
+
+Lets demonstrate references in List
+
+```py
+>>> list1 = [1, 3, 4]
+>>> list2 = list1
+
+>>> list2.append("Ad")
+>>> print(list1) # [1, 3, 4, 'Ad']
+>>> print(list2)  # [1, 3, 4, 'Ad'] # same value
+
+>>> id(list1) # id: 2584243212672
+>>> id(list2) # id: 2584243212672
+```
+
+however if your intention to make a copy of the list, you can use `copy` and `deepcopy` in-built module in python
+
+```py
+>>> import copy
+>>> list1 = [1, 3, 4]       
+>>> list2 = copy.copy(list1) 
+>>> list2.append("Ad")
+>>> list1 # [1, 3, 4]
+>>> list2 # [1, 3, 4, 'Ad']
+>>> id(list1) # 2584243192128
+>>> id(list2) # 2584243195264
+```
+
+You use `deepcopy` if you have list in a list
+
+```py
+>>> list1 = [23, 43, [1, 4]]
+>>> list2 = copy.deepcopy(list1) 
+>>> list1.append(["A", "B"])
+>>> list1 # [23, 43, [1, 4], ['A', 'B']]
+>>> list2 # [23, 43, [1, 4]]
+```

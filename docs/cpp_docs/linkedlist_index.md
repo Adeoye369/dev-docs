@@ -115,30 +115,18 @@ int main() {
 Result :
 ![alt text](img/image.png)
 
-## Demonstration of use nextedListIterator
+## Demonstration of use ListIterator
 
-Trying to see how this individual methods in the `nextedListIterator` class plays out
+Trying to see how this individual methods in the `ListIterator` class plays out
 
 ```cpp
 #include <iostream>
+// NOTE: We are re-using the Prev. Node Struct 
 
-/**
-* Quick take on the Interator class
-*/
+template <typename T>
+void printData(Node<T>* head) {
 
-template <class T>
-struct Node {
- T data{};
- Node<T> *next{};
-
- Node(T data) {
-  this->data = data;
- }
-};
-
-void printData(Node<int>* head) {
-
- Node<int>* current = head;
+ Node<T>* current = head;
  if (current == nullptr) {
   std::cout << "The list is empty " << std::endl;
   return;
@@ -154,33 +142,31 @@ void printData(Node<int>* head) {
 
 // A class that produces each element of a container such as a nextedList
 template <class T>
-class nextedListIterator {
+class ListIterator {
 public: 
- nextedListIterator() {
+ ListIterator() {
   current = nullptr;
  }
 
- nextedListIterator(Node<T>* ptr) {
+ ListIterator(Node<T>* ptr) {
   current = ptr;
  }
 
  T operator*() {
-  if (current != nullptr)
-   return current->data;
-  else
-   return -1;
+  if (current != nullptr) return current->data;
+  else return -1;
  }
 
- nextedListIterator<T> operator++() {
+ ListIterator<T> operator++() {
   current = current->next;
   return *this;
  };
 
 
- bool operator==(const nextedListIterator& right) const {
+ bool operator==(const ListIterator& right) const {
   return (current == right.current) ;
  }
- bool operator!=(const nextedListIterator& right) const {
+ bool operator!=(const ListIterator& right) const {
   return (current != right.current) ;
  }
 private:
@@ -190,45 +176,40 @@ private:
 int main() {
  Node<int>* first, *last, *newNode;
 
- // Initial node
- newNode = new Node<int>(55);
- first = newNode;
- last = newNode;
- 
- // insert at back
- newNode = new Node<int>(50);
- last->next = newNode;
- last = newNode;
+ float input_data[]{ -100.4, 4.9,3.4, 22.8, 42.7, 42.6, 4.2 , 90.0, 0 ,30.4, 50.25 };
 
- newNode = new Node<int>(45);
- last->next = newNode;
- last = newNode;
+ for (auto& val : input_data) {
 
- // inser in front
- newNode = new Node<int>(40);
- newNode->next = first;
- first = newNode;
+  newNode = new Node<float>(val);
 
- newNode = new Node<int>(35);
- newNode->next = first;
- first = newNode;
+  if (first == nullptr) {
+   // Initial node
+   first = newNode;
+   last = newNode;
+  }
+  else {
+   //// insert at back
+   last->next = newNode;
+   last = newNode;
+  }
+ }
+
+ printData<float>(first);
 
 
-
- nextedListIterator <int> l1(first);
+ ListIterator <float> l1(first);
  printData(first);
  std::cout << "Print Current Data: " << *l1 << std::endl;
  ++l1; // increment the next
  std::cout << "Print (next)Current Data: " << *l1 << std::endl;
 
- nextedListIterator <int> l2(l1); // copy l1 into l3
- nextedListIterator <int> l3; // 
+ ListIterator <float> l2(l1); // copy l1 into l3
+ ListIterator <float> l3; // 
 
  std::cout << "is l2 equals l1 => " << (l2 == l1) << "\n";
  std::cout << "is l3 equals l1 => " << (l3 == l1) << "\n";
  std::cout << "l3 value: " << *l3 << std::endl;
  return 0;
 }
-
 
 ```

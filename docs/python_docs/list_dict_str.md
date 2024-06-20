@@ -423,3 +423,125 @@ You use `deepcopy` if you have list in a list
 >>> list1 # [23, 43, [1, 4], ['A', 'B']]
 >>> list2 # [23, 43, [1, 4]]
 ```
+
+## Dictionary
+
+A data structure that store a key-value pair of any type.
+
+```py
+ziph = {'name': 'Ziphley', 'species': 'cat-kun', 'age': 22, 'hobby': 'sleep', 'weight(lb)': 54.0}
+
+print(list(ziph)) 
+# OUTPUT: ['name', 'species', 'age', 'hobby', 'weight(lb)']
+```
+
+### Keys(), values() and items() Method
+
+There are three dictionary method that will return list-like value. They are not like your regular list, but (`dict_keys`,`dict_values` and `dict_items`) can be use mostly in for loop.
+
+```py
+ziph = {'name': 'Ziphley', 'species': 'cat-kun', 'age': 22, 'hobby': 'sleep', 'weight(lb)': 54.0}
+
+
+for k in ziph.keys():
+    print(f"key: {k}") # print keys
+
+
+for v in ziph.values(): 
+    print(f'value: {v}') # print values
+
+
+for i in ziph.items():
+    print(f"item {i}") # print key - value
+
+
+for k,v in ziph.items():
+    print(f"item :=> {k}, => {v}") # print key - value
+
+
+```
+
+Should you want an actual list form the `keys(), values() or items()` pass them to a `list()`
+
+```py
+ziph = {'name': 'Ziphley', 'species': 'cat', 'age': 22}
+
+print([list(z) for z in list(ziph.items())])
+
+'''
+OUTPUT:
+[['name', 'Ziphley'], ['species', 'cat-kun'], ['age', 22]]]
+'''
+```
+
+### Check if a key or value exist
+
+```py
+>>> ziph = {'name': 'Ziphley', 'species': 'cat', 'age': 22}
+>>> 'cat' in ziph.values() # True
+>>> 'dog' in ziph.values() # False
+>>> 'weight' in ziph.keys() # False
+>>> 'age' in ziph.keys() # True
+```
+
+### The get() method
+
+```python
+ 
+customer = {
+    "name" : "Simon Jessie",
+    "age": 34,
+    "reg_date": "20-04-2019",
+    "cust_id" : 1022302,
+    "is_active": True,
+}
+
+# creating a new item and assigning a new dict into it
+customer['cart_content']  = {0: "rifle rice", 1: "dodo beans", 12: "Atta" }
+
+print(customer['cart_content'][12])
+print(customer['reg_date'])
+
+# This throws **ERROR** its not part of list
+print(customer['total_purchase']) 
+
+# This returns 'None' instead 
+print(customer.get("total_purchase"))
+
+# This returns 0.0, cause we are setting default value
+print(customer.setdefault("total_purchase", 0.0))
+
+print(customer)
+
+'''
+{'name': 'Simon Jessie', 'age': 34, 'reg_date': '20-04-2019', 'cust_id': 1022302, 'is_active': True, 'total_purchase': 0.0}
+'''
+
+```
+
+### use setdefault() method
+
+```py
+import pprint as pp
+
+msg = '''
+"thhis is a very long 
+character that we whant to do the, only charalong
+ character count oo "
+ '''
+count = {}
+
+for ch in msg:
+    count.setdefault(ch, 0)
+    count[ch] += 1
+
+print(count)
+val = pp.pformat(count) # to get value as string
+pp.pprint(count) # to get value as output
+
+
+
+'''
+{'\n': 4, '"': 2, 't': 9, 'h': 8, 'i': 2, 's': 2, ' ': 18, 'a': 9, 'v': 1, 'e': 5, 'r': 6, 'y': 2, 'l': 3, 'o': 8, 'n': 5, 'g': 2, 'c': 6, 'w': 2, 'd': 1, ',': 1, 'u': 1}
+'''
+```

@@ -71,6 +71,7 @@ True
 we will talk a little bit about `round(), floor() and ceil()`
 
 - `round()` is the typical math rounding up or down to the nearest integer `round(34.4) = 34` and `round(34.6) = 35`
+- It also allow to round float to a nearest decimal places if you specify second param `round(33.34354, 3 ) = 33.344`
 - `floor()` on the other just round down irrespective of the closenes so  `floor(34.4) = 34` and `floor(34.6) = 34`
 - - `ceil()` r just round up irrespective of the closenes so  `ceil(34.1) = 35` and `ceil(34.6) = 35`
 
@@ -82,6 +83,8 @@ we will talk a little bit about `round(), floor() and ceil()`
 46
 >>> round(45.5) 
 46
+>>> round(34.0002345321, 5) 
+34.00023
 
 >>> from math import floor, ceil
 # floor
@@ -457,8 +460,6 @@ def remove_duplicate(list_of_items):
             unique_items.append(it)
             
     return unique_items
-
-
 
 print(remove_duplicate(elist))
 

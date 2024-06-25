@@ -246,6 +246,10 @@ print(pets)
 pets.insert(3, "Monkey")
 print(pets)
 
+a = [34, 3 , 4]
+a.append([1, 2]) # [34, 3 , 4, [1, 2]]
+a.extend([1, 2]) # [34, 3 , 4, 1, 2]
+
 '''
 OUTPUT:
 ['Cat', 'Dog', 'Mouse', 'Babbit', 'Hamster']
@@ -544,4 +548,156 @@ pp.pprint(count) # to get value as output
 '''
 {'\n': 4, '"': 2, 't': 9, 'h': 8, 'i': 2, 's': 2, ' ': 18, 'a': 9, 'v': 1, 'e': 5, 'r': 6, 'y': 2, 'l': 3, 'o': 8, 'n': 5, 'g': 2, 'c': 6, 'w': 2, 'd': 1, ',': 1, 'u': 1}
 '''
+```
+
+## Strings
+
+### Get the Unicode Code Point for Strings
+
+You can use the `ord()` in-built function to get the code point for any character.
+
+```py
+>>> ord("'") 
+39
+>>> ord("W")
+87
+```
+
+And you can pass the code point to `chr()` to check it corresponding char
+```py
+>>> chr(98) 
+'b'
+>>> chr(300)
+'Ĭ'
+>>> chr(5000) 
+'ᎈ'
+>>> chr(10000) 
+'✐'
+>>> chr(ord('X') + 2) 
+'Z'
+```
+
+### String Code Example I
+
+```py
+import random
+
+passString = "rthglafsghglsf" # Test Password string
+pass_sym_num = 3 # Test numbers of symbols need
+rand_symbol = "%$@" # random symbols generated
+
+# this Check if the positioning of the symbol string will
+# Exceed the index of the total password length
+# In such case, try another random positon
+found = False
+while not found:
+    # this is a string 
+    i = random.randint(0, (len(passString) - 1))
+    if((i + pass_sym_num) > len(passString)):
+        print(f"X BAD pos: i + pass_sym num = {i + pass_sym_num}, len(passString) ={len(passString)}") 
+        found = False
+    else:
+        print(f"! GOOD pos: i + pass_symbol = {i + pass_sym_num}, len(passString) ={len(passString)}")
+        found = True 
+    
+passString = passString.replace(passString[i:i+pass_sym_num], rand_symbol)
+
+print(f"Your new password is : {passString}")
+
+```
+
+### String Code Example II
+
+```py
+import random
+
+# Get the length of password:
+pass_len = int(input("What is your password Length? "))
+
+# Get the numbers of symbols
+pass_symbol = int(input("How many symbols: "))
+
+# Get the numbers of 'numbers'
+pass_num = int(input("How many numbers: "))
+
+passString = ""
+# Gen. random password
+for p in range(0, pass_len):
+    passString += chr(random.randint(65, 122))
+
+rand_symbol = ""
+for s in range(0, pass_symbol):
+    new_symbol_char = chr(random.randint(33 , 47))
+    rand_pass_char = passString[random.randint(0, len(passString)-1)] 
+    passString.replace(rand_pass_char, new_symbol_char)
+
+rand_nums = ""
+for n in range(0, pass_num):
+    rand_nums += chr(random.randint(48, 57))
+
+
+i = random.randint(0, (len(passString) - 1))
+# if(i+pass_symbol > len(passString))
+passString = passString.replace(passString[i:i+pass_symbol], rand_symbol)
+
+
+print(f"Your new password is : {passString}")
+
+```
+
+### String PassCode Example III (MAIN)
+
+```py
+'''
+PyPassword Generator:
+- It takes in the 'LENGTH' of password you want
+- It will request for how many 'SYMBOLS' do you want inside
+- And also how many 'NUMBERS' do you want inside.
+'''
+import random
+
+def get_numbers_chars():
+    # Get list of 0 - 9
+    return [chr(x) for x in range(48, 57+1)]
+
+def get_symbols_chars():
+    # list of all accepted symbols
+    sym_chars = []
+    sym_chars.extend([chr(x) for x in range(35, 38+1)])
+    sym_chars.extend(['!','>','<', '?','@'])
+    return sym_chars
+
+def get_letters_chars():
+    # list of letters A-Z and a-z
+    let_chars = []
+    let_chars.extend([chr(x) for x in range(65, 91+1)]) # A - Z
+    let_chars.extend([chr(x) for x in range(97, 122+1)])# a - z
+    return let_chars
+
+
+# Get the length of password:
+pass_len = int(input("How many letters? "))
+
+# Get the numbers of symbols
+pass_sym_len = int(input("How many symbols: "))
+
+# Get the numbers of 'numbers'
+pass_num = int(input("How many numbers: "))
+
+pass_chars = []
+# Gen. random password
+for p in range(0, pass_len):
+    pass_chars += random.choice(get_letters_chars())
+
+for s in range(0, pass_sym_len):
+    pass_chars += random.choice(get_symbols_chars())
+
+for n in range(0, pass_num):
+    pass_chars += random.choice(get_numbers_chars())
+
+random.shuffle(pass_chars)
+pass_string = ''.join(pass_chars)
+print(f"Your new password is : {pass_string}")
+
+    
 ```

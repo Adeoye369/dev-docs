@@ -75,3 +75,161 @@ while True: # Main program loop
 ```
 
 ![alt text](img/image-13.png)
+
+## Ceaser Cypher
+
+This is based on tutorial offered by Angela Yu
+
+### Version 1:
+
+```py
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',' ']
+
+
+# function 'encrypt' that takes the 'text' and 'shift' as inputs.
+def encrypt(plain_text, shift_amount):
+
+    #shift each letter of the 'text' forwards in the alphabet by the shift 
+    # amount and print the encrypted text.  
+    encode_text=""
+    for letter in plain_text:
+        new_index = alphabet.index(letter) + shift_amount # shift the index
+        
+        if(new_index > len(alphabet)-1): # if index is out of range
+            new_index = (new_index % (len(alphabet))) # circle back to begin index
+        
+        encode_text += alphabet[new_index]
+
+    print(encode_text)
+
+# function 'decrypt' takes text and shift amount
+def decrypt(cipher_text, shift_amount):
+     
+     decode_text=""
+     for letter in cipher_text:
+        orig_index = alphabet.index(letter) - shift_amount # shift the index
+        
+        if(orig_index < 0): # index in -ve
+            orig_index = (len(alphabet)) + orig_index # go to end index
+        
+        decode_text += alphabet[orig_index]
+    
+     print(decode_text)
+
+def user_direction():
+
+    direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
+    text = input("Type your message:\n").lower()
+    shift = int(input("Type the shift number:\n"))
+
+    if direction == "encode":
+        encrypt(plain_text=text, shift_amount=shift) 
+    elif direction == "decode":
+        decrypt(cipher_text=text, shift_amount=shift)
+
+user_direction()
+
+```
+
+### Version 2 : My version
+
+```py
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',' ']
+
+# ceaser function 'encrpyt' and 'decrpyt' text
+def ceasar(cipher_direction, input_text, shift_amount):
+
+    cypher_text=""
+
+    for letter in input_text:
+        if cipher_direction == "encode":
+            new_index = alphabet.index(letter) + shift_amount # shift the index
+        
+            if(new_index > len(alphabet)-1): # if index is out of range
+                new_index = (new_index % (len(alphabet))) # circle back to begin index
+        
+    
+        elif cipher_direction == "decode":
+            new_index = alphabet.index(letter) - shift_amount # shift the index
+        
+            if(new_index < 0): # index in -ve
+                new_index = (len(alphabet)) + new_index # go to end index
+        
+        cypher_text += alphabet[new_index]
+   
+    print(f"The {cipher_direction}d text is {cypher_text}")
+
+
+
+def user_direction():
+
+    direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
+    text = input("Type your message:\n").lower()
+    shift = int(input("Type the shift number:\n"))
+
+    ceasar(direction, input_text=text, shift_amount=shift) 
+    
+user_direction()
+```
+
+### Version 3: Final
+
+```py
+
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',' ']
+
+from art import ceaser_logo
+
+
+# ceaser function 'encrpyt' and 'decrpyt' text
+def ceasar(cipher_direction, input_text, shift_amount):
+
+    cypher_text=""
+
+    for char in input_text:
+
+        if char in alphabet: 
+            position = alphabet.index(char) 
+
+            if cipher_direction == "decode": 
+                new_position = position - shift_amount
+                if(new_position < 0): # index in -ve
+                    new_position = (len(alphabet)) + new_position # go to end index
+
+            elif cipher_direction == "encode":
+                new_position = position + shift_amount
+                if(new_position > len(alphabet)-1): # if index is out of range
+                    new_position = (new_position % (len(alphabet))) # circle back to begin index
+                
+            cypher_text += alphabet[new_position]
+        else:
+            cypher_text += char
+   
+    print(f"The {cipher_direction}d text is <<{cypher_text}>>")
+
+
+
+def main():
+    print(ceaser_logo)
+
+    terminal="Y"
+    while(terminal != "N" ):
+        direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
+        if(direction != "encode" and direction != "decode"):
+            print(f"{direction} is not acceptable type 'encode' or 'decode'" )
+            continue
+
+        text = input("Type your message:\n").lower()
+
+        shift = int(input("Type the shift number:\n")) % len(alphabet)
+
+        ceasar(direction, input_text=text, shift_amount=shift) 
+
+        terminal= input("Type 'Y' to start or 'N' to exit:\n ").upper()
+    
+main()
+
+```

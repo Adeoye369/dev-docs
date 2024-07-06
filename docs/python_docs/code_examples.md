@@ -325,3 +325,126 @@ while input("Do you want to keep playing the game? y/n:") == 'y':
     play_game()
 
 ```
+
+## Guess Game
+
+```py
+
+from random import randint
+
+EASY_LEVEL_LIFE = 10
+HARD_LEVEL_LIFE = 5
+
+def check_answer(guess, answer, turns):
+    """check answer angainst guess, return the 'turns' """
+    if guess > answer:
+        print("Too high")
+        return turns - 1
+
+    elif guess < answer:
+        print("Too low")
+        return turns - 1
+    else:
+        print(f"You got it! The answer is {answer}")
+        return turns
+
+
+def set_difficulty():
+    level = input("Choose a difficulty, Type 'easy' or 'hard'")
+    if level == 'easy':
+        return EASY_LEVEL_LIFE
+    else:
+        return HARD_LEVEL_LIFE
+
+    
+
+def guess_game():
+    print("Welcome to the Number Guessing Game!")
+    print("I'm thinking of a number between 1 and 100")
+    # let computer guess
+    computer_ans = randint(1, 100)
+    # print(f"DEV::the correct answer is {computer_ans}")
+
+    turns = set_difficulty()
+
+    # repeat the guessing functionality 
+    user_guess = 0
+    while user_guess != computer_ans:
+        # Notify the number of life left
+        print(f"You have {turns} turns left")
+
+        #Let the user guess a number
+        user_guess = int(input("What is the number: "))
+
+        # Check if the number guessed is correct
+        turns = check_answer(turns=turns, guess=user_guess, answer=computer_ans)
+
+        if turns == 0:
+            print("You run out of guesses, Your Loss")
+            return
+        elif user_guess != computer_ans:
+            print("Guess again!\n")
+
+guess_game()
+```
+
+## HigherLower My Version
+
+```py
+
+
+from game_data import hl_data
+import random
+
+
+# fetch ig data at random
+def gen_random_account():
+    """Generate two ig account at random, returns the data"""
+    return random.choice(hl_data)
+
+
+# function to check whose data is greater
+def check_user_guess(data1, data2, guess):
+    """Check whose followers is greater and returns the greater data"""
+
+    if guess == 'H' and data2["follower_count"] > data1["follower_count"]:
+        print(f"Correct, {data2['name']}, followers: {data2['follower_count']} > {data1['name']}, followers: {data1['follower_count']}\n")
+    
+    elif guess == 'L' and data2["follower_count"] < data1["follower_count"]:
+        print(f"Correct, {data2['name']}, followers: {data2['follower_count']} < {data1['name']}, followers: {data1['follower_count']}\n")
+    
+    elif guess == 'H' and data2["follower_count"] < data1["follower_count"]:
+        print(f"Wrong, {data2['name']}, followers: {data2['follower_count']} < {data1['name']}, followers: {data1['follower_count']}\n")
+        return
+    
+    elif guess == 'L' and data2["follower_count"] > data1["follower_count"]:
+        print(f"Wrong, {data2['name']}, followers: {data2['follower_count']} > {data1['name']}, followers: {data1['follower_count']}\n")
+        return
+    
+    return data2
+
+
+
+user_score = 0
+   
+# data 1, data 2
+current_data = gen_random_account()
+
+while current_data != None:
+
+    next_data = gen_random_account()
+
+    # Case of same data, get new random acct.
+    if current_data == next_data:
+        next_data = gen_random_account()
+
+    # Ask user which is greater data1 or data 2
+    user_suggest = input(f"\nthe acct. A=>  {current_data['name']} has {current_data['follower_count']} Million follwers,\nand acct. B=> is {next_data['name']}, is B Higer or Lower(H\L): ").upper()
+
+    current_data = check_user_guess(data1=current_data, data2=next_data, guess=user_suggest)
+    if current_data == None:
+        print("sorry! You Lose, Your score is ", user_score )
+    else:
+        user_score+= 1
+
+```

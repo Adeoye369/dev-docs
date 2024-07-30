@@ -586,3 +586,324 @@ for file in path.glob("**/*.py"):
 ```
 
 ![alt text](img/image-6.png)
+
+## Object Oriented Programming (OOP)
+
+![alt text](img/image-14.png)
+
+## Open and writing to file
+
+```py
+
+# for read files
+with open("dir/to/file.txt", mode="r") as file:
+    content = file.read() # or file.readlines()
+
+# for writing
+with open("dir/to/file.txt", mode="w") as file:
+    file.write("this to write") 
+    # it creates a new file is file not exist
+
+with open("dir/to/file.txt", mode="a") as file:
+    file.write("Add to content") 
+    # same as write but append the text to end of line
+```
+
+
+## Working With CSV
+
+The basic way to work with csv in python is to use the in-built `csv module` with python.
+
+```py
+
+import csv
+
+with open('day25-read-csv/weather_data.csv') as data_file:
+    data = csv.reader(data_file)
+    for row in data:
+        print(row)
+
+```
+
+### Extracting data
+
+This list out the data in the csv as list
+
+```py
+
+data_row =[]
+with open('day25-read-csv/weather_data.csv') as data_file:
+    data = csv.reader(data_file)
+    for row in data:
+        print(row)
+        data_row.append(row)
+
+```
+
+![alt text](img/image-16.png)
+
+Extract all second column (temperature) excluding the first row
+
+```py
+
+# method 1: extract all second column
+print ([temp_data[1] for temp_data in data_row[1:]])
+
+# method 2: much longer but easier to understand
+temperatures = []
+for temp in data_row[1:]:
+    temperatures.append(temp[1])
+
+print(temperatures)
+```
+
+![alt text](img/image-17.png)
+
+## Working with Pandas
+
+```py
+
+import pandas as pd
+
+data = pd.read_csv("day25-read-csv/weather_data.csv")
+print(data)
+print(data['temp'])
+print(type(data)) # DataFrame <class 'pandas.core.frame.DataFrame'>
+print(type(data['temp'])) # Series(colums) <class 'pandas.core.series.Series'>
+print(type(data[data['day'] == 'Monday'])) # <class 'pandas.core.frame.DataFrame'>
+```
+OUTPUT DATA
+![alt text](img/image-18.png)
+
+### convert csv to dictionary
+
+```py
+data = pd.read_csv("day25-read-csv/weather_data.csv")
+print(data.to_dict())
+
+'''
+OUTPUT:
+{'day': {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}, 
+
+'temp': {0: 12, 1: 14, 2: 15, 3: 14, 4: 21, 5: 22, 6: 24}, 
+
+'condition': {0: 'Sunny', 1: 'Rain', 2: 'Rain', 3: 'Cloudy', 4: 'Sunny', 5: 'Sunny', 6: 'Sunny'}}
+'''
+```
+
+### Getting mean, max
+
+```py
+data = pd.read_csv("day25-read-csv/weather_data.csv")
+
+print(data['temp'].to_list())
+
+# finding the average
+print(data['temp'].mean())
+print(data['temp'].max())
+```
+
+output data:\
+![alt text](img/image-19.png)
+
+### Treating Data series like an object
+
+```py
+import pandas as pd
+
+data = pd.read_csv("day25-read-csv/weather_data.csv")
+
+print(data.condition)
+print(data[data.day == "Wednesday"])
+
+```
+
+![alt text](img/image-20.png)
+
+### Getting data of the max temperature
+
+```py
+
+data = pd.read_csv("day25-read-csv/weather_data.csv")
+print(data[data.temp == data.temp.max()])
+
+```
+
+### Creating a DataFrame from stratch
+
+```py
+# creating DataFrame from scratch
+movie_dict = {
+    'movie': ["A to Z", "Movers ", "Born to Live"],
+    'release_date': [1997, 2012, 2023],
+    'rating' : [9.5, 1.4, 8.8]
+}
+
+# create data from movie dictionary
+movie_data = pd.DataFrame(movie_dict)
+
+# Display movie data
+print(movie_data)
+
+print(movie_data["rating"].loc[2]) # print index 2(8.8) 
+# convert it to csv and save in directory
+movie_data.to_csv('day25-read-csv/movie_data.csv')
+
+```
+
+![alt text](img/image-21.png)
+
+
+## List Comprehension in python
+
+List comperesion applys to :
+
+- `list`
+- `range`
+- `string`
+- `tuple`
+
+List comprehension with numbers
+
+```py
+
+list1 =[2, 3.0, 5, 3, 4.0, 33]
+
+# square each in list
+mult = [x*x for x in list1]
+print(mult)
+
+# Adding if statement
+int_only = [i for i in list1 if type(i) is int ]
+print(int_only)
+
+''' RESULT:
+[4, 9.0, 25, 9, 16.0, 1089]
+[2, 5, 3, 33]
+'''
+```
+
+List comprehension with strings
+
+```py
+my_name = "Adegbite"
+letters = [letter for letter in my_name]
+print(letters)
+
+print([x*2 for x in range(1, 6)])
+
+# RESULT: ['A', 'd', 'e', 'g', 'b', 'i', 't', 'e']
+
+names = ["Freddie", "Alex", "Beth", "Dave", "Carolina", "Titilayo", "Tolulope"]
+
+upper_long_names = [long_names.upper() for long_names in names if len(long_names) > 5]
+print(upper_long_names)
+
+# RESULT: ['FREDDIE', 'CAROLINA', 'TITILAYO', 'TOLULOPE']
+```
+
+### List comprehension example
+
+```py
+
+with open("./day26-list-comp/file1.txt") as f1:
+    #conten1:  [111, 3, 6, 5, 8, 33, 12, 7, 4, 72, 2, 42, 13]
+    content1 = [c.strip() for c in f1.readlines()]
+
+with open("./day26-list-comp/file2.txt") as f2:
+    #content2: [3, 6, 13, 8, 7, 89, 12, 3, 33, 34, 1, 344, 42,1090, 111]
+    content2 = [c.strip() for c in f2.readlines()]
+
+# check if 
+same_content = [int(x) for x in content1 if x in content2]
+
+print(same_content)
+"""
+RESULT: [111, 3, 6, 8, 33, 12, 7, 42, 13]
+
+"""
+```
+
+### Using Zip in list comprehension
+
+```py
+with open("./day26-list-comp/file1.txt") as f1:
+    content1 = [int(c.strip()) for c in f1.readlines()]
+
+with open("./day26-list-comp/file2.txt") as f2:
+    content2 = [int(c.strip()) for c in f2.readlines()]
+
+print(content1)
+print(content2)
+
+print([ (x,y) for x, y in zip(content1, content2)])
+
+"""=============RESULT====================
+
+[(111, 3), (3, 6), (6, 13), (5, 8), (8, 7), (33, 89), (12, 12), (7, 3), (4, 33), (72, 34), (2, 1), (42, 344), (13, 42)]
+"""
+
+```
+
+## Dictionary comprehensions
+
+Here is the formats for dictionary comprehension in python
+
+Format using a list,string,range or tuple type as iterable:
+`{new_key:new_value for item in list_n}`
+
+Format using a dict type as iterable:
+`{new_key:new_value for (key, value) in dict_n.items()}`
+
+```py
+
+import random as r
+
+#{new_key:new_value for item in list_n}
+scores = [30, 56, 44, 34, 70, 99]
+print({chr(r.randint(1, 1000)):score for score in scores})
+
+# {new_key:new_value for (key, value) in dict_n.items()}
+students ={60: "alix", 200:"alesxa", 123:"Gemini"}
+print({v.title():k**2 for (k, v) in students.items()})
+
+'''
+RESULT:
+
+{'ā': 30, 'Ǘ': 56, '˫': 44, '\x85': 34, 'Ì': 70, 'Í': 99}
+{'Alix': 3600, 'Alesxa': 40000, 'Gemini': 15129}
+'''
+```
+
+Another example of dictionary comprehension
+
+```py
+
+sentence = "What is the Air-mac speed of a unicorn glider"
+print({word:len(word) for word in sentence.split(" ")})
+
+'''
+RESULT:
+{'What': 4,  'is': 2, 'the': 3,
+ 'Air-mac': 7, 'speed': 5, 'of': 2, 
+ 'a': 1, 'unicorn': 7, 'glider': 6}
+
+'''
+
+```
+
+## Using Dictionary comprehension with Pandas
+
+Example code look like so
+`for (index , row) in my_data_frame.iterrows():`
+From this, you can access the index and individual row cells. for example
+`row.name or row["name"]` as you would previously.
+
+
+```py
+
+nato_data = pd.read_csv("./day26-list-comp/nato_alphabet.csv")
+
+print({row.letter: row.code for(index, row) in nato_data.iterrows() })
+
+```

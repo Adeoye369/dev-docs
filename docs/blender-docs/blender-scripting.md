@@ -1,5 +1,43 @@
 # Blender Scripting
 
+## Making blender work on Vscode
+
+For Vscode to be able to read blender codes
+
+```bash
+pip install fake-bpy-module-latest
+```
+
+this provides all the necessary bpy module-like
+
+- Then install this extension on vscode extension:
+![alt text](img/image-3.png)
+
+- CTRL + SH + P - blender : start
+  incase you run into an error, do the follow
+
+  goto your directory where blender python is installed:
+    `C:\Program Files\Blender Foundation\Blender 4.2\4.2\python`
+  - R+CLK - `properties > security`
+  - Under (group or user) scrolled down to `User` and click `Edit` button
+  - check the option to `write` then ok it
+
+![alt text](img/image-4.png)
+
+## Getting Started with blender Addons
+
+minimum file structure
+
+```bash
+
+my_extension-0.0.1.zip
+├─ __init__.py
+├─ blender_manifest.toml
+└─ (...)
+
+```
+
+
 ## Blender Generic basics
 
 ### Listing all Active objects (DATA)
@@ -18,15 +56,17 @@ for n in bpy.data.objects:
 ### Select all Active objects (OPS)
 
 ```py
+# action param: TOGGLE, SELECT, DESELECT, INVERT
 bpy.ops.object.select_all(action='DESELECT')
-bpy.ops.object.select_by_type(type=item)
+
 ```
 
 here item can take any of the following values:
 
 ```py
-[‘MESH’, ‘CURVE’, ‘SURFACE’, ‘META’, ‘FONT’, ‘HAIR’, ‘POINTCLOUD’, ‘VOLUME’, 
-‘GPENCIL’, ‘ARMATURE’, ‘LATTICE’, ‘EMPTY’, ‘LIGHT’, ‘LIGHT_PROBE’, ‘CAMERA’, ‘SPEAKER’]
+# item param: [‘MESH’, ‘CURVE’, ‘SURFACE’, ‘META’, ‘FONT’, ‘HAIR’, ‘POINTCLOUD’, ‘VOLUME’, 
+# ‘GPENCIL’, ‘ARMATURE’, ‘LATTICE’, ‘EMPTY’, ‘LIGHT’, ‘LIGHT_PROBE’, ‘CAMERA’, ‘SPEAKER’]
+bpy.ops.object.select_by_type(type=item)
 ```
 
 ### Remove Objects' Meshs(DATA)
@@ -259,5 +299,104 @@ test_group.links.new(group_inputs.outputs['in_to_less'], node_less.inputs[0])
 #link output
 test_group.links.new(node_add.outputs[0], group_outputs.inputs['out_result'])
 
+
+```
+
+## BASIC OPERATORS CLASS FOR OPENING FILE
+
+```py
+import bpy
+import os
+
+from bpy.props import StringProperty, BoolProperty
+from bpy_extras.io_utils import ImportHelper
+from bpy.types import Operator
+
+
+class VIEW_OT_TestOpenFileBrowser(Operator, ImportHelper):
+
+    bl_idname = "image.open_filebrowser"
+    bl_label="Open the file browser"
+
+    # Filter the type of selected file
+    filter_glob : StringProperty( default="*.jpg; *jpeg;*.png; *.tif, *.tiff",
+                                 options={'HIDDEN'}) 
+    
+    # Add properties to the file browser window menu
+    test_boolean: BoolProperty(name="Check to test", 
+                               description="The description to check the something",
+                                default=True) 
+
+    
+    def execute(self, context):
+        "Do something with selected file"
+        
+        filename, extension = os.path.splitext(self.filepath)
+        print('Selected file = ', self.filepath)
+        print('File name = ', filename)
+        print('File Extension = ', extension)
+        
+        return {'FINISHED'}
+
+
+
+
+def register():
+    bpy.utils.register_class(VIEW_OT_TestOpenFileBrowser)
+
+def unregister():
+    bpy.utils.unregister_class(VIEW_OT_TestOpenFileBrowser)
+
+if __name__ == "__main__":
+    register()
+```
+
+Go to your view 3d press `F3` and type the name in the `bl_idname`
+in our case `image.open_filebrowser`
+
+You will have
+
+![alt text](<img/Screenshot 2024-08-13 183337.png>)
+
+You will get a file browser file like so:
+
+![u](<img/Screenshot 2024-08-13 183727.png>)
+
+
+## IMPORT TEXTURE IMAGE AS RIG WORKFLOW
+
+### 1. Custom image as plane
+
+This is a slightly modified to allow our workflow
+
+```py
+
+
+import bpy
+
+
+def custom_img_as_plane(image_name, image_dir):
+    
+    # Import image as mesh plane operator
+    bpy.ops.image.import_as_mesh_planes( directory=image_dir, 
+                                        filepath=f"{image_dir}{image_name}",
+                                        files=[{"name":image_name, "name":image_name}],  
+                                        image_sequence=True,relative=False,align_axis='+X')
+    
+    # Change material Image Texture node to work for animation seq.
+    bpy.data.images[image_name].source = 'SEQUENCE'
+
+    image_name_only = image_name.split('.')[0] # split e.g "seq-01.jpg" into ['seq-01', 'jpg'] 
+    bpy.data.materials[image_name_only].node_tree.nodes["Image Texture"].image_user.frame_offset = 1
+
+
+files_data = {
+    "sq_00.jpg" : "C:/Projects/Blender/_SandBox/seq1/",
+    "eye_01.png" : "C:/Projects/Blender/_SandBox/eye_imgs/"
+}
+
+for k, v in files_data.items():
+    print(k, v)
+    custom_img_as_plane(k, v)
 
 ```

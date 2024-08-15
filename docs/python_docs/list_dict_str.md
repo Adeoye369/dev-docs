@@ -552,6 +552,22 @@ pp.pprint(count) # to get value as output
 
 ## Strings
 
+## Display number with Leading zero
+
+```py
+
+# Method 1
+num = 1
+print(f"{num:02d}") # 01
+print(f"{num:03d}") # 001
+
+# Method 2
+num = 1
+print(str(num).zfill(2)) # 01
+print(str(num).zfill(3)) # 001
+
+```
+
 ### Get the Unicode Code Point for Strings
 
 You can use the `ord()` in-built function to get the code point for any character.

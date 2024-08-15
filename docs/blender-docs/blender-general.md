@@ -1,5 +1,40 @@
 # Blender General Notes
 
+## Importing my Custom Py files
+
+- Make or have a directory where all your **script or re-usable script** will be called from.
+- Create a `module`sub folder in the script directory. This is where you place your custom module python files
+
+ Add the directory of your script to your to Blender 
+    - `*Preference > file Path > Script Directory*`
+  ![alt text](<img/Screenshot 2024-08-12 194423.png>)
+    - **Restart your blender** for it to update
+  
+  Now you can Import your own custom module like in normal python:
+
+
+
+```py
+
+import bpy
+
+# located in modules sub directory
+import abcd 
+import xt_bl_utils
+from UtilityFunc import select_edit_bones
+
+
+print(list(select_edit_bones('LEG')))
+
+xt_bl_utils.deleteAll()
+bpy.ops.mesh.primitive_cylinder_add(radius=5)
+
+```
+
+## General Wide search in blender
+
+F3 - shortcut to search all blender (viewport)
+
 ## Make an App Template
 
 Generally your current startup file `startup.blend` and `userpref.blend` is stored in:  

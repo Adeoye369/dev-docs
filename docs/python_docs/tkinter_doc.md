@@ -1,0 +1,278 @@
+# Introduction to Tkinter
+
+## Basic examples
+
+Basic example here 
+
+```py
+
+import tkinter as tk
+
+BG_COLOR = "#222"
+FG_COLOR = "#eee"
+
+window_tk = tk.Tk()
+
+# create window basic
+window_tk.title("Test Program")
+window_tk.minsize(width=300, height=300)
+window_tk.config(bg=BG_COLOR)
+
+
+# Label example
+label1 = tk.Label(text="User name:", font=("Cursive", 10, "italic"))
+label1.config(bg=f"{BG_COLOR}444", fg=FG_COLOR)
+label1.pack()
+
+# Entry
+input1 = tk.Entry()
+input1.pack()
+
+window_tk.mainloop()
+
+```
+
+Output:
+
+![alt text](img/image-23.png)
+
+## Introducing other Tkinter widget
+
+![alt text](img/image-24.png)
+```py
+
+import tkinter as tk
+
+BG_COLOR = "#222"
+FG_COLOR = "#eee"
+
+
+win = tk.Tk()
+win.title("Basic demo")
+win.minsize(width=500, height=500)
+win.config(bg=BG_COLOR)
+
+# Entries==============================#
+entry = tk.Entry(width=30)
+
+# Add some text to begin with
+entry.insert(tk.END, string="Some text begin with")
+print(entry.get()) # Get text in entry
+entry.pack()
+
+# Button===============================#
+def action(): print("Btn: Just do it!")
+btn = tk.Button(text="Click it!", command=action).pack()
+
+# Text Widget =========================#
+text = tk.Text(height=10, width=30)
+text.focus() # Puts cursor in textbox
+text.insert(tk.END, "Example of multi-line.") # Text to begin with
+
+# '1.0' means get line "1" from "0" character
+print()
+text.pack()
+
+# Get the Text Content
+def text_action(): 
+    text_val = text.get("1.0", tk.END)
+    label1.config(text=text_val)
+
+btn1 = tk.Button(text="Get Text Content", command=text_action)
+btn1.pack()
+label1 = tk.Label(text="", fg=FG_COLOR, bg=BG_COLOR)
+label1.pack()
+
+# SpinBox ===================>
+def spinbox_action(): print(spinbox.get())
+
+spinbox = tk.Spinbox(from_=1, to=6, width=5, command=spinbox_action)
+spinbox.pack()
+
+
+# Scale =====================>
+def scale_action(value): print(value)
+
+scale = tk.Scale(from_=0, to=100, command=scale_action)
+scale.pack()
+
+# CheckBox ==================>
+def checkbtn_action():
+    # print '1' - ON,  '0' - OFF
+    print(checked_state.get())
+
+# variable to hold check
+checked_state = tk.IntVar()
+
+checkbutton = tk.Checkbutton(text="Turn off Nude", variable=checked_state, command=checkbtn_action)
+checkbutton.pack()
+
+# Radio Button ==============>
+def radio_action():
+    print(radio_state.get())
+
+# variable to hold which value is checked
+radio_state = tk.IntVar()
+
+radiobtn1 = tk.Radiobutton(text="30 sec", value=30, variable=radio_state, command=radio_action)
+radiobtn2 = tk.Radiobutton(text="60 sec", value=60, variable=radio_state, command=radio_action)
+radiobtn3 = tk.Radiobutton(text="2 mins", value=99, variable=radio_state, command=radio_action)
+radiobtn1.pack()
+radiobtn2.pack()
+radiobtn3.pack()
+
+
+# List Box ================>
+def listbox_action(event):
+    # Get current selection from listbox
+    print(listbox.get(listbox.curselection()))
+
+fruits = ["Apple", "Pear", "Orange", "Banana"]
+
+listbox = tk.Listbox(height=4)
+for i in range(len(fruits)): listbox.insert(i, fruits[i])
+
+listbox.bind("<<ListboxSelect>>", listbox_action) # Attach to the function
+listbox.pack()
+
+win.mainloop()
+
+```
+
+## Basic image loading
+
+```py
+
+root = tk.Tk()
+root.title("Pomodoro")
+root.config(padx=100, pady=50)
+
+# Create the canvas 
+canvas = tk.Canvas(width=200, height=224)
+
+# loading image
+tomato_img = tk.PhotoImage(file="day28-pomodoro/blue_apple.png")
+canvas.create_image(103, 112, image = tomato_img)
+canvas.pack()
+
+
+
+root.mainloop()
+
+```
+
+Result
+![alt text](img/image-25.png)
+
+
+## Full UI setup for Pomodoro
+
+
+```py
+# ---------------------------- UI SETUP
+root = tk.Tk()
+root.title("Pomodoro")
+root.config(padx=50, pady=50, bg=YELLOW)
+
+# Timer Stage label
+timer_stage_label = tk.Label(text="Timer", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "bold"), pady=20)
+timer_stage_label.grid(row=0, column=1)
+
+# Create the canvas 
+canvas = tk.Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
+
+# loading image
+tomato_img = tk.PhotoImage(file="day28-pomodoro/tomato.png")
+canvas.create_image(100, 112, image = tomato_img)
+canvas.create_text(103, 130, text="00:00", fill="white", font=(FONT_NAME, 35, "bold" ))
+canvas.grid(row=1, column=1)
+
+# Start Button
+start_btn = tk.Button(text="Start", font=BUTTON_FONT)
+start_btn.grid(row=2, column=0)
+
+# Reset Button
+reset_btn = tk.Button(text="Reset", font=BUTTON_FONT)
+reset_btn.grid(row=2, column=2)
+
+# Check mark Label
+marks_label= tk.Label(text="✔️", fg=GREEN, bg=YELLOW, font=("Arial", 20))
+marks_label.grid(row=3, column=1)
+
+```
+
+![alt text](img/image-26.png)
+
+
+## Canvas Shapes in Tkinter
+
+```py
+
+import tkinter as tk 
+
+class Shape:
+    def __init__(self, main = None):
+        self.main = main
+         
+        # Calls create method of class Shape
+        self.create()
+     
+    def create(self):
+         
+        # Creates a object of class canvas
+        # with the help of this we can create different shapes
+        self.canvas = tk.Canvas(self.main)
+ 
+        # Creates a circle of diameter 80
+        self.canvas.create_oval(10, 10, 80, 80, 
+                            outline = "black", fill = "white",
+                            width = 2)
+         
+        # Creates an ellipse with H. diameter: 210 and V. diameter: 80
+        self.canvas.create_oval(110, 10, 210, 80,
+                            outline = "red", fill = "green",
+                            width = 2)
+         
+        # Creates a rectangle of 60 x 50 (width x height)
+        self.canvas.create_rectangle(230, 10, 
+                                     290, # pos_x(230) + width(60)
+                                      60, # pos_y(10) + height(50)
+                                outline = "black", fill = "blue",
+                                width = 2)
+         
+        # Creates an arc of 210 deg (it also have soval shape of 90, 100)
+        self.canvas.create_arc(30, 200, 90, 100, start = 0,
+                          extent = 210, outline = "green",
+                          fill = "red", width = 2)
+         
+        points = [150, 100, 200, 120, 240, 180,
+                  210, 200, 150, 150, 100, 200]
+         
+        # Creates a polygon
+        self.canvas.create_polygon(points, outline = "blue",
+                              fill = "orange", width = 2)
+        # Pack the canvas to the main window and make it expandable
+        self.canvas.pack(fill = tk.BOTH, expand = 1)
+ 
+if __name__ == "__main__":
+     
+    # object of class Tk, responsible for creating
+    # a tkinter toplevel window
+    root = tk.Tk()
+    shape = Shape(root)
+ 
+    # Sets the title to Shapes
+    root.title("Shapes")
+ 
+    # Sets the geometry and position
+    # of window on the screen
+    root.geometry("400x300")
+ 
+    # Infinite loop breaks only by interrupt
+    root.mainloop()
+
+```
+
+![alt text](img/image-28.png)
+
+The document was originally from [geeksforgeeks](https://www.geeksforgeeks.org/python-tkinter-create-different-shapes-using-canvas-class/)

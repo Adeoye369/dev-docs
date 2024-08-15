@@ -907,3 +907,85 @@ nato_data = pd.read_csv("./day26-list-comp/nato_alphabet.csv")
 print({row.letter: row.code for(index, row) in nato_data.iterrows() })
 
 ```
+
+## Working with Many Positional Arguments(*args)
+
+Here you can add as many values as you want.
+By defaults it is all packed together in a `tuple`
+
+```py
+
+def add(*args):
+    sum = 0
+    for n in args:
+        sum += n
+    return sum
+
+print(add(23, 43, 3, 2, 43))
+
+# RESULT : 114
+
+```
+
+## Working with Many Keyword Arguments (**kwargs)
+
+Here you input as many key, value pairs in a function call as `func(key1=val1, key2=val2, key3=val3, ... )`.
+
+This is automatically packed into a  `dictionary`.
+
+```py
+
+def calc(init_val = 0,**kwargs):
+    # loop through the content
+    for key, val in kwargs.items():
+        print(key, val)
+
+    # display type and content
+    print(type (kwargs), kwargs)
+    init_val+= kwargs.get("add")
+    init_val*= kwargs.get("mul")
+    init_val/= kwargs.get("div")
+
+    return init_val
+
+
+print(calc(add = 15, div=30, mul=60)
+)
+
+'''
+OUTPUT:
+<class 'dict'> {'add': 15, 'div': 3, 'mul': 60}
+300.0
+'''
+```
+
+More example of kwarg usage
+
+```py
+class Car():
+    def __init__(self, **kw) -> None:
+        self.name = kw.get("name")
+        self.model= kw.get("model")
+        self.engine_type = kw.get("engineType")
+
+    def car_detail(self):
+        return f"name- {self.name}, model - {self.model}, engine - {self.engine_type}"
+
+
+my_carlot = Car(name="MX_702", engineType="VR-34-UK")
+print(my_carlot.car_detail())
+
+```
+
+## Normalizing Any Number
+
+If for instance you have a range of number from 0 - 777:
+`0` will be the minimum range
+`1` will be the interval i.e `(1-0)/(777-0) = 1/777 =  0.00128`
+`211` will then be `(221-0)/(777-0) = (221) x 1/777(interval) =0.28442`
+`700` will be closer to 1.0 `(700-0)/(777-0) = (221) x 1/777(interval) =0.90009`
+
+```py
+def normalize(self, number, min_num, max_number):
+        return (number - min_num)/ (max_number - min_num)
+```

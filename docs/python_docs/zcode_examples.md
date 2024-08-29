@@ -646,3 +646,11 @@ checks_label.grid(row=3, column=1)
 root.mainloop()
 
 ```
+
+## Timer code
+
+<figure markdown='span'>
+![alt text](img/Screenshot001.png)
+</figure>
+
+To see the the Timer code file Click [here](./code/timer_main.py) 

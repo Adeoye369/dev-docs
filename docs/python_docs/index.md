@@ -989,3 +989,64 @@ If for instance you have a range of number from 0 - 777:
 def normalize(self, number, min_num, max_number):
         return (number - min_num)/ (max_number - min_num)
 ```
+
+## OS PATH Loading Files in path
+
+### Loading Relative, Absolute Path & basename:
+
+```py
+
+# Relative path
+>>> os.path.relpath('./') 
+'.'
+>>> os.path.relpath('image_timer\imgs') 
+'image_timer\\imgs'
+
+# Absolute Path
+>>> os.path.abspath('./') 
+'C:\\Projects\\python_projects\\basics_to_advance'
+
+>>> os.path.abspath('image_timer\imgs')  
+'C:\\Projects\\python_projects\\basics_to_advance\\image_timer\\imgs'  
+
+# File name (base name)
+>>> os.path.basename("./image_timer/imgs/amogo.png") 
+'amogo.png'
+
+>>> a = os.path.basename("./image_timer/imgs/amogo.png") 
+>>> os.path.splitext(a) 
+('amogo', '.png')
+
+```
+
+
+List all the files or folders in the directory
+
+```bash
+>>> os.listdir('./docs') 
+['ai-dev-docs', 'blender-docs', 'cmd-docs', ...]
+
+>>> os.listdir('./docs/cpp_docs') 
+['img', 'index.md', 'linkedlist_index.md']
+
+>>> os.listdir('./image_timer/imgs')  
+['amogo.png', 'dlogo.png', 'img001.png', 'miem.png', 'sdgd.png']
+```
+
+### Load File list using os.listdir and os.path.join
+
+```bash
+>>> import os
+>>> dir = ".\image_timer\imgs" 
+>>> [os.path.join(dir, img) for img in os.listdir(dir)] 
+
+['.\\image_timer\\imgs\\amogo.png', '.\\image_timer\\imgs\\dlogo.png', '.\\image_timer\\imgs\\img001.png', '.\\image_timer\\imgs\\miem.png', '.\\image_timer\\imgs\\sdgd.png']
+
+```
+
+### Load File list using glob.glob
+
+```bash
+>>> [img for img in glob.glob(".\image_timer\imgs\*.png")] 
+['.\\image_timer\\imgs\\amogo.png', '.\\image_timer\\imgs\\dlogo.png', '.\\image_timer\\imgs\\img001.png', '.\\image_timer\\imgs\\miem.png', '.\\image_timer\\imgs\\sdgd.png']
+```

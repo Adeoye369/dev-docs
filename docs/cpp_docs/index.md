@@ -284,3 +284,119 @@ int main() {
 }
 
 ```
+
+
+## Classes Basics
+
+### Example 1
+
+#### Base.h
+
+```c++ title="Base.h"
+#pragma once
+
+#include <string>
+#include <iostream>
+
+class Car {
+
+private:
+ std::string name= std::string("Unknown"); // set default name
+ float fuel{ 0.0f }; // {} to initialier
+ float speed{ 0.0f };
+ int passenger{ 0 };
+
+public:
+ Car();
+ Car(std::string name, float amount);
+ void fillFuel(float amount);
+ void accelerate();
+ void breake();
+ void addPassenger(int passenger);
+ void dashboard();
+ ~Car();
+};
+```
+
+#### Base.cpp
+
+```c++ title="Base.cpp"
+#include "Base.h"
+
+Car::Car(){
+ dashboard();
+}
+
+Car::Car(std::string name, float amount){
+ this->name = name;
+ fuel = amount;
+
+ dashboard();
+
+}
+
+void Car::fillFuel(float amount){
+ fuel += amount;
+}
+
+void Car::accelerate(){
+ speed++;
+ fuel -= 0.5f;
+}
+
+void Car::breake(){
+ speed = 0;
+ fuel -= 0.5f;
+}
+
+void Car::addPassenger(int passenger){
+ this->passenger += passenger;
+}
+
+void Car::dashboard(){
+ std::cout << "< ===   DASHBOARD === >\n";
+ std::cout << "Car name: " << name << "\n";
+ std::cout << "Car fuel: " << fuel << "\n";
+ std::cout << "Car passenger: " << passenger << "\n\n";
+ std::cout << "Speed: " << speed << "\n";
+}
+
+Car::~Car(){}
+
+```
+
+#### Main.cpp
+
+```c++ title="Main.cpp"
+#include <iostream>
+#include <vector>
+#include <array>
+
+#include "Base.h"
+
+using std::array;
+using std::vector;
+
+
+int main() {
+
+ Car c1;
+ int x = 40; // fuel
+ Car c2("Xp90", 30);
+
+ c2.addPassenger(4);
+ c2.dashboard();
+
+ c2.fillFuel(x);
+ c2.dashboard();
+
+ c2.accelerate();
+ c2.accelerate();
+ c2.accelerate();
+ c2.accelerate();
+
+ c2.dashboard();
+
+ return 0;
+}
+```

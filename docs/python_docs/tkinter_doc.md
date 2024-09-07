@@ -345,7 +345,7 @@ mw.mainloop()
 
 ### Loading multiple Images pack view
 
-```py
+```py linenums="1"
 mw = tk.Tk()
 mw.geometry("400x400")
 mw.title("Img Btn text")
@@ -400,7 +400,7 @@ mw.mainloop()
 
 ### Choose Image & Loading Multiple Images in grid View
 
-```py
+```py linenums="1"
 
 # ... def load_image 
 
@@ -457,4 +457,102 @@ win.mainloop()
 
 <figure markdown='span'>
 ![load images to tk](<img/Screenshot 2024-08-29 063618.png>)
+</figure>
+
+## Working with TopLevel
+
+```py linenums="1"
+
+import tkinter as tk
+
+def activate_toplevel1():
+    top1 = tk.Toplevel()
+    top1.minsize(150, 150)
+    top1.title("I AM TOP-LEVEL 1")
+
+    label_top1 = tk.LabelFrame(top1, text="Top 1 Label", padx=10, pady=10)
+    tk.Button(label_top1, text="CLiCK ME", command=open_topLevel2).pack()
+    tk.Button(label_top1, text="Exit", fg="red", command=top1.destroy).pack()
+
+    label_top1.pack()
+
+    top1.mainloop()
+
+
+def open_topLevel2():
+    tp2 = tk.Toplevel()
+    tp2.geometry("250x400")
+    tp2.title("Top 2")
+
+    tk.Label(tp2, text="this is my label").pack()
+    tk.Button(tp2, text="Exit", fg="red", command=tp2.destroy).pack()
+    tk.Button(tp2, text="Exit Main", fg="red", command=win.destroy).pack()
+
+    tp2.mainloop()
+
+
+win  = tk.Tk()
+win.minsize(250, 250)
+win.title("Top level test")
+
+tk.Label(win, text="This is the Main window" ).pack()
+tk.Button(text="Start", command=activate_toplevel1).pack()
+
+win.mainloop()
+
+```
+
+<figure markdown="span">
+![alt text](img/image-32.png)
+</figure>
+
+## Loading image preview in another window
+
+```py linenums="1" hl_lines="28 29 34"
+
+def view_image(self, image, filename):
+
+        self.top1 = tk.Toplevel()
+        self.top1.minsize(300, 300)
+        self.top1.title("Image view")
+
+        label1 = tk.Label(self.top1, text=f"Image:{filename}")
+        label1.pack()
+
+        canvas_width = image.width()
+        canvas_height = image.height() 
+        self.canvas = tk.Canvas(self.top1)
+        self.canvas.pack(padx=10, pady=10)
+        self.canvas.create_image(canvas_width/2, canvas_height/2, image=image)
+
+        self.top1.mainloop()
+
+
+def display_images(self,img_files):
+        # ... Some prev. codes
+        index = 0
+        row = 0; col = 0
+        for img in img_files:
+            print(img)
+            row = index//4
+            col =  index%3
+            cropped_image = ImageTk.PhotoImage(load_image(img, 70))
+            full_image =ImageTk.PhotoImage(load_image(img))
+            name = os.path.splitext(os.path.basename(img))[0] # get the name
+
+            img_btn = tk.Button(self.images_frame, 
+                image=cropped_image, compound=tk.LEFT, 
+                text= f"{name[:6]}..." if len(name)> 6 else name,
+                command=partial(self.view_image, full_image, name) 
+                )
+
+            
+            img_btn.grid(row=row ,column=col)
+            self.img_btn_list.setdefault(cropped_image, img_btn)
+            index+=1
+
+
+```
+<figure markdown="span">
+![alt text](img/image-33.png)
 </figure>

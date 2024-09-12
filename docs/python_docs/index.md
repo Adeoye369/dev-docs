@@ -1050,3 +1050,41 @@ List all the files or folders in the directory
 >>> [img for img in glob.glob(".\image_timer\imgs\*.png")] 
 ['.\\image_timer\\imgs\\amogo.png', '.\\image_timer\\imgs\\dlogo.png', '.\\image_timer\\imgs\\img001.png', '.\\image_timer\\imgs\\miem.png', '.\\image_timer\\imgs\\sdgd.png']
 ```
+
+## Creating Setters and Getters in Python class
+
+```py
+
+
+class ImageViewer():
+    
+    def __init__(self, image_name="", thumbnail_image=None, full_image=None, 
+                 image_button=None):
+        
+        self._name = image_name
+        self._thumb_img = thumbnail_image
+        self._full_img = full_image
+        self._img_btn = image_button
+
+    @property # Attribute / Getter 
+    def name(self):return self._name
+    @name.setter
+    def name(self, val): self._name = val
+    
+    @property
+    def full_img(self): return self._full_img
+    @full_img.setter
+    def full_img(self, val): self._full_img = val
+
+    
+    @property
+    def thumb_img(self): return self._thumb_img
+    @thumb_img.setter
+    def thumb_img(self, val): self._thumb_img = val
+    
+    @property
+    def img_btn(self): return self._img_btn
+    @img_btn.setter
+    def img_btn(self, val): self._img_btn = val
+
+```

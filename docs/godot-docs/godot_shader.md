@@ -141,3 +141,32 @@ void fragment() {
     ALBEDO = outcolor;
 
 ```
+
+## Creating Fire Fx
+
+![alt](img/fire1.gif)
+
+```c
+shader_type spatial;
+render_mode cull_disabled, unshaded, shadows_disabled, ambient_light_disabled;
+
+uniform vec3 fire_color : source_color;
+uniform sampler2D tex1Img : source_color, repeat_enable;
+uniform sampler2D gradImg : source_color;
+
+
+void fragment() {
+    vec2 b_uv = UV;
+    b_uv.y += TIME*2.0;
+
+
+    vec4 tex1 = texture(tex1Img, b_uv); // Fire texture (BW)
+    vec4 grad1 = texture(gradImg, UV); // Gradient 2d
+
+    ALBEDO = fire_color;
+    // Clamp the value between 0.0 and 1.0
+    ALPHA =  clamp((tex1.r - grad1.r), 0.0, 1.0 )* 4.0;
+    }
+
+
+```

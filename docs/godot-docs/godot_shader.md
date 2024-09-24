@@ -144,7 +144,8 @@ void fragment() {
 
 ## Creating Fire Fx
 
-![alt](img/fire1.gif)
+
+![alt text](img/image-7.png)
 
 ```c
 shader_type spatial;
@@ -168,5 +169,29 @@ void fragment() {
     ALPHA =  clamp((tex1.r - grad1.r), 0.0, 1.0 )* 4.0;
     }
 
+
+```
+
+### Basic Fresnel Shader
+
+```c
+shader_type spatial;
+render_mode cull_disabled, unshaded, shadows_disabled, ambient_light_disabled, depth_prepass_alpha;
+
+uniform vec3 fire_color : source_color;
+uniform vec3 fresnel_color : source_color;
+uniform float amo : hint_range(0.1, 10.0, 0.1);
+uniform float inten: hint_range(0.1, 5.0, 0.1);
+
+vec3 fresnel_glow(float amount, float intensity, vec3 color,   vec3 normal, vec3 view){
+    return pow(1.0 - dot(normalize(normal), normalize(view)), amount) * color * intensity;
+}
+
+
+void fragment() {
+    vec3 fresnel = fresnel_glow(amo, inten, fresnel_color, NORMAL, VIEW);
+    ALBEDO = fire_color + fresnel;
+    ALPHA =  clamp(fresnel.r, 0.0, 1.0);
+}
 
 ```

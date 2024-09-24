@@ -1088,3 +1088,108 @@ class ImageViewer():
     def img_btn(self, val): self._img_btn = val
 
 ```
+
+
+## Dumping / Loading / Updating to Json file
+
+```py
+
+with open(f"{app_dir}/data.json", "r") as data_file:
+            json.dump(new_data, data_file, indent=4) # 'w' mode
+            data = json.load(data_file) # 'r' mode
+            print(data, type(data)) # <class 'dict'>
+
+```
+
+## Try, Except, Else and Finally
+
+try : `Something that might cause an exception`
+except: `Do this if THERE WAS an exception`
+else: `Do this if THERE WERE NO exception`
+finally: `Do this NO MATTER WHAT`
+
+```py
+
+app_dir = "day30-pwd-manager-json"
+dict1 = {}
+list1 = []
+
+
+try:
+    with open(f"{app_dir}/some_file.text", "r") as fd:
+        fd.read()
+
+    # get key 
+    print(dict1["a"])
+
+    # out of range index
+    print(list1[3])
+
+    # type error
+    val = "string " + 45
+
+except FileNotFoundError as fnferror:
+    print(f"{fnferror} file not found")
+
+
+except KeyError as error: # for Dictionary key that does not exist
+    print(f"Key {error} does not exist")
+
+except IndexError as error: # for index that does not exist in list
+    print(f"{error}")
+
+except TypeError as error:
+    print(f"{error}")
+
+```
+
+Note: Error will only be caught one at a time. Just like when you program throws a normal except other code line does not get executed.
+
+Another Example:
+
+```py
+
+facebook_posts = [
+    {'Likes': 21, 'Comments': 2},
+    {'Likes': 13, 'Comments': 2, 'Shares': 1},
+    {'Likes': 33, 'Comments': 8, 'Shares': 3},
+    {'Comments': 4, 'Shares': 2},
+    {'Comments': 1, 'Shares': 1},
+    {'Likes': 19, 'Comments': 3}
+]
+
+
+def count_likes(posts):
+
+    total_likes = 0
+    for post in posts:
+        try:
+            total_likes = total_likes + post['Likes']
+        except KeyError:
+            total_likes = total_likes + post.get('Likes', 0) # set default of zero
+    
+    return total_likes
+
+count_likes(facebook_posts)
+
+
+
+```
+
+### Raising your own exception
+
+Example:
+
+```py
+h = float(input("height(m): "))
+w = float(input("weight(kg): "))
+
+
+if h > 4.0:
+    raise ValueError("Human height should not exceed 4 meters")
+elif w > 1000:
+    raise ValueError("Human weight should not excceed 1000 kg")
+else:
+    bmi = w / h **2
+    print(f"Your bmi is {bmi}")
+```

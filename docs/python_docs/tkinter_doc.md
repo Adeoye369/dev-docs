@@ -556,3 +556,99 @@ def display_images(self,img_files):
 <figure markdown="span">
 ![alt text](img/image-33.png)
 </figure>
+
+
+## Basic Keyboard keybind in tkinter
+
+```py
+
+import tkinter as tk
+import tkinter.ttk as ttk
+
+win = tk.Tk()
+win.minsize(300, 500)
+win.title("Keyboard evernt Bind Test")
+win.config(padx=20)
+
+fram1 = ttk.LabelFrame(win, text="Keyboard Bind", padding="20 20")
+fram1.pack()
+
+label1 = ttk.Label(fram1, text= "Event Goes", background="#ffffee", padding=(20, 10))
+label1.pack(fill=tk.X)
+
+
+# General key bind
+win.bind("<Key>", lambda e : label1.config(text=f"{e.char}, {e.keysym}, {e.keycode}"))
+
+# Using lambda expression to bind key event
+win.bind("a", lambda e : label1.config(text="key small 'a' is pressed"))
+win.bind("A", lambda e : label1.config(text="key Capital 'A' is pressed")) # Note its case sensitive
+# key sequence example
+win.bind("aZ", lambda e : label1.config(text="aZ in is pressed")) # only when the other is fulfilled
+
+# Special keys binding
+# <Return>, <Up>, <Right> <Down> - arrows
+# <space>, <less>
+count = 0
+def add_count(num) : 
+    global count
+    count += num
+    return count
+
+win.bind("<Up> ", lambda e : print(e.keysym, add_count(1)) )
+win.bind("<Down> ", lambda e : print(e.keysym, add_count(-1)) )
+
+# Combined special keys bind with 
+win.bind("<Control-Up>", lambda e : print(e.keysym, "Control-up"))
+win.bind("<Alt-m>", lambda e : print(e.keysym, "Alt m pressed key"))
+win.mainloop()
+
+```
+
+## Basic of message box in tkinter
+
+```py
+
+import tkinter as tk
+import tkinter.messagebox as msgbox
+import tkinter.ttk as ttk
+
+win = tk.Tk()
+
+win.minsize(300, 300)
+win.title("testing msg Box")
+
+def showmsg(type):
+    output = None
+
+    if type == "AYNC":
+        output = msgbox.askyesnocancel(title = "Example0", message="Do you know what to do? ", parent=win)
+
+    elif type == "AYN":
+        output = msgbox.askyesno(title= "Exampe1", message="Do you know me?")
+
+    elif type == "AQ":
+        output = msgbox.askquestion(title="about you", message="tell me about you")
+    
+    elif type == "SI":
+        output = msgbox.showinfo("showinfo example", "this is a message box")
+
+    print(f"Message {type} output is : {output}" )
+
+
+btn1 = ttk.Button(win, text= "Press me!! AYNC " , padding="10 10", command= lambda : showmsg("AYNC"))
+btn2 = ttk.Button(win, text= "Press me!! AYN " , padding="10 10", command= lambda : showmsg("AYN"))
+btn3 = ttk.Button(win, text= "Press me!! AYQ " , padding="10 10", command= lambda : showmsg("AQ"))
+btn4 = ttk.Button(win, text= "Press me!! SI " , padding="10 10", command= lambda : showmsg("SI"))
+btn1.pack()
+btn2.pack()
+btn3.pack()
+btn4.pack()
+
+win.mainloop()
+
+```
+
+<figure markdown="span">
+![alt text](img/image-34.png)
+</figure>

@@ -283,13 +283,31 @@ except KeyboardInterrupt: # When user press CTRL + C
 
 ## basics with time and date
 
-Working with basics.
-(1.) `input()` and `print()`
-(2.) Then we work with the type
-
 ```python
+import datetime as dt
 
-from datetime import datetime
+now = dt.datetime.now()
+print(now) # 2024-09-29 19:28:48.991303
+print(now.date()) # 2024-09-29
+print(now.day) # 29
+print(now.month) # 9
+print(now.year) # 2024
+
+print(now.time()) # 19:28:48.991303
+print(now.time().hour) # 19
+print(now.time().minute) # 28 
+print(now.time().second) # 48
+print(now.time().microsecond) # 0.991303
+
+# NOTE: Weekdays starts with zero index so monday => 0, sunday => 6
+print(dt.datetime.now().weekday()) # 
+
+#  CREATING A NEW DATE
+my_birth_date = dt.datetime(year=1991, month=4, day=12, hour=20, minute=45, second=31)
+print(my_birth_date) # 1991-04-12 20:45:31
+
+
+import datetime as dt
 
 name = input('type your name :' )
 age = input('My age:')
@@ -297,7 +315,7 @@ month = input('month number: ')
 
 months = ['jan', 'feb', 'march', 'apr', 'may', 'jun',\
            'jul', 'Aug','sep', 'oct', 'nov', 'dec']
-birth_year = datetime.now().year - int(age)
+birth_year = dt.datetime.now().year - int(age)
 
 print("my name is {0} and I was born in month of {1} in the year {2}"\
       .format(name, months[int(month) - 1], birth_year))
@@ -1192,4 +1210,95 @@ elif w > 1000:
 else:
     bmi = w / h **2
     print(f"Your bmi is {bmi}")
+```
+
+## Sending Email with smtplib
+
+smtp - Simple Mail Transfer Protocol
+
+```py
+
+import smtplib
+
+"""
+Gmail: smtp.gmail.com
+Hotmail: smtp.live.com
+Outlook: outlook.office365.com
+Yahoo: smtp.mail.yahoo.com
+"""
+
+my_email = "adegbitefeyisetan@gmail.com"
+my_password = "xxxxxxxxxxxxx"  # App password generated from google account
+with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+    # connection.starttls() # make connect secure
+    connection.login(user=my_email, password=my_password)
+    connection.sendmail(from_addr=my_email, 
+                        to_addrs="adeoye-hm-test001@hotmail.com",
+                        msg="Subject:Meet for Tomorrow\n\nDear Adeoye,\n\
+                            This is to remind you of our meeting tomorrow\
+                                Best Regards.")
+
+```
+
+## Monday motivation Email
+
+```py
+
+import smtplib, random
+import datetime as dt
+
+
+my_email = "adegbitefeyisetan@gmail.com"
+my_password = "xxxxxxxxxxxxx"  # App password generated from google account
+
+now = dt.datetime.now()
+weekday = now.weekday()
+
+if weekday == 0:
+    with open("./day32-email-datetime/quotes.txt") as quote_file:
+        quotes = quote_file.readlines()
+        quote = random.choice(quotes)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+        # connection.starttls() # make connect secure
+        connection.login(user=my_email, password=my_password)
+        connection.sendmail(from_addr=my_email, 
+                            to_addrs=my_email,
+                            msg=f"Subject:Morning Motivation\n\n{quote}")
+
+```
+
+## Birthday Wisher Automation
+
+```py
+import smtplib, pandas,random
+from datetime import datetime
+
+src_dir = "zbirthday-wisher"
+my_email = "adegbitefeyisetan@gmail.com"
+my_password = "xxxxxxxxxxxxx" # App password generated from google account
+
+
+today_tuple = (datetime.now().month, datetime.now().day)
+
+data = pandas.read_csv(f"{src_dir}/birthdays.csv", )
+
+birthdays_dict ={(data_row["month"], data_row["day"]):data_row for (index, data_row) in data.iterrows()}
+
+if today_tuple in birthdays_dict:
+    birthday_person = birthdays_dict[today_tuple]
+    file_path = f"{src_dir}/letter_templates/letter_{random.randint(1, 3)}.txt"
+    with open(file_path) as letter_file:
+        content = letter_file.read()
+        content = content.replace("[NAME]", birthday_person["name"] )
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+        connection.login(user=my_email, password=my_password)
+        connection.sendmail(from_addr=my_email, 
+                            to_addrs=birthday_person["email"],
+                            msg=f"Subject:Happy Birthday\n\n{content}")
+        print("Mail Sent successfully.")
+else:
+    print("no birthday match found")
+
 ```

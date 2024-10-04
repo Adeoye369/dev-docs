@@ -1302,3 +1302,133 @@ else:
     print("no birthday match found")
 
 ```
+
+## API, End points and Parameters
+
+Response codes:
+![alt text](img/image-37.png)
+
+```py
+
+from datetime import datetime
+import smtplib, requests, time
+
+MY_LAT = 1.2243
+MY_LNG = 52.432
+my_email = "adegbitefeyisetan@gmail.com"
+my_password = "fovk opsk spir tdil"
+
+def is_iss_overhead():
+
+    response = requests.get(url="http://api.open-notify.org/iss-now.json")
+    response.raise_for_status()
+
+    data = response.json()
+    # print(data)
+    print(data["timestamp"])
+
+    iss_lat = float(data["iss_position"]["latitude"])
+    iss_lng = float(data["iss_position"]["longitude"])
+
+    if MY_LAT-5 <= iss_lat <= MY_LAT+5 and MY_LNG-5 <= iss_lng <= MY_LNG+5:
+        return True
+
+
+def is_night():
+    params = {"lat": MY_LAT,"lng": MY_LNG, "formatted": 0}
+
+    res = requests.get("https://api.sunrise-sunset.org/json", params=params)
+    res.raise_for_status()
+    data = res.json()
+    print(data)
+    sunrise = int(data['results']['sunrise'].split["T"][1].split(":")[0])
+    sunset = int(data['results']['sunset'].split["T"][1].split(":")[0])
+
+    time_now = datetime.now().hour
+
+    if time_now >= sunset or time_now <= sunrise:
+        return True
+
+
+while True:
+    # Send email 
+    if is_iss_overhead() and is_night():
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+            connection.login(user=my_email, password=my_password)
+            connection.sendmail(from_addr=my_email, 
+                                to_addrs=my_email,
+                                msg=f"Subject:Look up for ISS\n\nQuickly check the sky the ISS is above you now, Hurry!!!")
+            print("Mail Sent successfully.")
+
+    time.sleep(60) # check every sixty seconds
+
+
+```
+
+## API , GET(), POST(), PUT() and DELETE()
+
+The `request.get()` is to recieve info from the api
+The `request.post()` is to send info to the api
+
+```py
+
+import requests
+from datetime import datetime
+
+TOKEN = "234sfosdwao3402"
+USERNAME = "adeoye"
+GRAPH_ID = "code1"
+
+header_info ={
+    "X-USER-TOKEN": TOKEN} 
+
+
+# Making a POST request to create user
+PIXELA_ENDPOINT="https://pixe.la/v1/users"
+user_params= {
+    "token": TOKEN,
+    "username": USERNAME,
+    "agreeTermsOfService":"yes",
+    "notMinor":"yes"}
+# response = requests.post(url=f"{PIXELA_ENDPOINT}", json=user_params)
+# print(response.text)
+
+
+
+# Making a POST to create a new graph
+GRAPH_ENDPOINT = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs"
+graph_params = {
+    "id":GRAPH_ID,
+    "name":"Coding Hours",
+    "unit": "hrs",
+    "type": "float",
+    "color":"sora"}
+# response = requests.post(url=GRAPH_ENDPOINT, json=graph_params, headers=header_info)
+# print(response.text)
+
+
+
+# Making another post request to create the pixel points
+pixel_creation_endpoint = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs/{GRAPH_ID}"
+today = datetime.now()
+pixel_data={
+    "date": today.strftime("%Y%m%d"),
+    "quantity": "4.0",
+}
+# response = requests.post(url=pixel_creation_endpoint, json=pixel_data, headers=header_info)
+# print(response.text)
+
+
+# Making a PUT Requests
+that_day = datetime(year=2024, month=7, day=27)
+update_endpont = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs/{GRAPH_ID}/{that_day.strftime('%Y%m%d')}"
+new_pixel_data ={"quantity":"7.6"}
+# response = requests.put(url=update_endpont, json=new_pixel_data, headers=header_info)
+# print(response.text)
+
+# Making a DELETE Request
+delete_endpoint = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs/{GRAPH_ID}/{that_day.strftime('%Y%m%d')}"
+response = requests.delete(url=delete_endpoint, json=new_pixel_data, headers=header_info)
+print(response.text)
+
+```

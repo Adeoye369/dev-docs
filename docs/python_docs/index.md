@@ -1430,5 +1430,249 @@ new_pixel_data ={"quantity":"7.6"}
 delete_endpoint = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs/{GRAPH_ID}/{that_day.strftime('%Y%m%d')}"
 response = requests.delete(url=delete_endpoint, json=new_pixel_data, headers=header_info)
 print(response.text)
+```
+
+## Webscraping and Beautiful soup
+
+```py
+import requests, bs4
+
+response = requests.get(url="https://news.ycombinator.com/")
+html_page = response.text
+
+html_soup = bs4.BeautifulSoup(html_page, 'html.parser')
+print(html_soup.title.getText()) # Hacker News
+
+# Select tag based on class
+athings_class = html_soup.find_all("tr", class_="athing")
+print(athings_class)
+
+# Select class using selector
+titleline_links_tag = html_soup.select(selector=".titleline a")
+print(len(titleline_links_tag))
+
+```
+
+## Selenium Webscrapping
+
+Basic launching a website
+
+```py
+
+from selenium import webdriver
+
+crome_options = webdriver.ChromeOptions()
+crome_options.add_experimental_option("detach", True)
+
+driver = webdriver.Chrome(options=crome_options)
+driver.get("https://kdp.amazon.com")
+
+```
+
+### finding elements in the webpage
+
+```py
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+crome_options = webdriver.ChromeOptions()
+crome_options.add_experimental_option("detach", True)
+
+driver = webdriver.Chrome(options=crome_options)
+driver.get("https://www.python.org")
+
+# === find by "NAME" === #
+searchbar = driver.find_element(By.NAME, value="q")
+print(searchbar.get_attribute("placeholder")) # print: search
+
+# === find by "ID" === #
+doc_li = driver.find_element(By.ID, value="documentation")
+print(doc_li.text) # print: "Documentation"
+
+time.sleep(5) # wait 10 secs.
+
+# === find by "CSS_SELECTOR"
+latest_news = driver.find_elements(By.CSS_SELECTOR, value=".shrubbery ul li > a")
+latest_news = [news.text for news in latest_news]
+print("\n".join(latest_news))
+
+# === find by XPATH === #
+xpath = driver.find_element(By.XPATH, value='//*[@id="content"]/div/section/div[2]/div[4]/p[2]/a')
+print(xpath.text)
+
+time.sleep(5) # wait 10 secs.
+
+driver.quit()
+```
+
+### More example on CSS_SELECTOR
+
+```py
+# === find by "CSS_SELECTOR"
+driver.get("https://www.python.org")
+
+event_dates = driver.find_elements(By.CSS_SELECTOR, value="div.event-widget ul.menu li > time")
+event_names = driver.find_elements(By.CSS_SELECTOR, value="div.event-widget ul.menu li > a")
+
+event_dates = [date.get_attribute("datetime")[:10] for date in event_dates]
+event_names = [name.text for name in event_names]
+
+# ======== METHOD 1 ======== #
+event_data = {}
+for date, name in zip(event_dates, event_names):
+    current_idx = event_names.index(name) # get current index on element
+    new_data = {current_idx : {date : name}} # Create a new dictionary base on index
+    event_data.update(new_data) # extend/update the dict. data
+# ========================== #
+
+
+# ======== METHOD 2 ======== #
+for i in range(len(event_names)):
+    event_data[i] = {
+            "time": event_dates[i],
+            "event" : event_names[i]
+            }
+# ========================== #
+
+
+print(event_data)
+
+'''
+RESULT:
+{0: {'2024-10-16': 'PyCon Panamá 2024'}, 
+1: {'2024-10-16': 'Python Brasil 2024'}, 
+2: {'2024-10-16': 'Python New Zealand: From virtual envs to my reality'}, 
+3: {'2024-10-17': 'Swiss Python Summit 2024'}, 
+4: {'2024-10-22': 'Helsinki Python meetup'}}
+'''
+
+# Another Example
+for i in range(4):
+
+    time.sleep(random.randint(3, 6))
+    img = driver.find_element(By.CSS_SELECTOR, value=".photo img").get_attribute("src")
+    print(f"Image - {i+1} : {img}")
+    next = driver.find_element(By.CLASS_NAME, value="page-next")
+    next.click()
+
+```
+
+### click element in selenium
+
+Method 1 - Selecting the CSS element
+
+```py
+article_count = driver.find_element(By.CSS_SELECTOR, value="#articlecount a")
+article_count.click()
+```
+
+Method 2 - Clicking on link text
+
+```py
+waits_link = driver.find_element(By.LINK_TEXT, value="Waits")
+waits_link.click()
+```
+
+### Entering Text into a form
+
+```py
+# Load main page
+driver.get("https://www.python.org/")
+
+time.sleep(3)
+
+waits_link = driver.find_element(By.NAME, value="q")
+waits_link.send_keys("Ipython")
+waits_link.send_keys(Keys.ENTER)
+
+time.sleep(5)
+```
+
+#### Example Filling form
+
+<figure markdown="span" style="width: 30vw">
+    ![Form to fill](img/image-38.png)
+</figure>
+
+```py
+# Load main page
+driver.get("https://secure-retreat-92358.herokuapp.com/")
+
+time.sleep(3)
+
+fname = driver.find_element(By.NAME, value="fName")
+lname = driver.find_element(By.NAME, value="lName")
+email = driver.find_element(By.NAME, value="email")
+submit_btn = driver.find_element("css selector", value=".form-signin .btn")
+
+fname.send_keys("Adeoye")
+lname.send_keys("Adegbite")
+email.send_keys("teobe@mailman.com")
+submit_btn.send_keys(Keys.ENTER)
+
+time.sleep(5)
+
+driver.quit()
+```
+
+## Downloading Chunk Progress Bar in Console 
+
+![Progess bar console](img/dwnld-console-progress.gif)
+
+```py
+import time
+
+content_size = 1234453
+content_size_kb = f"{round(content_size/1024, 2) }"
+done = downloaded = 0
+
+while downloaded < content_size:
+    chunk = content_size/100 # divided the file size evenly
+    time.sleep(0.1)
+    downloaded += chunk
+    progress =f"[{'='*(int(done/2))}|({done+1}%){round(downloaded/1024, 2)}/{content_size_kb}kb]" 
+    print(progress, end="\r")
+    done += 1
+
+    # Download is complete
+    if downloaded >= content_size:
+        print(progress)
+```
+
+## Downloading Image Chunk Progroess Bar in Console
+
+```py
+def download_image(url, save_as):
+    
+    # download image an save in current work dir
+    res = requests.get(url, stream=True)
+
+    # Output total file size
+    total_size = int(res.headers.get('content-length', 0))
+    total_size_kb = round(total_size/1024, 2)
+    print(f"File size - {total_size_kb}kb")
+
+
+    done = downloaded = 0
+    with open(save_as, 'wb') as file:
+
+        # iterate over content to download
+        chunk_size = int(total_size/100)
+        for data in res.iter_content(chunk_size=chunk_size):
+            file.write(data)
+            downloaded += chunk_size
+            done += 1
+
+            # print download progress
+            progress =f"[{'='*(int(done/2))}|({done}%){round(downloaded/1024, 2)}/{total_size_kb}]" 
+            print(progress, end="\r")
+            
+
+            # Download is complete
+            if downloaded >= total_size:
+                done = 100
+                progress =f"[{'='*(int(done/2))}|({done}%){total_size_kb}/{total_size_kb}kb]" 
+                print(progress)
 
 ```

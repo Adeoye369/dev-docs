@@ -447,6 +447,13 @@ win.mainloop()
 
 ```
 
+## Working with Grid view Configuration
+
+For each widget, you can adjust base on how much space you want them the take
+
+check on the [tkinter grid configure for widget on pythontutorial.net](https://www.pythontutorial.net/tkinter/tkinter-grid/) for better explanation
+
+
 <figure markdown='span'>
 ![images btn](<img/Screenshot 2024-08-29 063535.png>)
 </figure>
@@ -557,6 +564,35 @@ def display_images(self,img_files):
 ![alt text](img/image-33.png)
 </figure>
 
+## Get the window screen width and height
+
+```py
+#Create an instance of tkinter frame
+win= Tk()
+
+#Set the geometry of frame
+win.geometry("650x250")
+
+#Get the current screen width and height
+screen_width = win.winfo_screenwidth()
+screen_height = win.winfo_screenheight()
+```
+
+## ttk Button styling
+
+```py
+s = ttk.Style()
+s.configure('my.TButton', font=('Helvetica', 12))
+b = ttk.Button(mainframe, text='Press me', style='my.TButton',
+command=foo)
+```
+
+To style everything in your root
+
+```py
+s = ttk.Style()
+s.configure('.', font=('Helvetica', 12))
+```
 
 ## Basic Keyboard keybind in tkinter
 
@@ -652,3 +688,98 @@ win.mainloop()
 <figure markdown="span">
 ![alt text](img/image-34.png)
 </figure>
+
+## Scrollable Frame - Example
+
+<figure markdown="span" style="width:400px">
+![Scrollable Frame example](img/scrollable_frame_demo.gif)
+</figure>
+
+This is extracted from the code at [blog.teclado scrollable frame](https://blog.teclado.com/tkinter-scrollable-frames/)
+
+```py
+import tkinter as tk
+from tkinter import ttk
+
+win = tk.Tk()
+win.title("Testing Scrollabe Frame")
+win.minsize(300, 300)
+win.config(padx=20, pady=20)
+
+s = ttk.Style()
+s.configure('my.TLabelframe', borderwidth=20, relief='solid', labelmargins=20, background="#ff99aa")
+s.configure('my.TLabelframe.Label', font=('Helvetica', 10, 'italic'))
+
+# contianer to hold canvas
+container = ttk.LabelFrame(win, text="Container Frame", width=400, height=200, style="my.TLabelframe", padding=(20, 20))
+
+canvas = tk.Canvas(container)
+scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+
+s.configure("my2.TLabelframe", background="#ffaa00")
+scrollable_frame = ttk.Frame(canvas, style="my2.TLabelframe")
+
+scrollable_frame.bind(
+        "<Configure>", 
+        lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        
+canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
+canvas.configure(yscrollcommand=scrollbar.set)
+
+# Load widget into the container
+for i in range(50):
+    row_count = i // 4
+    col_count =  i % 4
+    ttk.Button(scrollable_frame, text=f"Some Button ", padding=(20, 10)).grid(row=row_count, column=col_count, sticky=tk.N)
+
+container.pack()
+canvas.pack(side="left", fill="both", expand=True)
+scrollbar.pack(side="right", fill="y")
+
+win.mainloop()
+```
+
+### Scrollable Frame class
+
+```py title="Scrollable.py"
+import tkinter as tk
+from tkinter import ttk
+
+class ScrollableFrame(ttk.LabelFrame):
+    def __init__(self, container, *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+        canvas = tk.Canvas(self)
+        scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        scrollbar_h = ttk.Scrollbar(self, orient="horizontal", command=canvas.xview)
+        self.scrollable_frame = ttk.Frame(canvas)
+
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.configure(xscrollcommand=scrollbar_h.set)
+
+        scrollbar_h.pack(side="bottom", fill="x")
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+```
+
+```py title="main.py"
+
+    ...
+    # Display list Frame
+    self.images_frame = ScrollableFrame(self.win, padding=(10,10))
+    self.images_frame.pack(fill=tk.BOTH)
+    ...
+    for img in img_files:
+        ...
+        new_img.display_button(self.images_frame, row_count, col_count)
+
+```

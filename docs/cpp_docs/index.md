@@ -400,3 +400,18 @@ int main() {
  return 0;
 }
 ```
+
+# Basic Dynamic Memory allocation
+
+```c++
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+  int* p = (int*)malloc(sizeof(int)); // allocate memory
+  *p = 5;
+  *p = *p + 7;
+  printf("%d", *p); // print value
+  free(p);
+}
+```

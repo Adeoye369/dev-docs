@@ -1676,3 +1676,68 @@ def download_image(url, save_as):
                 print(progress)
 
 ```
+
+## First order class objects
+
+A first order class objects, can be passed around as arguments
+
+```py
+
+def mul(x, y): return x * y
+
+def add(x, y): return x + y
+
+def div(x, y) : 
+    try: return y / x
+    except ZeroDivisionError: print("cannot divide by zero")
+
+def math_op(func_op,val1, val2): 
+    return func_op(val1, val2)
+
+# Passing a function mul, div, add as arguement
+print(math_op(add, 23, 54))
+print(math_op(mul, 21, 11))
+print(math_op(div, 0, 10))
+
+```
+
+## Nested function
+
+```py
+# Nested function
+
+def outer_function():
+    print("I'm outer")
+
+    def inner_function():
+        print("I'm inner")
+
+    inner_function()
+
+outer_function()
+
+# OUTPUT
+# I'm outer
+# I'm inner
+
+```
+
+## A function can also return another function
+
+```py
+def outer_function():
+    print("I'm outer")
+
+    def inner_function():
+        print("I'm inner")
+
+    return inner_function # returns the function rather than calling it
+
+inner_func = outer_function()
+inner_func() 
+
+# OUTPUT
+# I'm outer
+# I'm inner
+
+```

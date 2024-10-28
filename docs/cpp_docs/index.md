@@ -401,7 +401,9 @@ int main() {
 }
 ```
 
-# Basic Dynamic Memory allocation
+## Basic Dynamic Memory allocation
+
+### Working with Malloc
 
 ```c++
 #include <stdio.h>
@@ -414,4 +416,129 @@ int main() {
   printf("%d", *p); // print value
   free(p);
 }
+```
+
+### Working with Calloc
+
+```c++
+float* prices = (float*)calloc(5, sizeof(float));
+
+for (size_t i = 0; i < 5; i++)
+{
+  float val = 56.65;
+  prices[i] += val * i;
+  printf("%f\n", prices[i]);
+}
+
+free(prices);
+prices = nullptr;
+```
+
+### Allocating memory with 'new' operator
+
+```cpp
+
+/*** 
+  Allocating memory through `new` Operator:
+  Computer knows exactly what size 'int' so it allocate it automatically
+  One can assign default value for new allocator unlike 'malloc' 
+  */
+int* p0 = new int;
+int* p1 = new int{}; // default 0
+int* p2 = new int{45}; // default 45
+int* p3 = new int(23); // default 23
+
+
+*p0 = 110;
+
+std::cout << *p0 << "\n";
+std::cout << *p1 << "\n";
+std::cout << *p2 << "\n";
+std::cout << *p3 << "\n";
+
+delete p1, p2, p3, p0;
+p1 = p2 = p3 = p0 = nullptr;
+
+// More Examples
+void String() 
+{
+    int LENGTH = 5;
+    char* lang = new char[LENGTH];
+    strcpy_s(lang, LENGTH, "Pyth"); // Alloc one extra bite
+    std::cout << lang << "\n";
+}
+
+```
+
+# Constant Member Functions
+
+* Member functions qualified with `const` keyword
+* Both declaration and definition is qualified
+* Such functions **cannot change value of any member variables**
+* Useful for creating read-only functions
+* Constant objects can invoke only constant member functions.
+  * This means all its members identifiers(variables) are also constant
+
+```c++ titlle="Person.h"
+#pragma once
+#include <iostream>
+
+class Person
+{
+  std::string username{};
+  bool isHealthy{};
+  float eneryStored{};
+  static int userCount;
+
+public:
+  Person();
+  Person(std::string);
+  void walk();
+  void displayPersonDetails() const;
+  static void showUserCount();
+};
+```
+
+```c++ title="Person.cpp"
+#include "Person.h"
+
+int Person::userCount = 0;
+
+Person::Person(){
+  userCount++;
+}
+
+Person::Person(std::string name) : username(name){
+  userCount++;
+}
+
+void Person::walk(){
+  this->eneryStored += 3.4f;
+}
+
+void Person::displayPersonDetails() const{
+  std::cout << "This person " << this->username << " has  " << this->eneryStored << " Energy.\n";
+}
+
+void Person::showUserCount() {
+  std::cout << "Total users = " << userCount << "\n";
+}
+```
+
+```c++ title="Main.cpp"
+#include "Person.h"
+
+
+int main() {
+
+  Person p1, p2, p3;
+  const Person p4("Pastor Iwo");
+  //p4.walk();
+  //p4.walk();
+  //p4.walk();
+  p4.displayPersonDetails(); // read-only 
+  Person::showUserCount();
+  return 0;
+}
+
 ```

@@ -822,3 +822,86 @@ for info in house_data[:10]:
 driver.quit()
 
 ```
+
+## Love Calculator (Worked Example)
+
+```py
+def calculate_love_score(name1, name2):
+    combined_names = name1 + name2
+    lower_names = combined_names.lower()
+    
+    t = lower_names.count("t")
+    r = lower_names.count("r")
+    u = lower_names.count("u")
+    e = lower_names.count("e")
+    first_digit = t + r + u + e
+    
+    l = lower_names.count("l")
+    o = lower_names.count("o")
+    v = lower_names.count("v")
+    e = lower_names.count("e")
+    second_digit = l + o + v + e
+    
+    
+    score = int(str(first_digit) + str(second_digit))
+    print(score)
+    
+calculate_love_score("Kanye West", "Kim Kardashian")
+
+```
+
+## Love Calculator (My Worked)
+
+```py
+
+def calculate_love_score(name1, name2):
+    true_count = {}
+    love_count = {}
+    sum_t = sum_l = 0
+    names = name1 + name2
+    for ch in names.upper():
+
+        if ch in 'TRUE':
+            true_count.setdefault(ch, 0)
+            true_count[ch] += 1
+        
+        if ch in 'LOVE':
+            love_count.setdefault(ch, 0)
+            love_count[ch] += 1
+        
+    for (_, v) in true_count.items(): sum_t+=v
+    for (_, v) in love_count.items() : sum_l+=v
+    print(str(sum_t) + str(sum_l))
+
+calculate_love_score("Angela Yu", "Jack Bauer")
+        
+```
+
+### Student Grades
+
+```py
+student_scores = {
+    'Harry': 88,
+    'Ron': 78,
+    'Hermione': 95,
+    'Draco': 75,
+    'Neville': 60
+}
+
+
+student_grades ={}
+
+for name, score in student_scores.items():
+    
+    if 91 < score < 100:
+        student_grades[name] = "Outstanding" 
+    elif 81 < score < 90 :
+        student_grades[name] = "Exceeds Expectations"
+    elif 71 < score < 80:
+        student_grades[name] = "Acceptable"
+    elif score <= 70:
+        student_grades[name] = "Fail"
+        
+print(student_grades)
+    
+```

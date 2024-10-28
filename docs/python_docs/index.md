@@ -1772,3 +1772,32 @@ def ghello_you():
 hello_world()
 ghello_you()
 ```
+
+### Decorator Example 2
+
+```py
+import time
+
+def speed_calc_decorator(func):
+  def wrapper_func(*args, **kwargs):
+      # Do something
+      before_time = time.time()
+      func(*args, **kwargs)
+      time_elapse = time.time() - before_time
+      print(f"the {func.__name__} took - {time_elapse}")
+      
+  return wrapper_func
+
+@speed_calc_decorator
+def fast_function():
+  for i in range(1000000):
+    i * i
+        
+@speed_calc_decorator
+def slow_function():
+  for i in range(10000000):
+    i * i
+    
+fast_function()
+slow_function()
+```

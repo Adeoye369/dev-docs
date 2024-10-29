@@ -540,5 +540,96 @@ int main() {
   Person::showUserCount();
   return 0;
 }
+```
+
+## workning With Constructors and Copy Constructor
+
+Remember "**RULE OF 3**" if you have to implement say Destructor then all implement all of the other 2 listed and vice versa:
+- `Destructor`
+- `Copy constructor`
+- `Copy assignment operator`
+
+```c++ title="Integer.h"
+#pragma once
+#include <iostream>
+class Integer
+{
+	int* m_pInt;
+
+public:
+  Integer();
+  Integer(int val);
+  Integer(const Integer& other);
+  int getValue() const;
+  void setValue(int val);
+  int operator+(const Integer& other);
+  friend std::ostream& operator<<(std::ostream& s, const Integer& val);
+  ~Integer();
+};
+
+```
+
+```c++ title="Integer.cpp"
+#include "Integer.h"
+
+Integer::Integer(){
+  m_pInt = new int(0);
+}
+
+Integer::Integer(int val){
+  m_pInt = new int(val);
+}
+
+Integer::Integer(const Integer& other){
+  m_pInt = new int(other.getValue());
+}
+
+int Integer::getValue() const{
+  return *m_pInt;
+}
+
+void Integer::setValue(int val){
+  *m_pInt = val;
+}
+
+int Integer::operator+(const Integer& other){
+  return getValue() + other.getValue();
+}
+
+Integer::~Integer(){
+  delete m_pInt;
+}
+
+std::ostream& operator<<(std::ostream& s, const Integer& val){
+  s << val.getValue();
+  return s;
+}
+
+```
+
+```c++ title="Source.cpp"
+#include "Integer.h"
+#include <iostream>
+
+void print(Integer x) {
+	std::cout << x.getValue() << std::endl;
+}
+
+Integer sum(Integer x, Integer y) {
+ return x + y;
+}
+
+
+
+int main() {
+
+  Integer i1(245);
+  Integer i2(55);
+  Integer i3 = i2;
+  std::cout << i1.getValue() << std::endl;
+  std::cout << sum(i1, i2) << std::endl;
+  std::cout <<  i2 + i3  << std::endl;
+
+}
 
 ```

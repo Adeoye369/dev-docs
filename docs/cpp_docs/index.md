@@ -633,3 +633,69 @@ int main() {
 }
 
 ```
+
+## Delegating Constructor
+
+Here is basically re-use of constructors
+
+```c++
+//Person() with No parameter
+Person::Person(): Person("Anonymous", 0)
+{
+}
+
+// Person(name) with "name" parameter
+Person::Person(std::string name) : Person(name, 0)
+{
+}
+
+// Person with multiple param
+Person::Person(std::string name, float eneryStored)
+{
+  this->username = name;
+  this->eneryStored = eneryStored;
+  userCount++;
+}
+```
+
+This helps avoid code duplications
+
+## Default and Delete Function
+
+`default` is good instruct compiler to automatic invoke default construct while the `delete` prevent a member function from being called by the compiler
+
+```c++
+class Animal {
+	int legs{ 4 };
+
+public:
+  // Compiler generate default construct implicitly
+  Animal() = default; 
+
+  Animal(int no_of_legs) {
+  legs = no_of_legs;
+  }
+
+  void setLegs(int l) {
+  legs = l;
+  }
+  // Compiler should reject this func. overload
+  void setLegs(float l) = delete;
+};
+
+```
+
+## L-Values, R-values and R-Values References
+
+| L-value | R-value
+|---------|------------
+|Has a name |Does not have a name
+|All variables are l-values |R-value is a temp.value
+|Can be assigned values |cannot to assigned value(They are the value passed)
+
+```c++
+int x = 5;
+float price = 45.99f;
+```
+
+Here `x` and `price` are L-Values, they can be assigned value, while `5` and `45.99f` are R-Values, they are temporary values.

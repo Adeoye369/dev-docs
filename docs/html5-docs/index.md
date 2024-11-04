@@ -778,6 +778,3 @@ element{
 
 ![alt text](img/image-38.png)
 
-## Flexbox
-
-this must be some flex

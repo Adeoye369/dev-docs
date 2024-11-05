@@ -94,6 +94,7 @@ justify-content: center; /* center ther content of container */
 ## Setting the Flex direction
 
 This is basically the **direction** along which flex is stacking up the html elements. By default `flex-direction` is set to `row` this is the  **Main axis,** which is along **X-axis**. Here the **Cross axis** is along the **Y-axis** 
+
 ```css
 /* This is the default behaviour */
  section.color{
@@ -155,3 +156,170 @@ section.color > div{
 <figure markdown style="width: 400px">
 ![alt text](img/image-47.png)
 </figure>
+
+### Flex order
+
+Flex order basically re-order the item in your flexbox, by stacking the highest
+order item at the far end of the items. All items has a defaults 
+`order: 0` if you  set an item order higher than 0, it stacks it to the far left.
+
+!!! Note
+    - This is an **ITEM property**
+    - It operates along the **MAIN-AXIS direction**
+
+Example:
+
+<div class="grid" markdown>
+
+```css
+.box .green{
+background-color: #00ff7b;
+/* order:1; */
+}
+```
+
+<figure markdown>
+![alt text](img/image-48.png)
+</figure>
+
+
+```css
+.box .green{
+background-color: #00ff7b;
+order:1;
+}
+```
+
+<figure markdown>
+![alt text](img/image-49.png)
+</figure>
+
+</div>
+
+Just as the order can be set to positive values, It can also be set to negative values.
+
+
+<div class="grid" markdown>
+
+```css
+.box .img{width: 100%;
+max-width: 200px;
+order: -1;
+ }
+
+```
+
+![alt text](img/image-50.png)
+
+</div>
+
+The higher the order number, the higher the stacking
+
+```css
+.box .img{width: 100%;
+max-width: 200px;
+order: -2;
+}
+.box .green{
+background-color: #00ff7b;
+order:1;
+}
+.box .orange{
+background-color: orange;
+order:3;
+}
+```
+![alt text](img/image-51.png)
+
+## Flex Wrap
+
+This is useful when the container items exceed what the window can container. E.g. In case
+of say mobile devices with low screen dimension.
+
+By default, the `flex-wrap` property is set to `nowrap`. 
+
+!!! Note
+    - This is a **COINTAINER/PARENT property**
+    - It works along the **MAIN-AXIS**
+
+```css
+.box{
+display: flex;
+
+flex-direction: row;
+flex-wrap: wrap;
+
+/* Short-hand form */
+flex-flow: row wrap;
+
+}
+```
+
+On a wide screen
+![alt text](img/image-53.png)
+
+On a low dimension screen
+<figure markdown="span" style="width: 500px">
+![alt text](img/image-52.png)
+</figure>
+
+there is also a property called `wrap-reverse` which layout the items from the bottom up.
+
+<figure markdown style="width:500px">
+![alt text](img/image-54.png)
+</figure>
+
+### important Note
+Depending on how the content is written flex wrap may work differently.
+
+Look at this Example
+
+This is the default  `nowrap` for this flex box:
+
+<figure markdown style="width:400px">
+![alt text](img/image-55.png)
+</figure>
+
+The moment it changes to `wrap` it behaves differently:
+The expectation might be that I will still layout in a column along the row.
+
+<figure markdown style="width:400px">
+![alt text](img/image-56.png)
+</figure>
+
+The problem stems from the fact that the content is written in **one line**.
+To make this behave in a more desirable way, one will need to break the text content in a more
+manageable lines using the `br` tag. Rather than it being one line. 
+
+<figure markdown style="width:400px">
+![alt text](img/image-57.png)
+</figure>
+
+However, breaking using `br` tag diffinitely work, but the best solution method will be
+to use the `@media` query to change the flex from `nowrap` to `wrap` after a certain width condition.
+
+```css
+ .container {
+display: flex;
+flex-wrap: nowrap;
+}
+
+
+@media screen and (max-width: 800px) {
+.container{
+    flex-wrap: wrap;
+}
+}
+```
+<div class="grid" markdown>
+
+<figure markdown>
+width `> 800px`
+![alt text](img/image-58.png)
+</figure>
+
+<figure markdown style="width:250px">
+width `< 800px`
+![alt text](img/image-59.png)
+</figure>
+</div>

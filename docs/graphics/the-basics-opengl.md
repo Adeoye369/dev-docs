@@ -216,5 +216,3 @@ int main(void)
 }
 
 ```
-
-You can check the full code [here](../src/open-gl/App.cpp)

@@ -124,6 +124,10 @@ margin-top: 20px;
 ![alt text](<img/Screenshot 2024-11-03 162617.png>)
 </figure>
 
+<figure markdown style="max-width: 300px">
+![alt text](img/image-63.png)
+</figure>
+
 ### Flex Basis
 
 So if we set thing like the `flex-basic` it is basically setting the width (or height) of each flexbox container item and it does so along the `Main-axis` so depending on weather the `flex-direction` is `row or column`, it will expand them in their respective direction. In other word, **we are flexing along the Main Axis**
@@ -231,6 +235,12 @@ order:3;
 ```
 ![alt text](img/image-51.png)
 
+<figure markdown="span" style="max-width:300px">
+
+![alt text](img/image-65.png)
+
+</figure>
+
 ## Flex Wrap
 
 This is useful when the container items exceed what the window can container. E.g. In case
@@ -323,3 +333,175 @@ width `< 800px`
 ![alt text](img/image-59.png)
 </figure>
 </div>
+
+### flex-flow
+
+This is a shorthand for the `flex-direction` and `flex-wrap` properties, which together define the flex container’s main and cross axes. The default value is `row nowrap`.
+
+```css
+.container {
+  flex-flow: column wrap;
+}
+```
+
+
+## Justify content
+
+This help arrange the html items along the  main-axis in the contain.
+
+!!! Note
+    - this is property on the **COINTAINER**
+    - It applied along the **MAIN-AXIS** weather `row` or `column`
+
+
+<figure markdown="span" style="width:300px">
+
+![alt text](img/image-60.png)
+
+</figure>
+
+## Align items
+
+This help arrange/align items along the **cross-axis** when the `flex-wrap` is set to `nowrap`
+
+!!! Note
+    - this is property on the **COINTAINER**
+    - It applied along the **CROSS-AXIS** 
+
+!!! Warning 
+    it only work when the **`flex-wrap: nowrap`** and when the container `height` is set say `px, vh, rem, %` etc.
+
+<figure markdown="span" style="width:300px">
+![alt text](img/image-61.png)
+</figure>
+
+### Align self
+
+This is if you want to change the postioning of the **child item** from the other elements
+
+```css
+
+section.color{
+    display:flex; 
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items:center;
+}
+
+section.color > div:nth-child(even){
+    ...
+    align-self: flex-end
+;}
+```
+
+![alt text](img/image-62.png)
+
+### Align content
+
+This is similar to `align-items` item help arrange/align items along the **cross-axis** when the `flex-wrap` is set to `wrap`
+
+!!! Note
+    - this is property on the **COINTAINER**
+    - It applied along the **CROSS-AXIS** 
+
+!!! Warning
+    it only work when the **`flex-wrap: wrap`** and when the container `height` is set say `px, vh, rem, %` etc.
+
+<figure markdown="span" style="max-width:400px">
+
+![alt text](img/image-64.png)
+
+</figure>
+
+
+### Flex-shrink, flex-grow & flex-basis
+
+This is applied across the individual element along the main-Axis
+
+!!! Note
+    - this is property on the **ITEM** elements
+    - It applied along the **MAIN-AXIS** 
+
+
+<figure markdown="span" style="max-width:400px">
+![alt text](img/image-66.png)
+</figure>
+
+#### flex-grow 
+
+It tries to redistribute the remaining space in the container base on the  grow size set
+
+<div class="grid" markdown>
+
+
+```css
+section.color > div:nth-child(2){
+    /* flex-grow: 1; */
+}
+```
+
+![alt text](img/image-67.png)
+
+```css
+section.color > div:nth-child(2){
+    flex-grow: 1;
+}
+```
+
+![alt text](img/image-68.png)
+
+
+```css
+ section.color > div:nth-child(2){
+    flex-grow: 0.5; /* now have the yellow*/
+}
+
+section.color > div:nth-child(3){
+    flex-grow: 1;
+}
+```
+
+![alt text](img/image-70.png)
+
+</div>
+
+### flex
+
+This is the shorthand for `flex-grow`, `flex-shrink` and `flex-basis` combined. The second and third parameters (`flex-shrink` and `flex-basis`) are optional. The default is 0 1 auto, but if you set it with a single number value, like `flex: 5;`, that changes the `flex-basis` to 0%, so it’s like setting `flex-grow: 5; flex-shrink: 1; flex-basis: 0%`;.
+
+```css
+.item {
+  flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
+}
+
+.box .item{
+    flex: 1 1 0; /* Very common */
+    flex : 1 /* Same as flex : 1 1 0 */
+}
+```
+
+## flex sizing
+
+the order by which the flexbox algorithm determine the size is this:
+
+<figure markdown="span">
+![alt text](img/image-69.png)
+</figure>
+
+It first check for the `min-width/max-width`, if not available then goes on to check if there is `flex-basis` set if not available It check if `width` is set  else is check for the `content-width`
+
+<figure markdown="span" style="max-width: 500px">
+![alt text](<img/Screenshot 2024-11-06 032839.png>)
+
+<figcaption> How `min-width/max-width` where determined </figcaption>
+</figure>
+
+Note that when you have a `flex-basis` set, It is going to ignore the `width` property on the item
+
+<figure markdown="span" style="max-width: 300px">
+![alt text](img/image-71.png)
+</figure>
+
+Consequent if the `max-width` is set to say `100px` and `flex-basis` is `200px`, the algo. picks the `max-width` dimension over `flex-basis`. Unless the `flex-basis` is set to say `50px` that it will read it over `max-width`.
+
+Sametime happens when the `min-width` is set. It takes preference for that over `flex-basis` and `width`

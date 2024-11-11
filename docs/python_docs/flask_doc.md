@@ -98,8 +98,106 @@ if __name__ == "__main__":
 ![alt text](img/image-41.png)
 </figure>
 
-
 </div>
 
+## EXAMPLE : Auto Update year
+
+![alt text](img/image-42.png)
+```py
+from flask import Flask, render_template
+import random, datetime as dt
+
+app = Flask(__name__)
+
+@app.route('/')
+def index_def():
+    val = random.randint(1, 33)
+    current_year = dt.datetime.now().year
+    return render_template("index.html", val = val, year= current_year)
+
+if __name__ == "__main__" :
+    app.run(debug=True)
+```
+
+```html
+...
+<body>
+    <main class="main-title">
+        <div class="details">
+            <h2>Adegbite Adeoye, {{val}} </h2>
+            <p>Story Artist | Software Dev.</p>
+        </div>
+    </main>
+    
+    <footer class="foot-title">
+        <p>Copyright {{year}}. Built by Adeoye</p>
+    </footer>
+</body>
+</html>
+```
+
+## EXAMPLE 2: Request from Agify, Genderize
+
+![alt text](img/image-43.png)
+
+```py title="server.py"
+
+from flask import Flask, render_template
+import  requests, json
 
 
+app = Flask(__name__)
+
+@app.route('/guess/<name>')
+def guess_page(name):
+
+    result = ""
+    gender = age = prob = None
+    try :
+        # Age data from agify
+        res = requests.get(f"https://api.agify.io?name={name}")
+        result = json.loads(res.text)
+        age = result['age']
+
+        # Gender data from genderize
+        res = requests.get(f"https://api.genderize.io?name={name}")
+        result = json.loads(res.text)
+        gender = result["gender"]
+        prob = round(result["probability"]*100)
+        
+    except KeyError as e:
+        print(e)
+        print(result)
+
+
+    return render_template("guess.html", name = name.title(),
+                age=age, gender = gender, prob = prob, result= result)
+
+
+if __name__ == "__main__" :
+    app.run(debug=True)
+
+```
+
+
+```html title="guess.html"
+...
+    <link rel="stylesheet" href="../static/guess-style.css">
+    <title>Guess API</title>
+</head>
+<body>
+    <main class="main-content">
+        <h1>Hi, <span>{{name}} </span>    </h1>
+        <p> So you are <span>{{age}}</span> years old </p>
+        <p> There is <span>{{prob}}% </span>chance 
+                    you are a <span>{{gender}}</span> </p>
+    </main>
+</body>
+</html>
+```
+
+!!! Warning
+    One of the noticable thing while revise the aspect of `json` to `dict` conversion was that in the `json` module, there are two distinctive functions
+
+    * `json.load(json_file)` - This is used specifically for loading **json files** from a directory
+    * `json.loads(json_obj)` - This is for loading **json object** return from either a request or from a function etc. Note this is `json.loads` ending with a **-s**

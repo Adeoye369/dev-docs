@@ -138,7 +138,7 @@ if __name__ == "__main__" :
 
 ## EXAMPLE 2: Request from Agify, Genderize
 
-![alt text](img/image-43.png)
+![alt text](img/image-44.png)
 
 ```py title="server.py"
 
@@ -154,14 +154,16 @@ def guess_page(name):
     result = ""
     gender = age = prob = None
     try :
-        # Age data from agify
+            # Age data from agify
         res = requests.get(f"https://api.agify.io?name={name}")
-        result = json.loads(res.text)
+        # result = json.loads(res.text)
+        result = res.json()
         age = result['age']
 
         # Gender data from genderize
         res = requests.get(f"https://api.genderize.io?name={name}")
-        result = json.loads(res.text)
+        # result = json.loads(res.text)
+        result = res.json()
         gender = result["gender"]
         prob = round(result["probability"]*100)
         
@@ -197,7 +199,51 @@ if __name__ == "__main__" :
 ```
 
 !!! Warning
-    One of the noticable thing while revise the aspect of `json` to `dict` conversion was that in the `json` module, there are two distinctive functions
+    The best way to convert your api response to json object is to call the `.json()` function on the response content i.e `<response_text>.json()`
+    One of the ways to convert json object to dictionary object is in the `json` module, there are two distinctive functions
 
     * `json.load(json_file)` - This is used specifically for loading **json files** from a directory
     * `json.loads(json_obj)` - This is for loading **json object** return from either a request or from a function etc. Note this is `json.loads` ending with a **-s**
+
+## Multiple blog post with flask
+
+We are going to use ["npoint.io"](https://www.npoint.io/){target=_blank} which gives use the opportunity to create our own simple api for free
+
+<figure markdown="span">
+![alt text](img/image-45.png){width=400px}
+</figure>
+```html title="blog.html"
+
+<main>
+    <div  data-id >
+    {% for blog in blog_post:  %}
+        <div class="blog-content" >
+            <h1 class="blog-title"> {{blog['title']}} </h1>
+            
+            <h3 class="blog-subtitle"> {{blog['subtitle']}} </h3>
+            <p class="blog-body" data-content>
+                {{blog['body']}}
+            </p>
+            <hr>
+        </div>
+    {% endfor %}
+    </div >
+</main>
+
+```
+
+```py title="server.py"
+
+@app.route('/blog')
+def blog_page():
+    res = requests.get('https://api.npoint.io/f83d799baae8f8930123')
+    post_data = res.json()
+    print(post_data)
+
+    return render_template('blog.html', blog_post = post_data)
+
+```
+<figure markdown="span">
+![alt text](img/image-43.png){width=400px}
+</figure>
+

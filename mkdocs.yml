@@ -1,4 +1,20 @@
 site_name: Dev Docs
+
+nav:
+  - CG Dev : 
+    - graphics/the-basics-opengl.md
+    - graphics/shader-learning.md
+    - graphics/index.md
+
+  - Ai Dev : ai-dev-docs/index.md
+  - Cpp Docs:
+    - cpp_docs/index.md
+    - cpp_docs/linkedlist_index.md
+
+  - godot-docs/index.md
+  - ...
+
+  
 theme:
   name: material
   features:
@@ -10,6 +26,7 @@ theme:
     - content.tabs.link
     - content.code.annotation
     - content.code.copy
+
   language: en
   palette:
     - scheme: slate
@@ -31,3 +48,7 @@ markdown_extensions:
   - pymdownx.mark
   - attr_list
   - md_in_html
+
+plugins:
+    - search
+    - awesome-pages

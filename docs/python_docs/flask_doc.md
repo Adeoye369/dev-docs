@@ -247,3 +247,34 @@ def blog_page():
 ![alt text](img/image-43.png){width=400px}
 </figure>
 
+
+### Multiple blog post `if` and `for`
+
+```html
+<section>
+            
+    {% if not players %}
+            
+        <div>
+            <h1>No player availabe</h1>
+        </div>
+    
+    {% else %}
+    
+        <header>
+            <div>
+                <h1> ----- Name ------ | ----  <span>Role -----</span></h1>
+            </div>
+        </header>
+        
+        {% for pl in players %}
+                <div>
+                    <h1> {{pl['id']}} - {{pl['name']}}  - <span> Roles {{pl['role']}}  </span></h1>
+                    <hr>
+                </div>
+        {% endfor %}
+
+    {% endif %}
+
+</section>
+```

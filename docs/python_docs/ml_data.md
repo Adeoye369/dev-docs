@@ -1,4 +1,53 @@
-# Basics of Machine Learning
+# Basics of Machine Learning / Data Science
+
+## Data from List
+
+```py
+import pandas as pd
+
+# Loading data in dataFrame/Table
+py_data = [
+            ["name", "score", "hasPassed"],
+            ["kk", 50, True],
+            ["wt", 34, False],
+            ["rq", 66, True]
+        ]
+
+df = pd.DataFrame(py_data)
+
+print(df)
+```
+![alt text](img/image-46.png)
+
+## More operations on dataFrame `iloc[]`
+
+```py
+
+import pandas as pd
+
+# Loading data in dataFrame/Table
+py_data = [
+            ["name", "score", "hasPassed"],
+            ["kk", 50, True],
+            ["wt", 34, False],
+            ["rq", 66, True],
+            ["mm",-2, True],
+            ["rq", 91, False]
+        ]
+
+df = pd.DataFrame(py_data)
+
+print(df)
+
+# You can just get some part
+print(df[:3])
+
+# iloc is like accessing the elements of a matrix
+print(df.iloc[4, 0])
+
+# it also use to get the 2d part df 
+print(df.iloc[1:,1:])
+```
 
 ## Import files using Pandas and Jupyter notebook
 
@@ -8,7 +57,7 @@ df = pd.read_csv('vgsales.csv')
 df2 = pd.read_excel('bookkeeping2.xlsx') # read excel file
 df
 
-df.shape # Result: (16539, 10)
+df.shape # Result: (16539, 10) - (row , column)
 ```
 
 Result :

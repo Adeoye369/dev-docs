@@ -2,9 +2,11 @@ site_name: Dev Docs
 
 nav:
   - CG Dev : 
+    - Get Started : graphics/index.md
+    - graphics/setting-up-opengl.md
     - graphics/the-basics-opengl.md
     - graphics/shader-learning.md
-    - graphics/index.md
+   
 
   - Ai Dev : ai-dev-docs/index.md
   - Cpp Docs:

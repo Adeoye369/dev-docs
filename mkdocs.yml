@@ -2,8 +2,8 @@ site_name: Dev Docs
 
 nav:
   - CG Dev : 
-    - Get Started : graphics/index.md
-    - graphics/setting-up-opengl.md
+    - Get Started : graphics/setting-up-opengl.md
+    - graphics/draw-triangle.md
     - graphics/the-basics-opengl.md
     - graphics/shader-learning.md
    

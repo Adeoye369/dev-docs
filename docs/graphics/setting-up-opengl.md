@@ -26,7 +26,7 @@ then `Main.cpp` for your entry point:
 ![alt text](<img/Screenshot 2024-11-21 192419.png>){width=80%}
 </figure>
 
-## Getting GLFW to Run
+## Getting GLFW to Run Window
 
 - Go to [GLFW Documentation](https://www.glfw.org/documentation.html){target=blank} copy the source code and paste it in your `Main.cpp`.  you will get a number of errors,
  
@@ -81,13 +81,65 @@ int main(void)
         <figure markdown="span">
         ![alt text](img/image-4.png){width=90%}
         </figure>
-    - Under same `Linker` go to `Input > Additional Dependencies` add `glfw3.lib;opengl32.lib`.
-     `glfw3`is located in your `$(SolutionDir)\dependency\glfw\lib-vc2022`
-      While `opengl32.lib` is windows dependent
-        <figure markdown="span">
-        ![alt text](img/image-6.png)
-        </figure>
+    - Under same `Linker` go to `Input > Additional Dependencies` add `glfw3.lib;opengl32.lib`.  
+    !!! Note
+        `glfw3`is located in your `$(SolutionDir)\dependency\glfw\lib-vc2022`
+        While `opengl32.lib` is windows dependent
+    <figure markdown="span">
+    ![alt text](img/image-6.png)
+    </figure>
     - Finally, Remember to Change your architecture you are rendering in to `x86`
-        <figure markdown="span">
-        ![alt text](img/image-5.png){width=70%}
-        </figure>
+    <figure markdown="span">
+    ![alt text](img/image-5.png){width=70%}
+    </figure>
+
+## Using GLEW for Opengl functions
+
+* Download from [here](https://glew.sourceforge.net/) and copy to `dependency` directory
+* Add the `include` and `lib` then link the `glew32s.lib` on your Visual studio.
+* Under `C/C++ > Preprocessor > preprocessor def` add `GLEW_STATIC` macro
+  
+<figure markdown="span">
+![alt text](img/image-7.png){width=70%}
+</figure>
+
+The following are very important for `glew` to function properly:
+
+- make sure you include `#include <GL/glew.h>` before any opengl include
+- An **opengl context** must be called before calling `glewInit()`
+
+```c++ hl_lines="1 22-26"
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+int main(void)
+{
+    GLFWwindow* window;
+
+    /* Initialize the library */
+    if (!glfwInit())
+        return -1;
+
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);  /* Make window's context current */
+
+    if (glewInit() != GLEW_OK)
+        std::cout << "Error! at GLEW " << std::endl;
+
+    // Get the OPENGL VERSION 
+    std::cout << glGetString(GL_VERSION) << std::endl;
+...
+    glfwTerminate();
+    return 0;
+}
+```
+
+![alt text](img/image-8.png)

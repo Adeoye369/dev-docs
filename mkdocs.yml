@@ -9,11 +9,17 @@ nav:
    
 
   - Ai Dev : ai-dev-docs/index.md
+  
+  - Python : python_docs/index.md
+
+  - Js : 
+    - Node Intro : js_docs/node_getting_started.md
+
   - Cpp Docs:
     - cpp_docs/index.md
     - cpp_docs/linkedlist_index.md
 
-  - godot-docs/index.md
+  - Godot :  godot-docs/index.md
   - ...
 
   
@@ -40,6 +46,9 @@ markdown_extensions:
   - pymdownx.snippets
   - admonition
   - tables
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
 
   - pymdownx.arithmatex:
       generic: true

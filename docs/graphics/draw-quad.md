@@ -1,0 +1,264 @@
+# How to draw Quad better option
+
+<div class="grid" markdown>
+
+<figure markdown="span">
+![alt text](img/image-10.png)
+<figcaption> using `GL_TRIANGLES`</figcaption>
+</figure>
+
+<figure markdown="span">
+![alt text](img/image-11.png){width=96%}
+<figcaption> using `GL_LINE_STRIP`</figcaption>
+</figure>
+
+</div>
+
+## Basic Shader
+
+```glsl title="basic.shader"
+#shader vertex
+#version 330 core
+layout(location = 0) in vec4 pos;
+void main(){
+    gl_Position = pos;
+}
+
+#shader fragment
+#version 330 core
+layout(location=0) out vec4 color;
+uniform vec4 new_color;
+
+void main(){
+    // color = vec4(1.0, 1.0, 0.5, 1.0);
+    color = new_color;
+}
+```
+
+## ShaderProgram Class 
+
+```c++ title="ShaderProgram.h"
+#pragma once
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+struct ShaderSource {
+	std::string VertSource;
+	std::string FragSource;
+};
+
+class ShaderProgram {
+	unsigned int vbo{}, vao{};
+	unsigned int sh_id{}, prog_id{}; // Shader and Program id
+
+	ShaderSource ParseShader(const std::string& filePath)
+	{
+		enum class shType { NONE = -1, VERT = 0, FRAG = 1 };
+		shType type = shType::NONE; // use to seperate lines of shaders
+
+		std::stringstream ss[2]; // array to hold  the shaders
+		std::ifstream stream(filePath); // load the file src in stream
+		std::string line{}; // holder for each line
+
+		while (getline(stream, line)) {
+
+			if (line.find("#shader") != std::string::npos) {
+
+				if (line.find("vertex") != std::string::npos)
+					type = shType::VERT;
+
+				else if (line.find("fragment") != std::string::npos)
+					type = shType::FRAG;
+
+			}
+			else {
+				ss[(int)type] << line << "\n";
+			}
+		}
+
+		return { ss[0].str(), ss[1].str() };
+	}// end ParseShader
+
+	unsigned int CompileShader(unsigned int type, const std::string& source) {
+
+		sh_id = glCreateShader(type);
+
+		const char* shader_src = source.c_str();
+		glShaderSource(sh_id, 1, &shader_src, nullptr);
+
+		glCompileShader(sh_id);
+
+		int success;
+		glGetShaderiv(sh_id, GL_COMPILE_STATUS, &success);
+
+		if (success == GL_FALSE) {
+			int length;
+			glGetShaderiv(sh_id, GL_INFO_LOG_LENGTH, &length);
+			char* msg = (char*)alloca(length * sizeof(char));
+			glGetShaderInfoLog(sh_id, length, &length, msg);
+
+			/*char msg[1024];
+			glGetShaderInfoLog(shader_id, 1024, NULL, msg);*/
+
+			std::cout << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " Shader Error:  \n" << msg << "\n";
+			std::cout << msg << std::endl;
+			glDeleteShader(sh_id);
+			return 0;
+		}
+		return sh_id;
+	}// end CompileShader
+
+	unsigned int CreateShaderProgram(const std::string& vertShader, const std::string& fragShader) {
+
+		prog_id = glCreateProgram();
+		unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertShader);
+		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragShader);
+
+		glAttachShader(prog_id, vs);
+		glAttachShader(prog_id, fs);
+
+		glLinkProgram(prog_id);
+		glValidateProgram(prog_id);
+
+		glDeleteShader(vs);
+		glDeleteShader(fs);
+
+		return prog_id;
+	}// end CreateShaderProgram : vs, fs
+
+	unsigned int CreateShaderProgram(const std::string& filePath) {
+		ShaderSource shaderSource = ParseShader(filePath);
+		return CreateShaderProgram(shaderSource.VertSource.c_str(), shaderSource.FragSource.c_str());
+	} // end CreateShaderProgram : filepath
+
+
+
+	void init() {};
+
+public:
+	ShaderProgram(const std::string& filePath) {
+		CreateShaderProgram(filePath);
+	};
+	ShaderProgram(const std::string& vertShader, const std::string& fragShader) {
+		CreateShaderProgram(vertShader, fragShader);
+	}
+
+	void useProgram() {
+		glUseProgram(prog_id);
+	}
+
+	void Uniform4f(const char* uniform_string, float x, float y, float z, float w) {
+		unsigned int u_id = glGetUniformLocation(prog_id, uniform_string);
+		glUniform4f(u_id, x, y, z, w);
+	}
+
+	unsigned int getShaderID() const { return sh_id; }
+	unsigned int getProgramID() const { return prog_id; }
+};
+```
+
+## Main Class
+
+```cpp title="main.cpp"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "ShaderProgram.h"
+
+
+
+int main(void)
+{
+	GLFWwindow* window;
+
+	/* Initialize the library */
+	if (!glfwInit())
+		return -1;
+
+
+	/* Create a windowed mode window and its OpenGL context */
+	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+	if (!window) {
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+
+	glfwMakeContextCurrent(window);  /* Make window's context current */
+
+	if (glewInit() != GLEW_OK)
+		std::cout << "Error! at GLEW " << std::endl;
+
+	// Get the OPENGL VERSION 
+  /*  std::cout << glGetString(GL_VERSION) << std::endl;
+*/
+
+
+	float position[10] =
+	{
+		 -0.3f, -0.5f,   // point 0
+		  0.5f, -0.5f,   // point 1
+		  0.5f,  0.5f,   // point 2
+		 -0.5f,  0.5f,   // point 3
+		  0.4f, 0.9f     // point 4
+	};
+
+	unsigned int pos_index[9] =
+	{
+		0, 1, 2,
+		2, 3, 0,
+		2, 4, 3
+	};
+
+	unsigned int va_id, vb_id, ib_id;
+	glGenVertexArrays(1, &va_id);
+	glBindVertexArray(va_id);
+
+	glGenBuffers(1, &vb_id);
+	glBindBuffer(GL_ARRAY_BUFFER, vb_id);
+	glBufferData(GL_ARRAY_BUFFER, 10 * sizeof(float), position, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &ib_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 9 * sizeof(unsigned int), pos_index, GL_STATIC_DRAW);
+
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+
+
+	ShaderProgram sProg("src/basic.shader");
+
+	sProg.useProgram();
+
+	sProg.Uniform4f("new_color", 0.7f, 0.2f, 0.3f, 1.0f);
+
+
+	while (!glfwWindowShouldClose(window)) { /* Loop until the user closes win */
+
+		/* Render here */
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+
+		glBindVertexArray(va_id);
+
+		glDrawElements(GL_LINE_STRIP, 9, GL_UNSIGNED_INT, nullptr); // Draw strip
+		//glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, nullptr);
+
+		glfwSwapBuffers(window); /* Swap front and back buffers */
+
+		glfwPollEvents(); /* Poll for and process events */
+	}
+
+
+	glfwTerminate();
+	return 0;
+}
+
+```
+

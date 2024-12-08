@@ -3,8 +3,9 @@ site_name: Dev Docs
 nav:
   - CG Dev : 
     - Get Started : graphics/setting-up-opengl.md
-    - graphics/draw-triangle.md
-    - graphics/the-basics-opengl.md
+    - Basic Opengl : graphics/the-basics-opengl.md
+    - Draw Triangle: graphics/draw-triangle.md
+    - Draw Quad Better : graphics/draw-quad.md
     - graphics/shader-learning.md
    
 
@@ -13,11 +14,17 @@ nav:
   - Python : python_docs/index.md
 
   - Js : 
+    - Js Intro : js_docs/basic-js.md
     - Node Intro : js_docs/node_getting_started.md
 
   - Cpp Docs:
     - cpp_docs/index.md
     - cpp_docs/linkedlist_index.md
+
+  - Html5 Docs:
+    - html5-docs/index.md
+    - html5-docs/flexbox.md
+    - html5-docs/gridbox.md
 
   - Godot :  godot-docs/index.md
   - ...

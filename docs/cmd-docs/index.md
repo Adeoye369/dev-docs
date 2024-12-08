@@ -47,3 +47,25 @@ If you are using PowerShell you can use Remove-Item (which is aliased to `del`, 
 
 - Get items that starts with "m"
 `D:\> get-childItem -path D:/ms_con/m*`
+
+
+## Setting/Getting Up environment Variable on Windows
+
+Getting list of environment variable
+
+` dir env: `
+
+<figure markdown="span">
+![alt text](img/image.png)
+</figure>
+
+Setting environment variable
+
+```shell
+>>> $env:USER_PC_ID = '455323'
+>>> dir env:USER_PC_ID # check specific env. var
+```
+
+<figure markdown="span">
+![alt text](img/image-1.png)
+</figure>

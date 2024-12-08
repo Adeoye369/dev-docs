@@ -16,6 +16,8 @@ nav:
   - Js : 
     - Js Intro : js_docs/basic-js.md
     - Node Intro : js_docs/node_getting_started.md
+    - Code Snippet : code-snippet.md
+  
 
   - Cpp Docs:
     - cpp_docs/index.md

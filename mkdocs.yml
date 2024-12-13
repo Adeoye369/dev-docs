@@ -14,9 +14,10 @@ nav:
   - Python : python_docs/index.md
 
   - Js : 
-    - Js Intro : js_docs/basic-js.md
-    - Node Intro : js_docs/node_getting_started.md
-    - Code Snippet : code-snippet.md
+    - Js Intro : js_docs/index.md
+    - Node Docs : js_docs/node_getting_started.md
+    - Express Docs:  js_docs/express-doc.md
+    - Code Snippet : js_docs/code-snippet.md
   
 
   - Cpp Docs:

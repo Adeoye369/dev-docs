@@ -37,5 +37,6 @@ for (const f of Object.values(foods)) {
     console.log(f); // 20, 5, 0, 34
 }
 
-console.log(Object.keys(foods))
+console.log(Object.keys(foods)) // "Eba", "Egusi", ...
+console.log(Object.entries(foods)) // ['Eba', 20], ['Egusi', 5] ...
 ```

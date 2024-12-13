@@ -52,3 +52,40 @@ Select the language you will like make snippet for or if you want it applicable 
 In situation where you are having difficulty with code snippet. You can bind to keyboard shortcut
 
 *CTRL + SHIFT + P >* type *"Open Keyboard Shortcuts (JSON)"*
+
+```json
+
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    // {
+    //     "key": "ctrl+shift+v",
+    //     "command": "markdown.showPreviewToSide",
+    //     "when": "!notebookEditorFocused && editorLangId == 'markdown'"
+    // },
+    // {
+    //     "key": "ctrl+k v",
+    //     "command": "-markdown.showPreviewToSide",
+    //     "when": "!notebookEditorFocused && editorLangId == 'markdown'"
+    // },
+    {
+        "key": "ctrl+1",
+        "command": "editor.action.insertSnippet",
+        "when": "editorTextFocus",
+        "args": {
+            "langId": "markdown",
+            "name": "mkdocs Figure"
+        }
+    },
+
+    {
+        "key": "ctrl+2",
+        "command": "editor.action.insertSnippet",
+        "when": "editorTextFocus",
+        "args": {
+            "langId": "markdown",
+            "name": "display div mkdocs"
+        }
+    }
+]
+
+```

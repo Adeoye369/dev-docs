@@ -35,7 +35,7 @@ void main(){
 }
 ```
 
-## ShaderProgram Class 
+### ShaderProgram Class 
 
 ```c++ title="ShaderProgram.h"
 #pragma once
@@ -158,7 +158,7 @@ public:
 };
 ```
 
-## Main Class
+### Main Class
 
 ```cpp title="main.cpp"
 #include <GL/glew.h>
@@ -262,3 +262,150 @@ int main(void)
 
 ```
 
+## Texture drawing class
+
+```cpp title="Texture.h"
+#pragma once
+#include <iostream>
+#include <GL/glew.h>
+
+class Texture
+{
+private:
+	unsigned int texture_id; // Load and create image
+	unsigned int m_glTexture_num{ GL_TEXTURE0 };
+	
+public:
+	static int texture_count;
+	Texture(std::string texturePath);
+
+	void Bind() const;
+};
+```
+
+```cpp title="Texture.cpp"
+#include "Texture.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+int Texture::texture_count = 0;
+
+Texture::Texture(std::string texturePath) {
+
+	texture_count ++;
+
+	// Switch the OpenGl texture, i.e. (GL_TEXTURE0 -> GLTEXTURE1 -> GL_TEXTURE2 ...)
+	//  if more texture detected
+	if (texture_count > 1 ) 
+		m_glTexture_num = m_glTexture_num + texture_count - 1;
+
+	// Load and create image
+	texture_id;
+	// texture 1
+	// ---------
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+	// set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// load image, create texture and generate mipmaps
+	int width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+
+	unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+}
+
+void Texture::Bind() const
+{
+	// bind textures on corresponding texture units
+
+	glActiveTexture(m_glTexture_num);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+}
+```
+
+### Modifying the Shader
+
+```glsl title="basic.shader"
+#shader vertex
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 TexCoord;
+
+void main()
+{
+	gl_Position = vec4(aPos, 1.0);
+	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+}
+
+#shader fragment
+#version 330 core
+
+out vec4 FragColor;
+in vec2 TexCoord;
+
+uniform sampler2D texture1;
+uniform sampler2D texture2;
+
+void main()
+{
+
+	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.5);
+}
+```
+
+### Using the Texture Class
+
+```cpp title="main.cpp"
+
+... 
+
+glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+glEnableVertexAttribArray(1);
+
+Texture tex1("imgs/download.jpg");
+Texture tex2("imgs/avatar200.jpg");
+
+ShaderProgram sProg("src/basic.shader");
+
+sProg.useProgram();
+sProg.SetInt("texture1", 0);
+sProg.SetInt("texture2", 1);
+
+	while (!glfwWindowShouldClose(window)) { /* Loop until the user closes win */
+
+		...
+		tex1.Bind();
+		tex2.Bind();
+		...
+
+```
+
+<figure markdown='span'>
+	![alt text](img/image-12.png)
+</figure>
+
+Here is the full srcs:  
+- [ `Texture.h`](code/src_v1_tex/Texture.h){target=blank}  
+- [ `Texture.cpp`](code/src_v1_tex/Texture.cpp){target=blank}  
+- [ `ShaderProgram.h`](code/src_v1_tex/ShaderProgram.h){target=blank}  
+- [ `ShaderProgram.cpp`](code/src_v1_tex/ShaderProgram.cpp){target=blank}  
+- [ `basic.shader`](code/src_v1_tex/basic.shader){target=blank}  
+- `stb_image.h` github repo [here](https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h){target=blank}  

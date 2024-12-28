@@ -1,6 +1,34 @@
 # Getting Started with Express
 
-Running basic `get`
+## Setup 
+
+Make a new directory for your file and do `npm init` to follow step by step instruction
+ or `npm init -y` for default settings.
+
+main change is  the  *package.json*
+
+```json title="package.json" hl_lines="5 7"
+{
+  "name": "node04",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module", // use es6 syntax
+  "scripts": {
+    "start": "node --watch server", // auto update
+    "dev" : "node <some-command>"
+  },
+...
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
+
+```
+
+* Here you call on console `npm start`  
+* Or call `npm run dev` for any other than `start`
+
+## Running basic `get`
 
 ```js
 import express from 'express';
@@ -41,9 +69,71 @@ app.listen(port, ()=>{
 });
 ```
 
-set environment variable
+### Method 1
 
-`>>> $env:PORT=5000`
+set environment variable in your console  `>>> $env:PORT=5000`
+
+### Method 2 (Recommended)
+
+- Create an *.env* file in your working directory, here is where you store your port `PORT=5000` environment variable
+- Then in your *package.json* file, append a flag `--env-file=.env` to your scripts
+
+```json hl_lines="6"
+{
+  "name": "node04",
+  "main": "server.js",
+...
+  "scripts": {
+    "start": "node --watch --env-file=.env server"
+  },
+...
+
+}
+```
+
+#### Full Basic Code
+
+```bash title=".env"
+PORT=5000
+```
+
+```json title="package.json"
+{
+  "name": "node04",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server",
+    "dev": "node --watch --env-file=.env server"
+  },
+...
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
+
+```
+
+```js title="server.js"
+import express from 'express';
+const port = process.env.PORT || 3000;
+
+const app =  express();
+
+app.get('/', (req, res)=>{
+    res.send(`<h1>Express yourself on port ${port}</h1>`);
+});
+
+app.listen(port, ()=>console.log("listening on port "+port));
+```
+
+
+<figure markdown='span'>
+    ![alt text](img/image-9.png)
+    <figcaption> Response from server </figcaption>
+</figure>
+
 
 ## Route Parameters
 
@@ -150,7 +240,7 @@ app.post('/api/courses', (req, res)=>{
 
     const schema = Joi.object({name: Joi.string().min(3).required()});
     
-    //using spread operator on `req.error` to get `error`
+    //using object destructuring on `req.error` to get `error`
     const {error} = schema.validate(req.body); 
     
     if(error) {
@@ -180,3 +270,112 @@ app.post('/api/courses', (req, res)=>{
     ![alt text](img/image-8.png)
 </figure>
 </div>
+
+## Put and Delete in node
+
+```js
+// ============ PUT ===================
+
+function validateCourse(course){
+    // Create validation criterias
+    const schema = Joi.object({name: Joi.string().min(3).required()});
+    //using spread operator on `req.error` to get `error`
+    return schema.validate(course); 
+}
+
+function checkUserId(req, res){
+    let cs = courses.find(c=>c.id === parseInt(req.params.id))
+   if(!cs) {
+        res.status(404).send('The given course ID not found');
+    }
+   else return cs;
+}
+. . .
+
+app.put('/api/courses/:id', (req, res)=>{
+    // Look up the course - If not exisiting, return 404
+    let course = checkUserId(req, res);
+    
+    // Validate - If invalid, return 400 - Bad request
+    const {error} = validateCourse(req.body); 
+    if(error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+    // Update course
+    course.name = req.body.name;
+    // Return the updated course
+    res.send(course);
+})
+
+//========== DELETE ================
+app.delete("/api/courses/:id", (req, res)=>{
+    // Look up the course - If not exisiting, return 404
+    let course = checkUserId(req, res);
+
+    let index = courses.indexOf(course);
+    courses.splice(index, 1);
+    
+    res.send(`${course} course has been removed`);
+})
+
+```
+
+## Sending a static file with express
+
+In your current directory, create a *public* folder where you will store all your static files.  
+
+!!! Note
+    As of Node v21.2.0 and 20.11.0, you can access yor `__dirname` and `__filename` like so:
+    ```js
+    const __filename = import.meta.filename;
+    const __dirname = import.meta.dirname;
+
+    console.log(__filename);
+    console.log(__dirname);
+    console.log(import.meta.url);
+    ```
+    <figure markdown='span'>
+        ![alt text](img/image-10.png){width=70%}
+    </figure>
+
+```js
+import express from 'express';
+import url from 'url';
+import path from 'path';
+const port = process.env.PORT || 3000;
+
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+
+const app =  express();
+
+// Get HomePage
+app.get('/', (req, res)=>{
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.listen(port, ()=>console.log("listening on port "+port));
+```
+
+Working on a more ***express*** way:
+
+```js
+import express from 'express';
+import path from 'path';
+
+const port = process.env.PORT || 3000;
+
+const __dirname = import.meta.dirname;
+
+const app =  express();
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.listen(port, ()=>console.log("listening on port "+port));
+```
+
+all you need to this time is just load with `.html`
+<figure markdown='span'>
+    ![alt text](img/image-11.png)
+</figure>
+

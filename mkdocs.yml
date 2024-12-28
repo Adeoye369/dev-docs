@@ -5,7 +5,7 @@ nav:
     - Get Started : graphics/setting-up-opengl.md
     - Basic Opengl : graphics/the-basics-opengl.md
     - Draw Triangle: graphics/draw-triangle.md
-    - Draw Quad Better : graphics/draw-quad.md
+    - Quad and Texture : graphics/draw-quad.md
     - graphics/shader-learning.md
    
 

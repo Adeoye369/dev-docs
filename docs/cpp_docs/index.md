@@ -1,7 +1,220 @@
 
 # Introduction to CPP
 
-## CPP Basics
+## Reference and Pointers
+
+**Variables or Identifiers** - they are like containers like say - buckets, box, cups etc. that stores
+data on the computer memory 
+
+```c++
+int num = 2;
+
+// Reference is like a LABEL on a container,
+//  It cannot exit with assigning a container to it
+int& r_num2 = num; 
+
+// Pointer is like a small container ONLY stores in the LABEL of another container
+int* p_num = &num; 
+```
+
+
+## Working with strings
+
+### Assignment , copy and concatenate
+
+```c++
+using std::string;
+string s0{ "Mathematics " };
+string s1{ "is the key to theory " };
+string s2 = "Bien venue, C++";
+string s3("hello Earth");
+
+// assignment/copy
+string s4 = s2;
+std::cout << s4 << "\n";
+
+// concatenate
+string s5 = s0 + s1;
+s5 = s2 + " **** " + s3;
+std::cout << s5 << "\n";
+
+```
+![alt text](img/image-2.png)
+
+### insert into a string
+
+```c++
+using std::string;
+string s0{ "Mathematics " };
+string s1{ "is the key to theory " };
+
+// insert
+string s4 = s0 + s1;
+
+// insert at index 7, it expand the length of the string
+s4.insert(7, "TRIX");
+
+std::cout << s4 << "\n";
+```
+
+#### Replace with `character`
+
+```c++
+using std::string;
+string s1{ "the key to theory " };
+
+std::cout << s1 << "\n";
+// replace(pos, n, m, c)
+// pos - index to start replace from
+// n - number of characters to replace, counting from `pos`
+// m - how many times should char. be replaced
+// c - is the character to add as replacement
+ 
+string s4 = s1;
+s4.replace(11, 5, 3, 'X');
+std::cout << s4 << "\n";
+
+string s5 = s1;
+s5.replace(11, 5, 8, 'X');
+std::cout << s5 << "\n";
+
+```
+
+<figure markdown='span'>
+![alt text](img/image-3.png)
+</figure>
+
+
+#### Replace with `substring`
+```c++
+	using std::string;
+	string s1{ "the key to theory " };
+
+	std::cout << s1 << "\n";
+
+	// Replace using strings
+
+	// replace(pos, n, str)
+	// pos - index to start replace from
+	// n - number of characters to replace, counting from `pos`
+	// str  - strings to replace
+ 
+	string s4 = s1;
+	s4.replace(11, 6, "practical");
+	std::cout << s4 << "\n";
+```
+<figure markdown='span'>
+  ![alt text](img/image-4.png)
+</figure>
+
+#### Replace string with anothe substring
+```c++
+	using std::string;
+	string s2 = "Bien venue, C++";
+	string s3{"hello Earth"};
+
+	std::cout << "BEFORE:" << "\n";
+	std::cout << s2 << "\n";
+	std::cout << s3 << "\n\n";
+
+	// Replace using strings
+
+	// replace(pos1, n1, str, pos2, n2)
+	// 
+	//		pos1 => index in the main string
+	//		n1 => number counting from `pos1`
+	//		str  => strings to replace from
+	//		pos2 => index in the second string
+	//		n2 => number counter from `pos2`
+ 
+	s2.replace(0, 4, s3, 6, 5);
+
+	std::cout << "AFTER:" << "\n";
+	std::cout << s2 << "\n";
+
+```
+<figure markdown='span'>
+  ![alt text](img/image-5.png)
+</figure>
+
+### Find and Replace strings Exercise
+
+```c++
+using std::string;
+string find_and_replace(string search_txt, string &to_find, string &to_replace ) {
+
+	size_t found_pos = search_txt.find(to_find);
+	
+	// Not found
+	if (found_pos == string::npos) return "string not found";
+
+	// While `to_find` string is available
+	while (found_pos != string::npos) {
+
+		// Replace the string 
+		search_txt.replace(found_pos, to_find.length(), to_replace);
+
+		// move forward in search string, to the character after last found
+		found_pos = search_txt.find(to_find, found_pos + to_find.length());
+	}
+
+	return search_txt;
+}
+
+int main() {
+
+	std::string s1{ "this is Hello You Helligan is the most Hellium\n in afriHell in Hellicarrier famous " };
+	std::string str_to_find{ "Hell" };
+	std::string str_to_replace{ "Heaven" };
+	
+	std::cout << "BEFORE: " << s1 << "\n\n";
+	std::cout << "AFTER: " << find_and_replace(s1, str_to_find, str_to_replace) << "\n";
+	return 0;
+}
+```
+
+### find string
+
+```c++
+using std::string;
+string s2 = "Bien venue, C++";
+string s3{"C++ is saying hello Earth"};
+
+
+// find
+size_t found = s2.find("C++");
+if (found != string::npos) std::cout << " found in `s2` at index " << found << "\n";
+else  std::cout << " not found in s2 "<< "\n";
+
+// start search at index 10
+found = s3.find("C++", 10); 
+if (found != string::npos) std::cout << " found in `s3` at index " << found << "\n";
+else std::cout << " not found in s3 " << "\n";
+```
+
+![alt text](img/image-6.png)
+
+### Erase and Clear
+
+```c++
+using std::string;
+string s2 = "Bien venue C++";
+string s3{"C++ is saying hello Earth"};
+
+// erase(pos, count) just like in the replace(...)
+s2.erase(11, 3); // Removes C++ fromm string
+
+std::cout << s2 << "\n";
+
+// clear
+std::cout <<"BEFORE s3.clear() s3 is = '" << s3 << "'\n";
+s3.clear(); // remove all the strings
+std::cout << "AFTER s3.clear() s3 is = '" << s3 << "'\n";
+
+```
+![alt text](img/image-7.png)
+
+## Data Structures
 
 ### The `std::arrays`  and `std::vector`
 
@@ -43,6 +256,38 @@ for (auto& i : agesf)
 
 std::cout << "\n";
 ```
+
+## Memory copy function
+
+```cpp
+#include <iostream>
+#include <array>
+
+int main() {
+
+  std::array <float, 10> score{3.0f, 5.0f, 8.2f, 5.5f};
+  std::array <float, 15> xp{};
+
+  memcpy(xp.data(), score.data(), sizeof(score));
+
+  std::cout << xp[0] << std::endl;
+  std::cout << xp[1] << std::endl;
+  std::cout << xp[2] << std::endl;
+
+  // This returns the count - 10
+  std::cout << "score.size() = " << score.size() << "\n";
+
+  // returns the total bytes = 10 x 4 bytes
+  std::cout << "sizeof(score) = " << sizeof(score) << std::endl;
+
+  return 0;
+}
+```
+<figure markdown='span'>
+![alt text](img/image-1.png)
+</figure>
+
+
 
 ### The most Basic Multithread Example : Part 1
 

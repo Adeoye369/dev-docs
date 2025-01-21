@@ -27,6 +27,10 @@ MKDIR or MD for cmd.exe
 - `md  some1\some2\some3`  recursive folder creation
 - `md  some1\some2\some3_2` create another folder in already created folder
 
+## Move Files/Directory in power shell
+cmd - `move-item <source directory or file> -destination <destination directory>`
+
+
 ## Removing directory Recursively
 
 RMDIR or RD if you are using the classic Command Prompt (cmd.exe):

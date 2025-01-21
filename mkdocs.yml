@@ -6,6 +6,7 @@ nav:
     - Basic Opengl : graphics/the-basics-opengl.md
     - Draw Triangle: graphics/draw-triangle.md
     - Quad and Texture : graphics/draw-quad.md
+    - Trans, coord, Cam : graphics/trans_coord_cam.md
     - graphics/shader-learning.md
    
 

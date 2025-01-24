@@ -4,7 +4,7 @@
 ## Reference and Pointers
 
 **Variables or Identifiers** - they are like containers like say - buckets, box, cups etc. that stores
-data on the computer memory 
+data on the computer memory
 
 ```c++
 int num = 2;
@@ -16,7 +16,6 @@ int& r_num2 = num;
 // Pointer is like a small container ONLY stores in the LABEL of another container
 int* p_num = &num; 
 ```
-
 
 ## Working with strings
 
@@ -39,6 +38,7 @@ s5 = s2 + " **** " + s3;
 std::cout << s5 << "\n";
 
 ```
+
 ![alt text](img/image-2.png)
 
 ### insert into a string
@@ -213,6 +213,124 @@ std::cout << "AFTER s3.clear() s3 is = '" << s3 << "'\n";
 
 ```
 ![alt text](img/image-7.png)
+
+## EXERCISES : String ToUpper and ToLower in C++
+
+```c++
+#include <iostream>
+#include <ctype.h>
+
+enum class Case { UPPER, LOWER };
+std::string To(Case c, std::string s) {
+    if (c == Case::UPPER)
+        for (int i = 0; i < s.length(); i++)
+            s[i] = (char)toupper(s[i]);
+
+    if (c == Case::LOWER)
+        for (int i = 0; i < s.length(); i++)
+            s[i] = (char)tolower(s[i]);
+
+    return s;
+}
+
+int main() {
+
+     std::string name1 = "basement animation";
+     std::string name2 = "ADEGBITE ADEOYE";
+
+
+    // Write C++ code here
+    std::cout << name1 << " to upper = " << To(Case::UPPER, name1) << "\n";
+    std::cout << name2 << " to lower = " << To(Case::LOWER, name2) << "\n";
+    
+    return 0;
+}
+```
+![alt text](img/image-11.png)
+
+## Working with stringstream
+
+Make sure you include `<sstream>`
+
+### istringstream - Input String to program
+```c++
+int main() {
+
+std::string hello = "124.12+13 14";
+
+std::istringstream is(hello);
+
+int x{};
+int y{};
+float z{};
+char buf;
+is >> z >> buf >> y >> x;
+
+std::cout << is.str() << "\n";
+std::cout  << "z=" << z <<", buf=" << buf  << ", y=" << y << ", x=" << x << "\n";
+	return 0;
+}
+```
+![alt text](img/image-8.png)
+
+### ostringstream - Output string  from program
+
+```c++
+std::ostringstream oss;
+
+int w = 45;
+float k = 345.32f;
+char div = '/';
+
+float result = static_cast<float>(w / k);
+
+oss << w << div << k << "=" << result;
+std::cout << oss.str() << std::endl;
+
+oss << " More content";
+std::cout << oss.str() << std::endl;
+oss << " + Yet Another ";
+std::cout << oss.str() << std::endl;
+
+oss.str(" Replace `oss` content");
+std::cout << oss.str() << std::endl;
+	
+```
+![alt text](img/image-9.png)
+
+### Read and convert string to other primitive, vice versa
+
+```c++
+std::stringstream ss;
+std::vector<int> list{};
+
+std::string number_list = "23  35 -23     44 34"; // `ss` will ingnore space
+ss.str(number_list);
+
+int num{};
+while (ss >> num)
+{
+	std::cout << num << "\n";
+	list.push_back(num);
+}
+
+// converting int to string 
+double num1 = 345.245;
+std::string num1_str = std::to_string(num1);
+
+int num2 = -1222;
+std::string num2_str = std::to_string(num2);
+
+// Converting string to other primitive
+
+std::string num3_str = "994.4";
+float num3 = std::stof(num3_str);
+
+std::cout << num3 + 111.111 << std::endl;
+
+```
+![alt text](img/image-10.png)
+
 
 ## Data Structures
 

@@ -1062,3 +1062,37 @@ float price = 45.99f;
 ```
 
 Here `x` and `price` are L-Values, they can be assigned value, while `5` and `45.99f` are R-Values, they are temporary values.
+
+## Generating Random number in C++
+
+This is a simple random number generator in cpp
+
+```cpp
+
+#include <iostream>
+//<ctime> and <cstdio> are already implemented in `iostream`
+//#include <ctime> 
+//#include <cstdio>
+
+int main() {
+
+  std::srand(std::time(0));
+
+  int val{};
+  std::cout << "Write - <1> to continue <0> to quit:  ";
+  std::cin >> val;
+
+  while (val != 0)
+  {
+  std::cout << "Random number " << std::rand() << "\n";
+  std::cin >> val;
+  }
+
+    return 0;
+}
+```
+
+<figure markdown='span'>
+  ![Random number Result](img/image-12.png)
+  <figcaption>Random Number Result </figcaption>  
+</figure>

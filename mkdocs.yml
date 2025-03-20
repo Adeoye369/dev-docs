@@ -1,13 +1,13 @@
 site_name: Dev Docs
 
 nav:
-  - CG Dev : 
-    - Get Started : graphics/setting-up-opengl.md
-    - Basic Opengl : graphics/the-basics-opengl.md
-    - Draw Triangle: graphics/draw-triangle.md
-    - Quad and Texture : graphics/draw-quad.md
-    - Trans, coord, Cam : graphics/trans_coord_cam.md
-    - graphics/shader-learning.md
+  # - CG Dev : 
+  #   - Get Started : graphics/setting-up-opengl.md
+  #   - Basic Opengl : graphics/the-basics-opengl.md
+  #   - Draw Triangle: graphics/draw-triangle.md
+  #   - Quad and Texture : graphics/draw-quad.md
+  #   - Trans, coord, Cam : graphics/trans_coord_cam.md
+  #   - graphics/shader-learning.md
    
 
   - Ai Dev : ai-dev-docs/index.md

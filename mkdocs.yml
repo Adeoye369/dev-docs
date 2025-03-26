@@ -44,6 +44,7 @@ theme:
     - search.suggest
     - content.tabs.link
     - content.code.annotation
+    - content.code.annotate
     - content.code.copy
 
   language: en

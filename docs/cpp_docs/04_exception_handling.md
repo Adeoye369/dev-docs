@@ -236,6 +236,69 @@ int main() {
     return EXIT_SUCCESS;
 }
 ```
+
 <figure markdown='span'>
     ![Nested Exception Handling](img/image-16.png)
 </figure>
+
+## Exception Handling with Constructor an Destructor
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class A
+{
+public:
+	A() { std::cout << "A() " << std::endl; }
+	~A() { std::cout << "~A() " << std::endl; }
+};
+
+class B
+{
+public:
+    B() { std::cout << "B() " << std::endl; }
+    ~B() { std::cout << "~B() " << std::endl; }
+};
+
+class Test
+{
+    std::unique_ptr<A> pA{};//A* pA{};
+    B b{};
+    std::unique_ptr<int> pInt{};//int* pInt{};
+    std::string pStr{}; //char* pStr{};
+    std::vector<int> pArr{}; //int* pArr{};
+
+public:
+    Test() {
+        std::cout << "Test() Acquire resources " << std::endl;
+        pA.reset(new A);//pA = new A;
+        pInt.reset(new int);//pInt = new int;
+        throw std::runtime_error("Can't Initialize ");
+        pStr.reserve(1000);//pStr = new char[1000];
+        pArr.reserve(50000);//pArr = new int[50000];
+    }
+    ~Test() {
+        std::cout << "~Test() Release resources " << std::endl;
+        // delete pA;
+        //delete pInt;
+        //delete[] pStr;
+        //delete[] pArr;
+    }
+
+};
+
+int main() {
+    try {
+        Test t;
+    }
+    catch (std::runtime_error& ex) {
+        std::cout << ex.what() << "\n";
+    }
+
+    return 0;
+}
+
+```
+

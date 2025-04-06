@@ -341,3 +341,243 @@ int main() {
 
 }
 ```
+
+## Working with seekp/g and tellp/g with file ifstream and ofstream:
+
+[seekp example](https://www.tutorialspoint.com/cpp_standard_library/cpp_ostream_seekp.htm)
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+
+void Write() {
+    std::ofstream out("data.txt");
+
+    std::string content{ "This is from the Write() funtion " };
+    for (char c : content)
+        out.put(c);
+
+    out.seekp(10); // pointer jump to 10 character
+    std::cout <<"tellp() : " << out.tellp() << std::endl; // Tell where the pointer is
+    out << "###";  // write from char 10
+
+    out.close();
+}
+
+void Read() {
+    std::ifstream in("data.txt");
+
+    char c;
+    in.seekg(5); // pointer jump to the 5 character
+    std::cout <<"tellg() : " << in.tellg() << std::endl; // Tell where the pointer is
+    while(!in.get(c).eof())  std::cout << c;
+    std::cout << std::endl;
+        
+    in.clear(); // go back to begining of file
+
+    in.seekg(-5, std::ios::end); // read from back
+    while (!in.get(c).eof())  std::cout << c;
+    std::cout << std::endl;
+
+    in.close();
+    }
+
+int main() {
+    Write();
+    Read();
+    return 0;
+}
+```
+<figure markdown='span'>
+    ![Seekp/g and Tellp/g](img/image-20.png)
+</figure>
+
+## Working with seekp/g and tellp/g with fstream
+
+```cpp
+void ReadWrite() {
+    std::fstream stream("data.txt");
+    if (!stream) {
+        std::cout << "Creating NEW FILE ... " << std::endl;
+        std::ofstream out("data.txt");
+        out.close();
+
+        stream.open("data.txt");
+    }
+    stream << "This is the content for FStream\n";
+
+    stream.seekg(0);
+    std::cout << stream.rdbuf() << std::endl;
+
+    stream.seekg(0, std::ios::beg);
+    std::string line;
+    std::getline(stream, line);
+    std::cout << line << std::endl;
+}
+
+```
+
+<figure markdown='span'>
+    ![text](img/image-21.png)
+</figure>
+
+## Reading and write binary files
+
+```cpp
+    std::string str = "ABCDEFGHIJ1234567890";
+    const char* str_c = str.c_str();
+    std::fstream iob{ "data.bin", std::ios::binary | std::ios::out | std::ios::in };
+    iob.write((const char*)&str_c, sizeof(str_c));
+
+    iob.clear();
+    iob.seekg(0);
+
+    // Read from binary
+    const char* str1 = "";
+    iob.read((char*)&str1, sizeof(str_c));
+    iob.close();
+
+    std::cout << str1 << std::endl;
+
+```
+
+### Reading/Writing Binary Records
+
+```cpp
+int main(){
+    AssignmentRecord rigAssign;
+    rigAssign.as_id = 1340;
+    rigAssign.name = "BAC3034 Rigging Progress";
+    rigAssign.score = 34.5f;
+
+    std::fstream record1{ "assignment-record.dat", std::ios::binary| std::ios::out | std::ios::in };
+    if (!record1){
+        std::cout << "File Non-exist creating file...\n";
+        std::ofstream out{ "assignment-record.dat", std::ios::binary };
+        out.close();
+
+        record1.open("assignment-record.dat");
+    }
+    record1.write((const char*)&rigAssign, sizeof(AssignmentRecord));
+    std::cout << sizeof(AssignmentRecord);
+
+    record1.clear();
+    record1.seekg(0);
+
+
+    /* --- Reading Record from binary --- */
+    AssignmentRecord teachersCopy;
+
+    record1.read((char*)&teachersCopy, sizeof(AssignmentRecord));
+
+    std::cout << "\n\nTeachers Copy :\nID - " << teachersCopy.as_id 
+    << "\nNAME - " << teachersCopy.name << "\nSCORE: " << teachersCopy.score << "\n";
+
+}
+```
+
+### Reading/Writing Multiple Binary Records [USING BASIC ARRAY]
+
+```cpp
+constexpr int STUDENTS_NUM = 4;
+AssignmentRecord studentsAssignments[STUDENTS_NUM] = {{123, "Dfld", 45.2}, 
+                                        {300, "Omotola", 50.4}, 
+                                        {281, "folashade", 55.6}, 
+                                        {201, "Gabib", 12.0} };
+
+std::fstream record1{ "assignment-record.dat", std::ios::binary| std::ios::out | std::ios::in };
+if (!record1){
+    std::cout << "File Non-exist creating file...\n";
+    std::ofstream out{ "assignment-record.dat", std::ios::binary };
+    out.close();
+
+    record1.open("assignment-record.dat");
+    }
+record1.write((const char*)studentsAssignments, sizeof(AssignmentRecord) * STUDENTS_NUM);
+std::cout << sizeof(AssignmentRecord);
+
+record1.clear();
+record1.seekg(0);
+
+
+/* --- Reading Record from binary --- */
+AssignmentRecord teachersCopy[STUDENTS_NUM];
+
+record1.read((char*)&teachersCopy, sizeof(AssignmentRecord)* STUDENTS_NUM);
+
+for (auto& assignment : teachersCopy){
+    std::cout << "ID - " << assignment.as_id << "\n";
+    std::cout << "NAME - " << assignment.name << "\n";
+    std::cout << "SCORE - " << assignment.score << "\n\n";
+
+}
+```
+
+<figure markdown='span'>
+    ![Output Binary multiple reading](img/image-22.png)
+</figure>
+
+
+### Reading/Writing Multiple Binary Records [USING STD::VECTOR]
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+struct AssignmentRecord {
+    int  as_id{-1};
+    const char* name{};
+    float score{};
+};
+
+
+int main() {
+
+
+    /* --- Writing Records to Binary --- */ 
+
+    constexpr int STUDENTS_NUM = 4;
+    std::vector<AssignmentRecord> studentAssignments = { {123, "Dfld", 45.2},
+                                            {300, "Omotola", 50.4},
+                                            {281, "folashade", 55.6},
+                                            {201, "Gabib", 12.0} };
+
+    std::fstream record1{ "assignment-record.dat", std::ios::binary| std::ios::out | std::ios::in };
+    if (!record1){
+        std::cout << "File Non-exist creating file...\n";
+        std::ofstream out{ "assignment-record.dat", std::ios::binary };
+        out.close();
+
+        record1.open("assignment-record.dat");
+    }
+    record1.write((const char*)(&studentAssignments), sizeof(AssignmentRecord) * studentAssignments.size());
+    std::cout << sizeof(AssignmentRecord);
+
+    record1.clear();
+    record1.seekg(0);
+
+    /* --- Reading Record from binary --- */
+    //AssignmentRecord teachersCopy[STUDENTS_NUM];
+    std::vector<AssignmentRecord> teachersCopy{};
+    teachersCopy.resize(STUDENTS_NUM);
+    record1.read(reinterpret_cast<char*>(&teachersCopy), sizeof(AssignmentRecord) * teachersCopy.size());
+    if(record1.good()){
+    for (auto assignment : teachersCopy){
+            std::cout << "ID - " << assignment.as_id << "\n";
+            std::cout << "NAME - " << assignment.name << "\n";
+            std::cout << "SCORE - " << assignment.score << "\n\n";
+
+        }
+    }
+    else {
+        std::cout << "Something Went Wrong!" << std::endl;
+    }
+
+}
+```
+<figure markdown='span'>
+    ![alt text](img/image-23.png)
+</figure>

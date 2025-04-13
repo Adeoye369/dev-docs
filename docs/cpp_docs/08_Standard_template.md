@@ -567,3 +567,190 @@ int main() {
 
 ![output from multiset example](img/image-39.png)
 
+## Standard Map `std::map` / Multimap `std::multimap`
+<div class='grid' markdown>
+- Implemented as binary tree with Key/Value pair.
+- The elements are arranged in sorted order based on the key values
+- Best for search (its quite fast)
+- No random access allowed (values are immutable)
+- Keys cannot be modified directly
+
+<figure markdown='span'>
+    ![map as binary tree](img/image-49.png)
+</figure>
+    
+</div>
+
+### Insertion into a map
+
+```cpp
+void Map() {
+	
+    std::map<int, string> studentsInfo = {
+        {0xE1, "Omolara Olatunde"},
+        {0x11, "Segun Thompson"},
+        {0xff, "Afor Blessing"},
+        {0x8A, "Tunde Abolasade"}
+    };
+
+
+    // Insert using std::pair
+    studentsInfo.insert(std::pair<int, string>(0xAA, "Abah Inagwelu"));
+    studentsInfo.insert(std::pair<int, string>(0x12, "Odunayo Olaniyan"));
+
+    // Insert using std::make_pair
+    studentsInfo.insert(std::make_pair(0x22, "Funmilola Omololu"));
+    studentsInfo.insert(std::make_pair(0x15, "Omoriege Sharon"));
+
+    // Insert using square bracket operator []
+    studentsInfo[0x90] = "Adebimpe Oluwashina";
+    studentsInfo[0xAA] = "Kelechukwu Nnamani";
+
+
+    for (auto& i : studentsInfo)
+        cout << std::hex << i.first << " : " << i.second << "\n";
+    cout << "\n";
+}
+
+```
+<figure markdown='span'>
+    ![output from map](img/image-44.png)
+</figure>
+
+### Sorting the map base on value
+
+The work around here is to flip the  map so that the key becomes the value and vice versa
+
+```cpp
+template<typename A, typename B>
+std::pair<B, A> flip_pair(const std::pair<A, B>& p)
+{
+    return std::pair<B, A>(p.second, p.first);
+}
+
+template<typename A, typename B>
+std::multimap<B, A> flip_map(const std::map<A, B>& src)
+{
+    std::multimap<B, A> dst;
+    std::transform(src.begin(), src.end(), std::inserter(dst, dst.begin()),
+        flip_pair<A, B>);
+    return dst;
+}
+
+// Usage
+void Map{
+    std::map<int, string> studentsInfo = {
+        {0xE1, "Omolara Olatunde"},
+        ...}
+        ...
+        std::multimap<string, int> dst = flip_map(studentsInfo);
+
+        for (auto& i : dst)
+            cout << std::hex << i.first << " : " << i.second << "\n";
+
+ }
+
+```
+<figure markdown='span'>
+    ![output based on inversed map](img/image-45.png)
+</figure>
+
+
+### Modify & Erase
+
+```cpp
+
+    // Modify Value 
+    studentsInfo[0x11] = "Mustapha Al Nurudeen";
+    for (auto& i : studentsInfo) cout << std::hex << i.first << " : " << i.second << "\n";
+    cout << "\n";
+
+    // Erase by Key
+    studentsInfo.erase(0xAA);
+    for (auto& i : studentsInfo) cout << std::hex << i.first << " : " << i.second << "\n";
+    cout << "\n";
+
+
+    // Erase at begin()
+    studentsInfo.erase(studentsInfo.begin());
+    for (auto& i : studentsInfo) cout << std::hex << i.first << " : " << i.second << "\n";
+    cout << "\n";
+
+
+```
+
+### Find and Iterator loop
+
+```cpp
+// Searching through map
+auto itr = studentsInfo.find(0x90);
+
+if (itr != studentsInfo.end())
+    cout << "FOUND : " << itr->second << "\n\n";
+else
+    cout << "Value not found\n\n";
+
+auto it = studentsInfo.begin();
+
+while (it != studentsInfo.end()){
+    cout << it->first << " => " << it->second << "\n";
+    it++;
+    }
+
+```
+<figure markdown='span'>
+    ![output of find and Iterator loop](img/image-46.png)
+</figure>
+
+### Working with `std::multimap`
+
+This is similar to the `multiset` that it supports same key input and usage of `equal_range` function.
+
+```cpp
+void MultiMap() {
+    std::multimap <int, string> usersAddr{ {2, "Manny"},{ 5, "Bongo"},{ 1, "Fanaty"}, {2, "Olorunsogo"}, {2, "Jobak"}};
+
+    for (auto i : usersAddr){
+        cout << i.first << " " << i.second << "\n";
+    }
+
+}
+```
+<figure markdown='span'>
+    ![demonstration of multimap](img/image-47.png)
+</figure>
+
+with using equal_range
+
+```cpp
+void MultiMap() {
+    std::multimap <int, string> usersAddr{ {2, "Manny"},{ 5, "Bongo"},{ 1, "Fanaty"}, {2, "Olorunsogo"}, {2, "Jobak"}};
+
+    for (auto i : usersAddr){
+        cout << i.first << " " << i.second << "\n";
+    }
+
+    // Using equal range
+    auto itr = usersAddr.equal_range(2);
+    cout << "\nFOUND EQUAL RANGE: \n";
+    while (itr.first != itr.second){
+        cout << itr.first->first << " = " << itr.first->second << endl;
+        itr.first++;
+    }
+
+}
+```
+<figure markdown='span'>
+    ![finding equal range](img/image-48.png)
+</figure>
+
+### MACRO to print variable name
+
+```cpp
+
+#define PRINT(var) cout << #var << " = "<< var << endl;
+
+
+int score = 50;
+PRINT(score);  // score = 50
+```

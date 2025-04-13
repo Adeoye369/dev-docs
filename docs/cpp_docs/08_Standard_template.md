@@ -754,3 +754,76 @@ void MultiMap() {
 int score = 50;
 PRINT(score);  // score = 50
 ```
+
+## Unordered containers
+
+- Associative containers implemented as hash tables
+- Values are hashed and stored in undefined order
+- Fast search, insertion/deletion but may degrade over a period of time
+- `std::unordered_set` stores values that act as keys for hashing
+- `std::unoredered_map` stores pairs (*first* is used to compute hash)
+- Iterators are constant
+
+### Unordered set
+
+```cpp
+#include <unordered_set>
+void UoSet() {
+    std::unordered_set<std::string> sups;
+    sups.insert("Hulk");
+    sups.insert("Batman");
+    sups.insert("Bayrun");
+    sups.insert("touchgirl");
+    sups.insert("Novacaine");
+    sups.insert("NightCrawler");
+    sups.insert("Superman");
+    sups.insert("ReverseFlash");
+    // once the number of element passes 8 the bucket count changes from 8 to 64
+    sups.insert("Flash");
+
+    for (auto& i : sups) {
+        cout << "Bucket #" << sups.bucket(i) <<" ==> " << i << endl;
+    }
+    cout << "\nBucket count: " << sups.bucket_count() << endl;
+    cout << "Number of elements: " << sups.size() << endl;
+    cout << "Load factor: " << sups.load_factor() << endl;
+
+}
+```
+<figure markdown='span'>
+    ![unordered set output image](img/image-50.png)
+</figure>
+
+Unorder multiset allows duplicate
+
+### Unordered Map
+
+```cpp
+#include <unordered_map>
+void UoMap() {
+    std::unordered_map<int, string> powerUsers;
+
+    powerUsers.insert(std::make_pair(20000, "Spiderman"));
+    powerUsers.insert(std::make_pair(400000, "Superman"));
+    powerUsers.insert(std::make_pair(5670, "Hawkeye"));
+    powerUsers.insert(std::make_pair(350000, "Hulk"));
+    powerUsers.insert(std::pair<int, string>(6500, "Romanoff"));
+    powerUsers.insert(std::pair<int, string>(390000, "SheHulk"));
+
+    powerUsers[12000] = "Dr. Strange";
+    powerUsers[22110] = "Capt. America";
+    powerUsers[25110] = "Capt. Carter";
+
+
+    for (auto i : powerUsers) {
+        cout << "Bucket #" << powerUsers.bucket(i.first)<< " ==> " << i.first <<", "<< i.second << endl;
+    }
+    cout << "\nBucket count: " << powerUsers.bucket_count() << endl;
+    cout << "Number of elements: " << powerUsers.size() << endl;
+    cout << "Load factor: " << powerUsers.load_factor() << endl;
+
+}
+```
+<figure markdown='span'>
+    ![unorder_map output image](img/image-51.png)
+</figure>

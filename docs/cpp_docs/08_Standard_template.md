@@ -230,6 +230,8 @@ int main() {
   
 Basically what `std::vector` can do but with the extra of front operations
 
+![diagram for Deque](img/image-40.png)
+
 ```cpp
   #include <iostream>
 #include <deque>
@@ -242,7 +244,7 @@ void StdDeque() {
 
     songsFreq.push_front(77);
     songsFreq.push_front(12);
-
+    songsFreq[6] = 345;
     std::cout << "\nIteration with for loop:\n";
     for (int i = 0; i < songsFreq.size(); i++) std::cout << songsFreq[i] << " ";
 
@@ -301,7 +303,9 @@ int main() {
 - Efficient for insertion / deletion
 -**DOES NOT provide random accesss (NO `[]`operator modify element)**
 
-Useful when you need a container that you will often insert and delete from FRONT/back
+Useful when you need a container that you will often insert and delete from FRONT/BACK
+
+![image demo for list](img/image-41.png)
 
 ```cpp
 void List() {
@@ -361,6 +365,7 @@ int main() {
 - Does not provide support for size
 - Elements are added at the front only
   
+![image demo for forward list](img/image-42.png)
 
 ```cpp
 #include <forward_list>
@@ -426,9 +431,139 @@ int main() {
 
 ## standard Set `std::set` / Multiset `std::multiset`
 
+<div class='grid' markdown>
 - Implemented as a binary tree
 - Elements are stored and sorted by (< or >)
 - Values act as keys
 - Fast for search
 - No random access
 - Elements cannot be modified
+
+<figure markdown='span'>
+    ![binary tree look for set/multiset](img/image-43.png){width=70%}
+    <figcaption>Binary tree look for `set/multset` <figcaption>
+</figure>
+</div>
+
+
+### Inserting and Printing Output
+
+First thing to note is that Set is printed in the sorted order
+
+```cpp
+void Set0() {
+    std::set<int> scores;
+    scores.insert(34);
+    scores.insert(67);
+    scores.insert(90);
+    scores.insert(99);
+    scores.insert(0);
+
+    auto it = scores.begin();
+
+    // Element is printed in sorted order (less than by default)
+    for (auto i : scores) cout << i << endl;
+}
+```
+
+Sort the set in the ascending order         
+![set sorted by lessthan](img/image-36.png)
+
+But for you to sort by is greather than, you need to include `std::greater` which is found 
+in the `<functional>` header.
+
+```cpp
+// Your new definition of scores with `std::greater<int>`
+    std::set<int, std::greater<int>> scores;
+    scores.insert(34);
+    scores.insert(67);
+    ...
+    for (auto i : scores) cout << i << " ";
+```
+
+This sort the set in descending order       
+![set sorted by greather](img/image-37.png)
+
+
+### `erase()` and `find()` with  Set
+
+```cpp
+void Set1() {
+
+    std::set<string> students = { "Ngozi", "Fifa", "Ayomide", "Tolulope","Mustapha", "Bolanle"};
+    students.insert("Damilola");
+    students.insert("Zamani");
+    students.insert("Yetunde");
+
+    auto it = students.begin();
+    while (it != students.end()) cout << *it++ << "  ";
+    cout << "\n";
+
+
+    /**
+    DOES NOT SUPPORT RANDOM ACCESS LIKE - vector, deque
+    cout << students[3] << endl;
+    *it = 12;
+    cout << *it+3 << endl; 
+    */
+
+    // Erases use the value itset as key or it
+    students.erase("Yetunde");
+    students.erase(students.begin());
+
+
+    for (auto& i : students){
+        cout << i << "  ";
+    }
+
+    // Search returns the iterator to the key
+    auto itr_find = students.find("Zamani");
+
+    if (itr_find != students.end())
+        cout << "find: " << *itr_find << " found\n";
+    else
+        cout << "couldn't find zamani\n";
+
+}
+```
+![output with erase() and find()](img/image-38.png)
+
+
+### Working with multiset
+
+The main difference for `multiset` is that it allows duplicate of value and you can
+also find that duplicated values using `equal_range`.
+
+```cpp
+
+void MultiSet() {
+
+    std::multiset<int> ages{ 5, 6,1, 16, 16, 18, 21, 34, 28, 27, 18, 18, 14 , 16, 0, 1, 16};
+
+    for (auto i : ages) cout << i << "  ";
+
+    // to find multiple occurence of a value
+
+    auto itr_val = ages.find(18);
+    if (itr_val != ages.end())
+        cout << "\nfound: " << *itr_val << "\n\n";
+
+    // equal range return to iterators as std::pair
+    // first - is the iterator of the first found
+    // second - the iterator of the element after the last found
+    auto itr = ages.equal_range(16);
+
+    while (itr.first != itr.second)
+        cout << *itr.first++ << " " ;
+    cout << "\n";
+
+
+}
+
+int main() {
+    MultiSet();
+}
+```
+
+![output from multiset example](img/image-39.png)
+

@@ -581,3 +581,24 @@ int main() {
 <figure markdown='span'>
     ![alt text](img/image-23.png)
 </figure>
+
+## Reading File with Vector
+
+```cpp
+
+int main() {
+
+    std::ifstream input{ "main.cpp" };
+    if (!input) {
+        std::cout << "Could not open file\n";
+        return -1;
+    }
+    auto size = fs::file_size("main.cpp");
+    std::vector<char> buffer;
+    buffer.resize(size);
+    input.read(buffer.data(), size);
+    std::cout << buffer.data() << "\n";
+
+    return 0;
+}
+```

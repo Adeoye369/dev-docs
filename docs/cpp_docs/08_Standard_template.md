@@ -221,6 +221,54 @@ int main() {
 }
 ```
 
+### New in `std:vector`
+
+```cpp
+int main() {
+
+    std::vector<int> vInt;
+
+    for (size_t i = 0; i < 20000; i++)
+        vInt.push_back(i);	
+
+
+    std::cout << "\nSize: " << vInt.size() << "\n";
+    std::cout << "Capacity: " << vInt.capacity() << "\n";
+
+    //vInt.resize(10);
+    vInt.erase(vInt.begin(), vInt.end() - 10);
+    //vInt.shrink_to_fit();
+    std::cout << "\nAfter Erasing ...\n";
+    std::cout << "\nSize: " << vInt.size() << "\n";
+    std::cout << "Capacity: " << vInt.capacity() << "\n";
+
+    std::for_each(vInt.begin(), vInt.end(), [](int v) {
+        cout << v << " ";  });
+    cout << "\n";
+
+    return 0;
+}
+```
+<figure markdown='span'>
+    ![printed std vector new](img/image-53.png)
+</figure>
+
+Once we add Shrink_to_fit 
+
+All the reserved spaces were fitted to the size - (extra memory freed)
+
+```cpp
+
+vInt.shrink_to_fit();
+std::cout << "\nAfter Erasing ...\n";
+std::cout << "\nSize: " << vInt.size() << "\n";
+std::cout << "Capacity: " << vInt.capacity() << "\n";
+```
+<figure markdown='span'>
+    ![shrink to fit](img/image-54.png)
+</figure>
+
+
 ## Standard Deque `std::deque`
 
 - Efficient for additional / Removal at both end
@@ -293,7 +341,18 @@ int main() {
 }
 ```
 
+Also about `resize` and `reserve`
 
+```cpp
+    std::vector<int> vInt;
+
+    //keeps memory space
+    vInt.reserve(10);
+
+    //keeps memory space and init them to 0
+    vInt.resize(20);
+
+```
 
 ## Standard List `std::list` / Forward list `std::forward_list`
 
@@ -826,4 +885,251 @@ void UoMap() {
 ```
 <figure markdown='span'>
     ![unorder_map output image](img/image-51.png)
+</figure>
+
+## Hash function
+
+```cpp
+#include <iostream>
+#include <unordered_set>
+
+using std::cout, std::endl, std::string;
+
+struct EmpHash {
+    size_t operator() (const Employee& emp) const {
+        auto s1 = std::hash<string>{}(emp.GetName());
+        auto s2 = std::hash<int>{}(emp.GetId());
+        return s1 ^ s2;
+    }
+};
+
+struct EmpEquality {
+    bool operator()(const Employee& e1, const Employee& e2) const {
+        return e1.GetId() == e2.GetId() && e1.GetName() == e2.GetName();
+    }
+};
+class Employee {
+    string mName;
+    int mId;
+public:
+    Employee(const string& n, int id): mName(n), mId(id){}
+    const string& GetName() const { return mName; }
+    int GetId() const { return mId; }
+};
+
+
+void Hashes() {
+    std::hash<std::string> h;
+    cout << "Hash: " << h("Hello") << endl;
+
+    std::unordered_set<Employee, EmpHash, EmpEquality> emps;
+    emps.insert(Employee{ "Segun", 0x1201});
+    emps.insert(Employee{ "Omotosho", 1011});
+    emps.insert(Employee{ "Balogun", 0x1202});
+
+    for (auto& x : emps){
+        cout << x.GetId() << " " << x.GetName() << endl;
+    }
+
+}
+
+int main() {
+    Hashes();
+    return 0;
+}
+```
+
+## Algorithms
+
+- STL Provides algorithms for common tasks
+  - sorting items
+  - Removing items
+  - Searching items
+  - many other numeric operations
+  
+- More optimized than handwritten loops
+- Work with all containers regardless of the data type
+
+- Several Algorithms can be customized through user-defined operations
+- Some containers provide specialized versions of algorithms.
+  - list provides sort & remove
+  - associative containers provide `lower_bound`, `upper_bound`, `find` etc.
+
+- Most algorithms reside in `<algorithm>` header
+  
+### Sorting algorithm with User Defined type `vector` and Working with User Defined `set`
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <set>
+
+class Employee {
+    string mName;
+    int mId;
+    string mProgLang;
+    public:
+    Employee(const string& n, int id, const string& p)
+        :mName(n), mId(id), mProgLang(p){}
+
+    const string&	GetName() const		{ return mName; }
+    int				GetId() const		{ return mId; }
+    const string	GetProgLang() const { return mProgLang; }
+
+    // ### SET METHOD 1 - overload the `<` less in the class  
+    //bool			operator < (const Employee& e)const { return mId < e.mId; } // one way to pass less/greater
+};
+
+
+void UserDefinedVector() {
+
+    // Sorting with Vector
+    std::vector<Employee> v{
+        Employee("Oma", 5200, "Js"),
+        Employee{"Funmi", 2100, "Rust"},
+        Employee{"Rodney", 3802, "C++"},
+        Employee{"Kemi", 6210, "Java"},
+        Employee{"Busayo", 4180, "Python"}
+    };
+
+    std::sort(v.begin(), v.end(), 
+        // best way to pass less/greater
+        [](Employee& emp1, Employee& emp2) {return emp1.GetId() < emp2.GetId();
+        });
+
+    cout << "=== User defined Vector === \n";
+    for (auto& x : v)
+        cout << x.GetId() << " - " << x.GetName() << " - " << x.GetProgLang() << endl;
+
+}
+
+// ### SET METHOD 2 - overload the `()` in a `Compare` 
+struct EmpCompare {
+    bool operator () (const Employee& a1, const Employee& a2) const {
+        return a1.GetId() < a2.GetId();
+    }
+}; 
+
+void UserDefinedSet() {
+    // Sorting with Vector
+    std::set<Employee, EmpCompare> sl{
+        Employee("Oma", 5200, "Js"),
+        Employee{"Funmi", 2100, "Rust"},
+        Employee{"Rodney", 3802, "C++"},
+        Employee{"Kemi", 6210, "Java"},
+        Employee{"Busayo", 4180, "Python"}
+    };
+
+
+    cout << "=== User defined Set === \n";
+    for (auto& x : sl)
+        cout << x.GetId() << " - " << x.GetName() << " - " << x.GetProgLang() << endl;
+    }
+
+int main() {
+
+    UserDefinedSet();
+
+    return 0;
+}
+```
+
+### count_if, find_if and for_each algorithms demo 
+
+```cpp
+// Sorting with Vector
+std::vector<Employee> v{
+    Employee("Oma", 5200, "Js"),
+    Employee{"Rodney", 3802, "C++"},
+    Employee{"Anthonio", 4040, "C++"},
+    Employee{"Daniel2", 3000, "C++"},
+    Employee{"Kemi", 6210, "Java"},
+    Employee{"Busayo", 4180, "Python"},
+    Employee("Omololu", 7070, "Js"),
+};
+
+int countJsUsers{};
+// count_if Algorithm [User defined] ===========================================================
+countJsUsers = std::count_if(v.begin(), v.end(),
+    [](const auto& emp) { return emp.GetProgLang() == "Js" ; });
+
+cout << "Count of Js users : " << countJsUsers <<"\n";
+
+// find & find_if Algorithm [User defined] =====================================================
+auto itr = std::find_if(v.begin(), v.end(),
+    [](const auto& emp) { return emp.GetProgLang() == "Python"; });
+
+if (itr != v.end())
+    cout << "\nHeyy!!! " << itr->GetName() << " is a Python Programmer!\n";
+
+// for_each Algorithms ========================================================================
+std::for_each(v.begin(), v.end(), [](const auto& e) {
+    cout << e.GetName() << " | ";
+    int counter = 2;
+    cout << e.GetId() * counter << " | ";
+    cout << e.GetProgLang() + std::to_string(e.GetId()) << endl;
+    });
+
+// for_each example 2 === Getting Just individual Ids =========================================
+std::vector<int> ids;
+std::for_each(v.begin(), v.end(), [&](const auto& e) {
+    if (e.GetProgLang() == "C++") ids.push_back(e.GetId());
+    });
+
+cout << "\nCpp users ID : ";
+for (auto& i : ids) cout << i << " ";
+```
+
+<figure markdown='span'>
+    ![Output by other algorithms](img/image-52.png)
+</figure>
+
+
+## New Features / Topics to discuss c++11
+
+### Emplace_back
+
+Makes significant difference when you want to pass User defined class to a container
+The main advantange is that it doesn't call multiple constructor, only copy.
+unlike the `push_back` that calls all the constructs (copy and move )
+```cpp
+void UserDefinedVector() {
+
+    // Sorting with Vector
+    std::vector<Employee> v{
+        Employee("Oma", 5200, "Js"),
+        Employee{"Busayo", 4180, "Python"},
+    };
+
+    v.push_back(Employee("Omololu", 7070, "Js"));
+
+    // instead on creating constructors like it was above we can just write it like so
+    v.emplace_back( "Anthonio", 4040, "C++" );
+    v.emplace_back("Daniel2", 3000, "C++");
+```
+
+## `std::erase` Remove Elements based on its value C++20 features
+
+```cpp
+int main() {
+
+    std::vector<int> v1 = { 34, 23, 69, 33,21 };
+    std::list<int> l1 = { 304, 12, 69, 331,211 };
+    std::deque<int>  d1 = { 53, 230, 69, 133,11 };
+
+    std::erase(v1, 69);
+    std::erase(l1, 69);
+    std::erase(d1, 69);
+
+    for (auto& i : v1) cout << i << " "; cout << "\n";
+    for (auto& i : l1) cout << i << " "; cout << "\n";
+    for (auto& i : d1) cout << i << " "; cout << "\n";
+
+
+    return 0;
+}
+```
+<figure markdown='span'>
+    ![output from std::erase](img/image-55.png)
 </figure>

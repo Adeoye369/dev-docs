@@ -750,7 +750,6 @@ class RenderTriangle : public Renderer {
 public:
     unique_ptr<GraphicObject> graphicObject;
     unique_ptr<GraphicObject> graphicObject1;
-    
     Renderer::Renderer;
 
     void setupDraw() override{

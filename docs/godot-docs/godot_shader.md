@@ -6,7 +6,6 @@
 ![alt text](img/image-1.png)
 
 ```c
-
     shader_type spatial;
 
     uniform sampler2D imgTex: source_color;

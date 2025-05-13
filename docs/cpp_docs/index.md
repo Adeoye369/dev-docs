@@ -248,6 +248,40 @@ int main() {
 ```
 ![alt text](img/image-11.png)
 
+
+## Working with `substr()` in C++
+
+```cpp
+int main() {
+
+    string s1 = "dir2/dir4/dir5/dir6/dir7 ";
+
+    cout << s1.substr(0, s1.find_last_of('/')) << endl;   
+    //Output: dir2/dir4/dir5/dir6/ 
+    cout << s1.substr(s1.find_last_of('/'), s1.length()-1) << endl;
+    //Ouput: /dir7
+
+	return 0;
+}
+```
+
+## Working with string `data()`
+
+It returns a non-null pointer of type `const char*` that points to the **first character** of the string's data.
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+  std::string str = "Hello, world!";
+
+  const char* data = str.data();
+  std::cout << "String data: " << data << std::endl;
+
+  return 0;
+}
+```
+
 ## Working with stringstream
 
 Make sure you include `<sstream>`

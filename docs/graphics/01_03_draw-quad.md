@@ -409,3 +409,191 @@ Here is the full srcs:
 - [ `ShaderProgram.cpp`](code/src_v1_tex/ShaderProgram.cpp){target=blank}  
 - [ `basic.shader`](code/src_v1_tex/basic.shader){target=blank}  
 - `stb_image.h` github repo [here](https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h){target=blank}  
+
+## Open GL Screen normalization, coordinate convertion 
+
+The goal here is to convert the opengl coordinate to pixel based.
+
+![alt text](img/_SCREEN_NORM.png)
+
+where, 
+
+- $X_o$, $Y_o$ are current point openGl screen coordinate
+- $X_p$, $Y_p$ are current point Pixel screen coordinate
+- $W_p$, $H_p$ pixel screen width and height resolution
+
+
+### Find the OpengGl X coord
+
+Finding $X_o$,
+
+$$\frac{X_o-(-1)}{X_p - 0} = \frac{1-(-1)}{W_p - 0}$$
+
+$$\frac{X_o + 1}{X_p} = \frac{2}{W_p}$$
+
+$$\boxed{X_o = \frac{2X_p}{W_p} - 1 --- (1)}$$
+
+### Find the OpengGl Y coord
+
+Finding $Y_o$,
+
+$$\frac{Y_o-(1)}{Y_p - 0} = \frac{-1 - 1}{W_h - 0}$$
+
+$$\frac{Y_o - 1}{Y_p} = \frac{-2}{W_h}$$
+
+$$\boxed{ X_o = \frac{-2X_p}{W_p} + 1 --- (2)}$$
+
+## Implementing it in OpenGL
+
+This are the basic representation in cpp
+
+```cpp
+
+float coordConvert(int dim, DimType type) {
+    if (type == X) return static_cast<float>(((2.0 * dim) / Width) - 1);
+    else if (type == Y) return static_cast<float>(((-2.0 * dim) / Height) + 1);
+}
+
+Position Point(int Xdim, int Ydim) {
+    return { coordConvert(Xdim, X), coordConvert(Ydim, Y) };
+}
+...
+// we call it here like so
+    std::vector<Position> vert_p;
+    vert_p.push_back(Point(20, 20));
+    vert_p.push_back(Point(400, 50));
+    vert_p.push_back(Point(600, 400));
+    vert_p.push_back(Point(30, 480));
+
+```
+
+This is the full implementation
+
+```cpp
+#include <iostream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+int Width = 960;
+int Height = 540;
+
+
+enum DimType { X, Y };
+struct Position {float x; float y;};
+
+float coordConvert(int dim, DimType type) {
+    if (type == X) return static_cast<float>(((2.0 * dim) / Width) - 1);
+    else if (type == Y) return static_cast<float>(((-2.0 * dim) / Height) + 1);
+}
+
+Position Point(int Xdim, int Ydim) {
+    return { coordConvert(Xdim, X), coordConvert(Ydim, Y) };
+}
+
+struct ShaderSource {std::string VertSource; std::string FragSource;};
+static ShaderSource ParseShader(const std::string& filePath){. . . .}
+static unsigned int CompileShader(unsigned int type, const std::string& source) { . . . . }// end CompileShader
+static unsigned int CreateShaderProgram(const std::string& vertShader, const std::string& fragShader) { . . . . }
+
+static unsigned int CreateShaderProgram(const std::string& filePath) {
+    ShaderSource shaderSource = ParseShader(filePath);
+    return CreateShaderProgram(shaderSource.VertSource.c_str(), shaderSource.FragSource.c_str());
+}
+
+
+int main(void)
+{
+    GLFWwindow* window;
+
+    /* Initialize the library */
+    if (!glfwInit()) return -1;
+
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(Width, Height, "Tutorial 01", NULL, NULL);
+
+    if (!window){
+        glfwTerminate();return -1;
+    }
+
+    //glfwSwapInterval(1);
+
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
+
+    if (glewInit() != GLEW_OK) {
+        std::cout << " Glew Error \n";
+    }
+
+
+    std::vector<Position> vert_p;
+    vert_p.push_back(Point(20, 20));
+    vert_p.push_back(Point(400, 50));
+    vert_p.push_back(Point(600, 400));
+    vert_p.push_back(Point(30, 480));
+
+
+    int indices[6] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    unsigned int vao, vbo, ibo;
+
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ibo);
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER,vert_p.size() * sizeof(Position), vert_p.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), indices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+    glBindVertexArray(0);
+
+
+    //Linking the program
+    GLuint prog = CreateShaderProgram("res/shader/basic1.shader");
+
+    glUseProgram(prog);
+
+ /*   glUniform4f(glGetUniformLocation(prog, "u_color"),0.9f, 0.9f, 0.1f, 3.0f);*/
+    glUniform2f(glGetUniformLocation(prog, "u_resolution"), Width, Height);
+
+    /* Loop until the user closes the window */
+    float time_step = 0.0001f;
+    float current_time = 0.0f;
+    while (!glfwWindowShouldClose(window))
+    {
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindVertexArray(vao);
+
+        glUniform1f(glGetUniformLocation(prog, "u_time"), current_time); 
+        current_time += time_step;
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        /* Swap front and back buffers */
+        glfwSwapBuffers(window);
+
+        /* Poll for and process events */
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    return 0;
+}
+```
+<figure markdown='span'>
+	![rendered output](img/image-27.png)
+</figure>

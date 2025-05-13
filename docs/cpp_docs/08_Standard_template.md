@@ -198,6 +198,14 @@ void StdVector() {
     xPos.insert(xPos.begin(), -101); // insert single element
     xPos.insert(xPos.begin()+3, -33); // insert at index 3
 
+    vector<int> somNum1 = { 1, 3, 5 };
+    vector <int> somNum2 = { -7, -9, -11 };
+    // at the end() extend with content of `somNum1`
+    somNum1.insert(somNum1.end(), somNum2.begin(), somNum2.end()); // 1 3 5 -7 -9 -11
+
+    // at the end() insert count=5, value= ;20
+    somNum2.insert(somNum2.end(), 5, 20);  //-7 -9 -11 20 20 20 20 20
+
     std::cout << "\n";
     for (auto& i : xPos) std::cout << i << " ";
 

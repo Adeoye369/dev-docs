@@ -9,14 +9,16 @@ let foods = ["Eba", "Egusi", "Iyana", "Amala"];
 
 //  Get the keys of Object (Array is an Object too)
 for (const f in foods) {
-    console.log(f); //"Eba","Egusi","Iyana","Amala"
-    console.log(foods[f]); // Get the Values
+    console.log(f);         //Index :  0, 1, 2, 3
+    console.log(foods[f]);  //Value: "Eba","Egusi","Iyana","Amala"
 }
 
 // // Get the Values of Object/Dict
 for (const f of foods) {
-    console.log(f);
+    console.log(f); //Value: "Eba","Egusi","Iyana","Amala"
 }
+
+
 ```
 
 
@@ -29,12 +31,16 @@ let foods = {"Eba": 20, "Egusi":  5, "Iyana": 0, "Amala": 34};
 //  Get the keys of Object/Dict
 for (const f in foods) {
     console.log(f); //"Eba","Egusi","Iyana","Amala"
-    console.log(foods[f]); // Get the Values
-}
+    console.log(foods[f]); // 20, 5, 0, 34
 
 // Get the Values of Object/Dict
 for (const f of Object.values(foods)) {
     console.log(f); // 20, 5, 0, 34
+}
+
+// Get the Values of Object/Dict
+for (const f of Object.keys(foods)) {
+    console.log(f); // Eba, Egusi, ...
 }
 
 console.log(Object.keys(foods)) // "Eba", "Egusi", ...

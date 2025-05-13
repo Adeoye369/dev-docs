@@ -10,28 +10,28 @@ nav:
   #   - graphics/shader-learning.md
    
 
-  - Ai Dev : ai-dev-docs/index.md
+  # - Ai Dev : ai-dev-docs/index.md
   
-  - Python : python_docs/index.md
+  # - Python : python_docs/index.md
 
-  - Js : 
-    - Js Intro : js_docs/index.md
-    - Node Docs : js_docs/node_getting_started.md
-    - Express Docs:  js_docs/express-doc.md
-    - Code Snippet : js_docs/code-snippet.md
+  # - Js : 
+  #   - Js Intro : js_docs/index.md
+  #   - Node Docs : js_docs/node_getting_started.md
+  #   - Express Docs:  js_docs/express-doc.md
+  #   - Code Snippet : js_docs/code-snippet.md
   
 
-  - Cpp Docs:
-    - cpp_docs/index.md
-    - cpp_docs/linkedlist_index.md
+  # - Cpp Docs:
+  #   - cpp_docs/index.md
+  #   - cpp_docs/linkedlist_index.md
 
-  - Html5 Docs:
-    - html5-docs/index.md
-    - html5-docs/flexbox.md
-    - html5-docs/gridbox.md
+  # - Html5 Docs:
+  #   - html5-docs/index.md
+  #   - html5-docs/flexbox.md
+  #   - html5-docs/gridbox.md
 
-  - Godot :  godot-docs/index.md
-  - ...
+  # - Godot :  godot-docs/index.md
+  # - ...
 
   
 theme:
@@ -75,3 +75,7 @@ markdown_extensions:
 plugins:
     - search
     - awesome-pages
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

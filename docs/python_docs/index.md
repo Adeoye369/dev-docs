@@ -998,10 +998,11 @@ print(my_carlot.car_detail())
 ## Normalizing Any Number
 
 If for instance you have a range of number from 0 - 777:
-`0` will be the minimum range
-`1` will be the interval i.e `(1-0)/(777-0) = 1/777 =  0.00128`
-`211` will then be `(221-0)/(777-0) = (221) x 1/777(interval) =0.28442`
-`700` will be closer to 1.0 `(700-0)/(777-0) = (221) x 1/777(interval) =0.90009`
+
+- `0` will be the minimum range
+- `1` will be the interval i.e `(1-0)/(777-0) = 1/777 =  0.00128`
+- `211` will then be `(221-0)/(777-0) = (221) x 1/777(interval) =0.28442`
+- `700` will be closer to 1.0 `(700-0)/(777-0) = (221) x 1/777(interval) =0.90009`
 
 ```py
 def normalize(self, number, min_num, max_number):

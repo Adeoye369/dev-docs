@@ -253,3 +253,60 @@ const updateVariant = (index) => selectedVariant.value = index
 </template>
 
 ```
+
+## Using onMounted in Vue
+
+### Use case example, fetching data from an API
+
+```html
+<script setup>
+import {ref, onMounted} from 'vue';
+
+...
+
+// Base content
+const tasks = ref(["buy Book", "Read a lesson", "Sweep floor", "Watch movies"]);
+
+const buttonStyle = ref({float:"right", borderRadius: "20px", backgroundColor:"#777"})
+
+
+
+// some form of counter with `setInterval`
+onMounted(()=>{
+  setInterval(()=>{ secs.value++ },1000)
+})
+
+// Requesting from API
+onMounted(async ()=>{
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/todos')
+    const data = await res.json()
+    tasks.value = data.map((task) => task.title)
+    
+  } catch (error) {
+    console.error("ASYNC_ERROR::FAILED TO FETCH TASK")
+  }
+})
+
+</script>
+
+
+<template>
+  <header>
+
+  <h1>Hello Vue<span>{{ secs % 30 }}</span></h1>
+</header>
+
+...
+
+<ul>
+  <li v-for="(task, index) in tasks" :key="task" style="width: 50%">
+   <span>{{ task }}</span> 
+   <button 
+   :style="buttonStyle" 
+   @click="deleteTask(index)">x</button>
+  </li>
+</ul>
+
+</template>
+```

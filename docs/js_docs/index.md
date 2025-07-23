@@ -46,3 +46,17 @@ for (const f of Object.keys(foods)) {
 console.log(Object.keys(foods)) // "Eba", "Egusi", ...
 console.log(Object.entries(foods)) // ['Eba', 20], ['Egusi', 5] ...
 ```
+
+## Mapping example in javascript
+
+```js
+const numbers = [1, 2, 3, 4];
+
+// Using map to double each number
+const doubledNumbers = numbers.map(function(number) {
+  return number * 2;
+});
+
+console.log(doubledNumbers); // Output: [2, 4, 6, 8]
+console.log(numbers);       // Output: [1, 2, 3, 4] (original array unchanged)
+```

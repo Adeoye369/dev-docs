@@ -310,3 +310,351 @@ onMounted(async ()=>{
 
 </template>
 ```
+
+
+## Setting Up tailwind CSS
+
+1. Install tailwind and its peer dependency
+
+    ```bash
+    npm install tailwindcss @tailwindcss/vite
+    ```
+
+2. In your `vite.config.js`
+
+    ```bash title="vite.config.js" hl_lines="2 6"
+    import { defineConfig } from 'vite'
+    import tailwindcss from '@tailwindcss/vite'
+
+    export default defineConfig({
+      plugins: [
+        tailwindcss(),
+      ],
+    })
+    ```
+
+3. import tailwind in your css file
+
+    ```css
+    @import 'tailwindcss';
+
+    ```
+
+## Setting up `Hero.vue` components adding props
+
+1. In the `Hero.vue` component
+
+    ```html title="Hero.vue"
+    <script setup>
+
+    const props = defineProps({
+        heroData:{
+            type: Object,
+            default: 
+            {
+              title: "Become a Vue Dev", 
+              desc: "Vue jobs that fits your skills and needs" 
+            }
+        }
+    })
+
+    </script>
+
+    <template>
+          <!-- Hero -->
+          <section class="bg-green-700 py-20 mb-4">
+          ...
+                {{heroData.title}}
+              </h1>
+              <p class="my-4 text-xl text-white">
+                {{heroData.desc}}
+              </p>
+        ...
+        </section>
+    </template>
+    ```
+
+2. In the `App.vue`
+
+    ```html title="App.vue"
+    <script setup>
+    import {ref} from 'vue'
+    import Navbar from '@/components/Navbar.vue';
+    import Hero from './components/Hero.vue';
+
+
+    const heroData = ref({ title : "World best Jobs",
+      desc: "Become the world best Dev. in Tech world"
+      })
+    </script>
+
+    <template>
+      <Navbar />
+      <Hero :hero-data = "heroData"/>  <!-- Show passed data -->
+      <Hero />                         <!-- show the default title -->
+
+    </template>
+    ```
+
+We see that we have two hero files right now
+
+<figure markdown='span'>
+![alt text](img/image-3.png)
+</figure>
+
+## Working with `HomeCard.vue` and 'Card' setup 
+
+Here is the `Card.vue` template
+```html title="Card.vue"
+<script setup>
+const props = defineProps({
+    bgColor : {
+        type: String,
+        default: "bg-gray-100"
+    }
+});
+</script>
+
+<template>
+    <div :class="`${bgColor} p-6 rounded-lg shadow-md`">
+        <slot></slot>
+    </div>
+</template>
+```
+
+```html title="HomeCard.vue"
+<script setup>
+import Card from "@/components/Card.vue"
+</script>
+
+<template>
+
+<Card bg-color="bg-purple-200">
+    <!-- Here is the <Slot> Content-->
+    <h2 class="text-2xl font-bold">For Developers</h2>
+            <p class="mt-2 mb-4">
+              Browse our Vue jobs and start your career today
+            </p>
+            <a href="jobs.html" class="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700">
+              Browse Jobs
+            </a>    
+        <!-- End <Slot>-->
+</Card>
+
+<Card bg-color="bg-cyan-100">
+    <!-- Here is the <Slot> Content-->
+    <h2 class="text-2xl font-bold">For Employers</h2>
+            <p class="mt-2 mb-4">
+              List your job to find the perfect developer for the role
+            </p>
+            <a
+              href="add-job.html"
+              class="inline-block bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+            >
+              Add Job
+            </a>
+    <!-- End <Slot>-->
+</Card>
+
+</template>
+```
+<figure markdown='span'>
+  ![alt text](img/image-4.png)
+</figure>
+
+## Fetch basic Json Data from src
+
+```html title="JobListings.vue"
+<script setup>
+import {ref} from 'vue'
+import jobData from '@/jobs2.json'
+
+const jobs = ref(jobData)
+
+</script>
+
+<template>
+    Job Listings
+    <p v-for = "job in jobs" :key="job.id">
+        {{job.id +" - "+ job.title }}
+    </p>
+</template>
+```
+
+<figure markdown='span'>
+  ![alt text](img/image-5.png)
+</figure>
+
+### Styling the Data with Basic tailwind
+
+```html
+<template>
+    <section class="bg-blue-50 px-4 py-10">
+        <div class="container-xl lg:container m-auto">
+            <h2 class="text-3xl font-bold text-green-500 mb-6 text-center">
+                Browse Jobs
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div v-for = "job in jobs" :key="job.id">
+                    {{job.id +" - "+ job.title }}
+                </div>
+
+            </div>
+        </div>
+    </section>
+</template>
+```
+
+<figure markdown='span'>
+  ![alt text](img/image-6.png)
+</figure>
+
+### Finalising the Joblisting Styling
+
+Individual Job Listings
+
+```html title="JobListing.vue"
+<script setup>
+import { defineProps } from 'vue';
+
+defineProps({
+    jobData : Object
+})
+</script>
+
+<template>
+      <div class="bg-white rounded-xl shadow-md relative">
+           ...
+              <div class="mb-5">
+                {{jobData.description.slice(0, 105) + " ..."}}
+              </div>
+
+              ...
+              <i class="fa-solid fa-location-dot text-lg"></i>
+                  {{jobData.location}}
+                </div>
+                <a
+                  :href="`/jobs/${jobData.id}`"
+                  class="h-[36px] bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-center text-sm"
+                >
+                  Read More
+                </a>
+            ...
+          </div>
+</template>
+```
+
+All the JobListing display
+
+```html title="JobListings.vue"
+<script setup>
+import {ref, defineProps} from 'vue'
+import jobData from '@/jobs2.json'
+import JobListing from '@/components/JobListing.vue'
+
+const jobs = ref(jobData)
+
+defineProps({
+    limit: Number,
+    showAllJobs: {type: Boolean, default: false}
+})
+
+
+</script>
+
+<template>
+    <section class="bg-blue-50 px-4 py-10">
+        <div class="container-xl lg:container m-auto">
+            <h2 class="text-3xl font-bold text-green-500 mb-6 text-center">
+                Browse Jobs
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Display on limit amount -->
+                <JobListing v-for="job in jobs.slice(0, limit || jobs.length)" :job-data="job" />
+            </div>
+        </div>
+    </section>
+
+    <section v-if="showAllJobs" class="m-auto max-w-lg my-10 px-6">
+      <a
+        href="jobs.html"
+        class="block bg-black text-white text-center py-4 px-6 rounded-xl hover:bg-gray-700"
+        >View All Jobs</a
+      >
+    </section>
+</template>
+```
+
+Displaying JobListing in Main vue
+
+```html title="App.vue"
+<script setup>
+import {ref} from 'vue'
+...
+import JobListings from './components/JobListings.vue';
+
+</script>
+
+<template>
+...
+
+  <JobListings :limit="3" :show-all-jobs="true"/>
+
+</template>
+
+```
+
+<figure markdown='span'>
+  ![alt text](img/image-7.png)
+</figure>
+
+### Implementing Toggle full description
+
+```html
+<script setup>
+import {ref, defineProps, computed } from 'vue';
+
+const props = defineProps({
+    jobData : Object
+})
+
+const showFullDescription = ref(false)
+
+const toggleFullDescription = () =>{
+    showFullDescription.value = !showFullDescription.value
+}
+
+const truncatedDescription = computed(()=>{
+    let description = props.jobData.description
+    if(!showFullDescription.value)
+        description = description.substring(0, 90) + " ..."
+    return description
+})
+</script>
+
+<template>
+      <div class="bg-white rounded-xl shadow-md relative">
+          ...
+
+              <div class="mb-5">
+                <div>
+                    {{truncatedDescription}}
+                </div>
+                <button 
+                class="text-green-500 hover:text-green-600 mb-5"
+                @click="toggleFullDescription"
+                >
+                    {{ showFullDescription ? 'Less' : 'More' }}
+                </button>
+              </div>
+
+              ...
+
+          </div>
+</template>
+```
+
+<figure markdown='span'>
+  ![alt text](img/image-8.png)
+</figure>

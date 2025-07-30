@@ -745,3 +745,91 @@ const truncatedDescription = computed(()=>{
     </template>
 
   ```
+
+  Everything remains as it was 
+
+<figure markdown='span'>
+  ![alt text](img/image-9.png)
+</figure>
+
+### Replacing the html link tag 
+
+
+
+Lets use Navbar as example
+```js
+// import router link
+import { RouterLink } from 'vue-router'
+```
+Replace the html link tags and properties `<a>, href` with `<RouterLink>, to` respectively
+<div class='grid' markdown>
+
+```html title="before" hl_lines="1 2 5"
+    <a
+    href="/jobs/add"
+    class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2"
+    >Add Job
+    </a>
+
+```
+
+```html title="after" hl_lines="1 2 5"
+   <RouterLink
+    to="/jobs/add"
+    class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2"
+    >Add Job
+    </RouterLink>
+```
+
+
+</div>
+
+### Adding Navbar ActiveLink
+
+Here is the setup to Add Navbar Activelink
+```html
+<script setup>
+import { RouterLink, useRoute } from 'vue-router'
+
+const isActiveLink = (routePath) =>{
+  const route = useRoute()
+  return route.path === routePath
+}
+
+const navRouteHighlight = (path) =>[
+    isActiveLink(path) ? 'bg-green-900' : 'hover:bg-gray-900 hover:text-white',
+    'text-white',
+    'px-3',
+    'py-2',
+    'rounded-md'
+  ]
+
+</script>
+
+<template>
+      ...
+              >
+            </RouterLink>
+            <div class="md:ml-auto">
+              <div class="flex space-x-2">
+                <RouterLink
+                  to="/"
+                  :class="navRouteHighlight('/')"
+                  >Home
+                </RouterLink>
+
+                <RouterLink
+                  to="/jobs"
+                  :class="navRouteHighlight('/jobs')"
+                  >Jobs
+                </RouterLink>
+
+                <RouterLink
+                  to="/jobs/add"
+                  :class="navRouteHighlight('/jobs/add')"
+                  >Add Job
+                </RouterLink>
+```
+<figure markdown='span'>
+![alt text](img/navbar_highlight.gif)
+</figure>

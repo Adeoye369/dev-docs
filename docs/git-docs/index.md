@@ -1,6 +1,9 @@
 # Git Documentation
 
-
+General flow of info
+<figure markdown='span'>
+![alt text](img/1690188509519.png)
+</figure>
 
 ## Git Basics commands
 

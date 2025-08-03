@@ -833,3 +833,74 @@ const navRouteHighlight = (path) =>[
 <figure markdown='span'>
 ![alt text](img/navbar_highlight.gif)
 </figure>
+
+### Adding NoteFound Page
+
+```js title="index.js"
+
+import {createRouter, createWebHistory} from 'vue-router'
+...
+import PageNotFound from '@/components/PageNotFound.vue'
+
+const router = createRouter({
+    history: createWebHistory(import.meta.BASE_URL),
+    routes: [
+        // ... Add to Other routes
+        {
+            path: '/:catchAll(.*)',
+            name: 'not-found', component: PageNotFound
+        }
+    ]
+})
+
+export default router
+
+```
+
+```html title="PageNotFound.vue"
+<script setup>
+import { RouterLink } from 'vue-router';
+</script>
+
+<template>
+      <section class="text-center flex flex-col justify-center items-center h-96">
+      <i class="pi pi-exclamation-triangle text-7xl text-yellow-500"></i>
+      <h1 class="text-6xl font-bold mb-4">404 Not Found</h1>
+      <p class="text-xl mb-5">This page does not exist</p>
+      <RouterLink
+        to="/"
+        class="text-white bg-green-700 hover:bg-green-900 rounded-md px-3 py-2 mt-4"
+        >Go Back</RouterLink>
+    </section>
+</template>
+```
+
+<figure markdown='span'>
+  ![alt text](img/image-10.png){width=70%}
+</figure>
+
+### Adding Job (singular) page 
+
+first lets add it to router
+
+```js title="index.js" hl_lines="9"
+import {createRouter, createWebHistory} from 'vue-router'
+...
+import JobView from '@/components/JobView.vue'
+const router = createRouter({
+    history: createWebHistory(import.meta.BASE_URL),
+    routes: [
+       ...
+        {
+            path: '/jobs/:id',
+            name: 'Job', component: JobView
+        },
+
+        ...
+    ]
+})
+export default router
+```
+
+Note that on the path will take in an **id** so we have `/path/:id`
+

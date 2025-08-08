@@ -60,3 +60,50 @@ const doubledNumbers = numbers.map(function(number) {
 console.log(doubledNumbers); // Output: [2, 4, 6, 8]
 console.log(numbers);       // Output: [1, 2, 3, 4] (original array unchanged)
 ```
+
+
+## Basics of Export/import in Javascript
+
+```html title="index.html"
+<!DOCTYPE html>
+<html>
+  ...
+  
+    <body style="background-color: #333; color:#ddd">
+
+        <h1>Testing out Promises</h1>
+        <div id="demo"></div>
+
+        <script src="index.js" type="module"></script>
+    </body>
+</html>
+```
+
+```js title="utility.js"
+async function GetFile(filename){
+    let filePromise = new Promise((resolve) 
+    ...
+    })
+
+    // load the request data
+    document.getElementById("demo").innerText = await filePromise
+    console.log(filePromise)
+}
+
+function someFun01(){
+    console.log("Hello From SomeFun 01")
+}
+
+function someFun02(){
+    console.log("Hello from SomeFun 02")
+}
+
+export {GetFile, someFun01, someFun02}
+```
+
+```js title="index.js"
+import {GetFile, someFun01} from './utility.js'
+
+GetFile("./helloFile.html")
+someFun01()
+```

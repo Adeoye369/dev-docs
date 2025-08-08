@@ -101,7 +101,7 @@ This demonstrate import using both commonjs(cjs) and Esmacript 6(es6) syntax
 
     // For both of this scenerio, use {} when import
     // index.js
-    import {randNumGen} from 'utils.js'
+    import {randNumGen} from './utils.js'
     ```
    
     Export with `default` option
@@ -111,7 +111,7 @@ This demonstrate import using both commonjs(cjs) and Esmacript 6(es6) syntax
     export default randNumGen;
 
     // index.js - Here you don't need to add {}
-    import randNumGen from 'utils.js'
+    import randNumGen from './utils.js'
 
     ```
 
@@ -155,6 +155,9 @@ To export multiple function export
     console.log(`Get random ${randNumGen()}`);
     console.log(`Get BMI: ${getBMI(100, 30)}`);
     ```
+
+### Example 2
+
 
 ## File System module
 

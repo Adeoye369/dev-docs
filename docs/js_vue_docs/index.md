@@ -904,3 +904,332 @@ export default router
 
 Note that on the path will take in an **id** so we have `/path/:id`
 
+## Getting Jobs from Json Server
+
+## Adding, Editing and Deleting A Job
+
+### Adding Toastification for Toast view
+
+Add Toastification by installing first
+` npm i vue-toastification@next`
+
+Add it to the `main.js` ability to use toast
+
+```js title="main.js" 
+...
+import 'vue-toastification/dist/index.css'
+
+import { createApp } from 'vue'
+
+import router from './router'
+import App from './App.vue'
+
+const app = createApp(App)
+
+app.use(router)
+app.use(Toast)
+
+app.mount('#app')
+
+```
+
+## Adding Job
+
+```html title="AddJobView.vue"
+<script setup>
+import {reactive,} from 'vue'
+import axios from 'axios'
+import router from '@/router'
+
+const form = reactive({
+    type: "Full-Time",
+    title: "",
+    description : "",
+    location: "",
+    salary: "",
+    company: {
+      name: "school of company",
+      description: "Browning   creatively and innovate.",
+      contactEmail: "contact@consecteturadipisicing.com",
+      contactPhone: "555-555-5555"
+    }
+})
+
+const handleSubmition = async()=>{
+
+  const newJob = {
+    type: form.type,
+    title: form.title,
+    description : form.description,
+    location: form.location,
+    salary: form.salary,
+    company: {
+      name: form.company.name,
+      description: form.company.description,
+      contactEmail: form.company.contactEmail,
+      contactPhone: form.company.contactPhone
+    }
+}
+
+try {
+  const response = await axios.post('/api/jobs', newJob)
+  // @todo - show toast
+  router.push(`/jobs/${response.data.id}`)
+} catch (error) {
+  console.error("failed to add new job", error)
+}
+
+}
+</script>
+
+<template>
+  <section class="bg-green-50">
+  ...
+          <form  @submit.prevent = "handleSubmition">
+            <h2 class="text-3xl text-center font-semibold mb-6">Add Job</h2>
+
+            <div class="mb-4">
+              <label for="type" class="block text-gray-700 font-bold mb-2"
+                >Job Type</label
+              >
+              <select
+                v-model="form.type"
+                id="type"
+                name="type"
+                class="border rounded w-full py-2 px-3"
+                required
+              >
+                <option value="Full-Time">Full-Time</option>
+                <option value="Part-Time">Part-Time</option>
+                <option value="Remote">Remote</option>
+                <option value="Internship">Internship</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 font-bold mb-2"
+                >Job Listing Name</label
+              >
+              <input
+              v-model="form.title"
+                type="text"
+                id="name"
+                name="name"
+                ...
+                required
+              />
+            </div>
+            ...
+
+
+            ...
+              <button
+                class="bg-green-500 hover:bg-green-600 ...
+                type="submit"
+              >
+                Add Job
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+</template>
+
+```
+<figure markdown='span'>
+![alt text](img/Vue-AddJob.gif)
+</figure>
+
+### Editing A Job
+
+Just like we have a form in `AddJobView.vue` we use same form
+but this time around we will populate the form with the job info
+
+```html title="EditJobView.vue"
+<script setup>
+import {onMounted, reactive,} from 'vue'
+import { useRoute } from 'vue-router'
+import { useToast } from 'vue-toastification'
+import axios from 'axios'
+import router from '@/router'
+
+const toast = useToast()
+// Get current id of job
+const route = useRoute()
+const jobId = route.params.id
+
+const form = reactive({
+    type: "Full-Time",
+    title: "",
+    description : "",
+    location: "",
+    salary: "",
+    company: {
+      name: "",
+      description: "",
+      contactEmail: "",
+      contactPhone: ""
+    }
+})
+
+
+// State to hold retrieved job data
+const state = reactive({
+  job: {},
+  isLoading : true
+})
+
+
+// Update the Json server when submit button is clicked
+const handleSubmition = async()=> {
+
+  try {
+    const jobUpdate = {
+      type:         form.type,
+      title:        form.title,
+      description : form.description,
+      location:     form.location,
+      salary:       form.salary,
+      company: {
+        name:         form.company.name,
+        description:  form.company.description,
+        contactEmail: form.company.contactEmail,
+        contactPhone: form.company.contactPhone
+        }
+    }
+    await axios.put(`/api/jobs/${jobId}`, jobUpdate)
+    toast.success("Job successfully Edited")
+    router.push(`/jobs/${jobId}`)
+
+  } catch (error) {
+    toast.error("failed to Add job")
+    console.error("failed to add new job", error)
+  }
+
+}
+
+
+// Retrieve the value in the specific obj. when fully loaded 
+onMounted(async ()=>{
+  try {
+    const response = await axios.get(`/api/jobs/${jobId}`)
+    
+    // update the form model
+    state.job = response.data
+
+    form.type        = state.job.type 
+    form.title       = state.job.title 
+    form.description = state.job.description 
+    form.location    = state.job.location 
+    form.salary      = state.job.salary 
+    form.company.name         = state.job.company.name 
+    form.company.description   = state.job.company.description 
+    form.company.contactEmail = state.job.company.contactEmail 
+    form.company.contactPhone = state.job.company.contactPhone 
+
+  } catch (error) {
+    console.log("Fail to load edit job", error)
+  }
+})
+</script>
+
+<template>
+  ...
+          <form  @submit.prevent = "handleSubmition">
+            <h2 class="text-3xl text-center font-semibold mb-6">Edit Jobs</h2>
+
+         ...
+
+            <div>
+              <button
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Update Job
+              </button>
+            </div>
+          </form>
+   
+    </section>
+</template>
+```
+
+<figure markdown='span'>
+![alt text](img/Vue-EditJob.gif)
+</figure>
+
+### Deleting A Job
+
+This happens in the `JobView.vue` section
+
+```html title="JobView.vue"
+
+<script setup>
+import { RouterLink, useRoute } from 'vue-router';
+import router from '@/router';
+import {reactive, onMounted} from 'vue'
+import { useToast } from 'vue-toastification';
+import SyncLoader from 'vue-spinner/src/SyncLoader.vue';
+import axios from 'axios'
+import BackButton from '@/components/BackButton.vue';
+
+const route = useRoute()
+const toast = useToast()
+const jobId = route.params.id
+
+...
+
+const deleteJob =() =>{
+  try {
+    const confirm = window.confirm("Are you are you want to delete Job?")
+
+    if(confirm){
+      axios.delete(`/api/jobs/${jobId}`)
+      toast.success("Job Deleted Successfully")
+      router.push('/jobs')
+    }
+  } catch (error) {
+    console.error("Error deleting job :: ", error)
+    toast.error("Job not deleted")
+    
+  }
+}
+
+...
+
+</script>
+
+<template>
+     ...
+            <!-- Manage -->
+            <div class="bg-white p-6 rounded-lg shadow-md mt-6">
+              <h3 class="text-xl font-bold mb-6">Manage Job</h3>
+              <RouterLink
+                :to="`/jobs/edit/${state.job.id}`"
+                class="bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+                >Edit Job</RouterLink>
+              <button
+                @click="deleteJob"
+                class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+              >
+                Delete Job
+              </button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Show loading spinner while loading is true -->
+    <div v-else class="text-center text-gray-500 py-6">
+    <SyncLoader/>
+  </div>
+
+</template>
+
+```
+
+<figure markdown='span'>
+![alt text](img/Vue-Delete-Job.gif)
+</figure>

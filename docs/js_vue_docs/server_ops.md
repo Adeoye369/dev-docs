@@ -83,3 +83,27 @@ then run `npm run server1` server1 being the name you decide.
        ...
     </template>
     ```
+
+## Replacing LocalHost with '/api'
+
+```js title="vite.config.js" hl_lines="6-14"
+export default defineConfig({
+  plugins: [
+    vue(),
+    ...
+  ],
+  server:{
+    proxy: {
+      '/api' : {
+        target:'http://localhost:1234',
+        changeOrigin: true,
+        rewrite: (path)=>path.replace(/^\/api/, '')
+      }
+    }
+  },
+  resolve: {
+    ...
+  },
+})
+
+```

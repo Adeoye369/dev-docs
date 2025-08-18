@@ -93,6 +93,10 @@ justify-content: center; /* center ther content of container */
 
 ## Setting the Flex direction
 
+<figure markdown='span'>
+![alt text](img/image-81.png)
+</figure>
+
 This is basically the **direction** along which flex is stacking up the html elements. By default `flex-direction` is set to `row` this is the  **Main axis,** which is along **X-axis**. Here the **Cross axis** is along the **Y-axis** 
 
 ```css

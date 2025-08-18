@@ -778,3 +778,84 @@ element{
 
 ![alt text](img/image-38.png)
 
+
+## ::Before and ::After
+
+This are called Pseudo-Elements. 
+Basic they appear `before` (overlay below) or `after` (overlay over) the content of an element.
+
+**Example:**
+
+```html
+
+<head>
+<style>
+p::before {
+  content: "{{ -";
+}
+
+
+p::after{
+content: "";
+position: absolute;
+right: 0;
+height: 20px; width: 100%;
+background: linear-gradient(to right, rgba(0,0,0,.5), transparent);
+border-radius: 10px;
+}
+
+p{color: #ddd;}
+
+</style>
+</head>
+<body>
+
+<h1>Demo of ::before</h1>
+
+<p>My name is Donald.</p>
+<p>I live in Duckburg.</p>
+
+</body>
+```
+
+![alt text](img/image-82.png)
+
+### Definition and Usage
+
+The CSS ::before pseudo-element inserts some content before the content of the specified element.
+
+Use the content property to specify the content to insert. The content value can be:
+
+- A string: content: `"Hello world!"`;
+- An image: content: `url(myimage.jpg)`;
+- Nothing: content: `none`;
+- A counter: content: `counter(li)`;
+- A quote: content: `open-quote`;
+- An attribute value: content: `" (" attr(href) ")"`;
+- 
+Tip: Notice that the inserted content is still inside the specified element. The inserted content is added before the other content inside.
+
+Use `::after` to insert some content after the content of the specific element.
+
+
+## Aspect Ratio CSS
+
+As the name said it works on aspect ratio (responsive constraint) of width and height of an element
+
+```html
+<style>
+div {
+  background-color: red;
+  width: 100px;
+  aspect-ratio: 5/1;
+}
+</style>
+</head>
+<body>
+
+<h3>Aspect-ratio property</h3>
+<div>Hello</div>
+```
+
+![alt text](img/image-83.png)
+

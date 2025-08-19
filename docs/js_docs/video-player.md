@@ -408,3 +408,7 @@ video.addEventListener('volumechange', ()=>{
 })
 
 ```
+
+<figure markdown='span'>
+![alt text](img/video-volume-controlv1.gif)
+</figure>

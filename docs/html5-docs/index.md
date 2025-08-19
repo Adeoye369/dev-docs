@@ -859,3 +859,18 @@ div {
 
 ![alt text](img/image-83.png)
 
+## Ponter-events in Css
+
+this allows you to layer elements in html without affecting the interactive ones with events
+
+```css
+div.ex1 {
+  /* Removes interactivity from element  */
+  pointer-events: none; 
+}
+
+div.ex2 {
+    /* Default:  Allows element be interactive */
+  pointer-events: auto;
+}
+```

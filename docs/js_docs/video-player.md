@@ -190,20 +190,87 @@ You can use the play / pause button. You can also use the **"Spacebar"**, **"K"*
 
 ![alt text](img/video-play-pause@scale400.gif)
 
-## Ponter-events in Css
 
-this allows you to layer elements in html without affecting the interactive ones with events
 
-```css
-div.ex1 {
-  /* Removes interactivity from element  */
-  pointer-events: none; 
+## Fullscreen, Theater mode and Mini-player 
+
+
+```js
+const playPauseBtn      = document.querySelector(".play-pause-btn")
+const minPlayerBtn      = document.querySelector(".mini-player-btn")
+const theaterBtn      = document.querySelector(".theater-mode-btn")
+const fullScreenBtn      = document.querySelector(".fullscreen-mode-btn")
+const video               = document.querySelector("video")
+const videoContainer      = document.querySelector(".video-container")
+const vidConClist       = videoContainer.classList;
+
+///... Play / Pause code ...
+/**
+ *============== View Modes function ======================= **
+ */
+theaterBtn.addEventListener('click', toggleTheaterMode)
+fullScreenBtn.addEventListener('click', toggleFullScreenMode)
+minPlayerBtn.addEventListener('click', toggleMiniPlayerMode)
+
+function toggleTheaterMode(){
+    vidConClist.toggle("theater")
 }
 
-div.ex2 {
-    /* Default:  Allows element be interactive */
-  pointer-events: auto;
+function toggleFullScreenMode(){
+
+    // Removes theater if present
+    if(document.fullscreenElement == null){
+        // make full screen request
+        videoContainer.requestFullscreen()
+
+        // hide theater button
+        document.querySelector('.theater-mode-btn').style.display='none';
+    }else{
+        // Exit fullscreen 
+        document.exitFullscreen()
+
+        // show theater button
+        document.querySelector('.theater-mode-btn').style.display='block';
+       }
 }
+
+function toggleMiniPlayerMode(){
+    if( !vidConClist.contains('mini-player')){
+        video.requestPictureInPicture()
+    }else
+         document.exitPictureInPicture()
+}
+
+document.addEventListener('fullscreenchange',()=>{
+    vidConclist.toggle('fullscreen', document.fullscreenElement)
+})
+
+document.addEventListener('enterpictureinpicture', ()=>vidConClist.add('mini-player' ))
+document.addEventListener('leavepictureinpicture', ()=>vidConClist.remove('mini-player' ))
+
+// Keyboard listener
+document.addEventListener('keydown',(e)=>{
+    const tagName = document.activeElement.tagName.toLowerCase()
+    if(tagName === "input") return
+
+    switch(e.key.toLowerCase()){
+        case  " " :
+            if(tagName === "button") return
+        case  "k" :
+            togglePlay()
+            break
+        case "f":
+            toggleFullScreenMode()
+            break
+        case "t":
+            toggleTheaterMode()
+            break
+        case "i":
+            toggleMiniPlayerMode()
+            break
+        default:
+            console.log("Invalid Key Button")
+    
+    }
+})
 ```
-
-

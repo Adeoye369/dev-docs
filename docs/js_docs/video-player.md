@@ -412,3 +412,85 @@ video.addEventListener('volumechange', ()=>{
 <figure markdown='span'>
 ![alt text](img/video-volume-controlv1.gif)
 </figure>
+
+## Video Duration
+
+```css
+
+/* Duration Styling css */
+.duration-container{
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    flex-grow: 1;
+}
+```
+
+```html
+...
+                    
+                     <div class="duration-container">
+                        <div class="current-time">0:00</div>
+                        /
+                        <div class="total-time">10:00</div>   
+                     </div>
+...
+
+```
+
+```js
+const currentTimeEl   = css(".current-time")
+const totalTimeEl     = css(".total-time")
+
+...
+
+////// Duration related =============================================*/
+// handle time formating
+function formatTime(time){
+    let secs    = Math.floor(time % 60)
+    let min     = Math.floor(time / 60) % 60
+    let hr      = Math.floor(time / 3600) 
+
+
+    // format time to string
+    /**
+     * ALTERNATIVE FORMAT:
+     * leadZeroFormater = new Intl.NumberFormat(undefined, {minimumIntegerDigits: 2})
+     * USAGE:
+     * leadZeroFormater.format(minutes)
+     */
+    function toString(num) {return String(num).padStart(2, '0')}
+
+    if(hr === 0)    return `${min}:${toString(secs)}`
+    else            return `${hr}:${toString(min)}:${toString(secs)}`
+}
+
+// Detect duration, when video has finished loading
+video.addEventListener('loadeddata', ()=>{
+    console.log('loadedData completed')
+    totalTimeEl.textContent = formatTime(video.duration)
+})
+
+video.addEventListener('timeupdate', ()=>{
+    currentTimeEl.textContent = formatTime(video.currentTime)
+})
+
+function skip(skipTime){
+    video.currentTime += skipTime
+}
+
+...
+
+    case "arrowleft":
+    case "j":
+        skip(-5)
+        break
+    case "arrowright":
+    case "l":
+        skip(5)
+
+```
+<figure markdown='span'>
+![alt text](img/video-duration.gif)
+    
+</figure>

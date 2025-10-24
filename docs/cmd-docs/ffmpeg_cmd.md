@@ -53,3 +53,54 @@ ffmpeg -i input.gif -vf "palettegen=max_colors=64" palette.png
 ffmpeg -i input.gif -i palette.png -filter_complex "paletteuse" output_reduced_colors.gif
 
 ```
+
+## Split your video within timestamp
+
+```bash
+# split single video
+ffmpeg -i ./video_1.mp4 -ss 00:00:00 -to 00:00:05  video_@5sec.mp4 
+
+# splitting multiple
+ffmpeg -i ./video_1.mp4 
+  -ss 00:00:00 -to 00:00:05  video_1@0.00-5sec.mp4 
+  -ss 00:01:00 -to 00:01:12  video_2@1.00-12sec.mp4 
+  -ss 00:03:11 -to 00:03:25  video_3@3.11-14sec.mp4 
+```
+
+## Getting Image frames from video
+
+The basic way to get frames from your video
+
+```bash
+ffmpeg -i ./video_1.mp4 vid_frame%d.png #output: vid_frame1, vid_frame2 ...
+ffmpeg -i ./video_1.mp4 vid_frame%3d.png #output: vid_frame001, vid_frame002 ...
+
+# output frames within a time range
+ffmpeg -i ./video_1.mp4 -ss 00:00:00 -to 00:00:02  vid_frame%d.png 
+
+# output within time range and scale to 100 
+# NOTE scale = 100:-1 means maintain same aspect ratio for height
+#      scale = 640:480 means export video in dimension specified
+ffmpeg -i ./video_1.mp4 -ss 00:00:00 -to 00:00:02 -vf "scale=100:-1" vid_frame%d.png
+```
+
+### Exporting your video images at every secs
+
+the `-vf fps=1` set it to only capture the first frame of every second(24 or 30 frames depending on frame rate)
+
+```bash
+ffmpeg -i .\video_2.mp4 -vf fps=1 vid%3d.png 
+```
+
+### Extracting Single frame at a specific timestamp
+
+```bash
+ffmpeg -ss 00:02:45 -i ./video_1.mp4 -frames:v 1 output_frame.jpg
+```
+
+- `-ss 00:02:45` : Seeks to the 5-second mark in the video. The format can be HH:MM:SS or seconds.
+- `-frames:v 1` : Specifies that only one video frame should be extracted.
+- `output_frame.jpg` : The name of the output image file.
+
+!!! Note
+    Placing `-ss` before `-i` enables faster seeking, as FFmpeg will start processing from that point, rather than decoding the entire video up to the timestamp.

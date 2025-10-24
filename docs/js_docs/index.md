@@ -107,3 +107,77 @@ import {GetFile, someFun01} from './utility.js'
 GetFile("./helloFile.html")
 someFun01()
 ```
+
+## Using Element.ClassList.toggle
+
+It would simply allow you to do something like this:
+
+```js
+
+el.classList.toggle("abc", someBool);
+
+// instead of this:
+
+if (someBool) {
+    el.classList.add("abc");
+} else {
+    el.classList.remove("abc");
+}
+```
+
+## Stringfy a javascript Class
+
+If the intention is to serialize only the data contained within a class instance, then `JSON.stringify()` can be used directly on the instance.
+
+```js
+class MyClass {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+    this.secret = "this will not be stringified by default"; // Non-enumerable
+  }
+
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+}
+
+const instance = new MyClass("Alice", 30);
+const jsonString = JSON.stringify(instance);
+console.log(jsonString); // Output: {"name":"Alice","age":30}
+```
+
+To control the serialization process, particularly to include specific properties or transform values, a `toJSON()` method can be added to the class:
+
+```js
+class MyClassWithToJSON {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+    this.secret = "this will not be stringified by default";
+  }
+
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+
+  toJSON() {
+    // Return a plain object with the desired properties for serialization
+    return {
+      personName: this.name,
+      personAge: this.age,
+      secretInfo: this.secret // Now including the 'secret' property
+    };
+  }
+}
+
+const instanceWithToJSON = new MyClassWithToJSON("Bob", 25);
+const jsonStringWithToJSON = JSON.stringify(instanceWithToJSON);
+console.log(jsonStringWithToJSON); 
+/** Output: {
+  "personName":"Bob",
+  "personAge":25,
+  "secretInfo":"this will not be stringified by default"}
+  */
+```
+

@@ -494,3 +494,222 @@ function skip(skipTime){
 ![alt text](img/video-duration.gif)
     
 </figure>
+
+## Playback speed button implementation
+
+```html
+ <!-- ...After captions button  -->
+  <button class="speed-btn wide-btn">
+    1x
+  </button>
+```
+
+```css
+/* speed control */
+.video-controls-container .controls button.wide-btn{
+    width: 50px;
+}
+
+```
+
+```js
+///// Playback speed =========================================*/
+function changePlaybackSpeed(){
+    video.playbackRate = video.playbackRate + 0.25
+    if(video.playbackRate > 2) video.playbackRate = 0.25
+    playSpeedbtn.textContent = `${video.playbackRate}x`
+}
+
+playSpeedbtn.addEventListener('click', changePlaybackSpeed)
+```
+
+<figure markdown='span'>
+![alt text](img/video-play-speed.gif)
+</figure>
+
+## Finish the Timeline
+
+```html hl_lines="3 7-12"
+<div class="video-container paused " data-volume-level="muted" >
+    <!--  Thumbnail holder for preview images-->
+    <img class="thumbnail-img" />
+
+    <div class="video-controls-container">
+
+        <div class="timeline-container">
+            <div class="timeline">
+                <img class="preview-img" />
+                <div class="thumb-indicator"></div>
+            </div>
+        </div>
+
+    <div class="controls">
+<!-- playbutton --> ....
+```
+
+```css
+/* Timeline css */
+.timeline-container{
+    height: 14px;
+    margin-inline: .5rem;
+    cursor: center;
+    display: flex;
+    align-items: center;
+}
+
+
+.timeline{
+    background-color: rgba(100, 100, 100, .5);
+    height: 3px;
+    width: 100%;
+    position: relative;
+    transition: height 200ms ease-in-out;
+}
+
+.timeline::before, .timeline::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    
+}
+
+.timeline::before{
+    right: calc(100% - var(--preview-position) * 100%);
+    background-color: rgb(150, 150, 150);
+    display: none;
+   
+}
+.timeline::after{
+    right: calc(100% - var(--progress-position) * 100%);
+    background-color: red;
+}
+
+.timeline .thumb-indicator{
+    --scale-thumb: 0;
+    position : absolute;
+    transform: translateX(-50%) scale(var(--scale-thumb));
+    height: 200%;
+    width: 10px;
+    top: -50%;
+    left: calc(var(--progress-position) * 100%);
+    background-color: red;
+    border-radius: 50%;
+    transition: transform 150ms ease-in-out;
+    aspect-ratio: 1 / 1;
+}
+
+.timeline .preview-img{
+    position: absolute;
+    height: 80px;
+    aspect-ratio: 16 / 9;
+    top: -1rem;
+    transform: translate(-50%, -100%);
+    left: calc(var(--preview-position) * 100%);
+    border-radius : .25rem;
+    border: 2px solid white;
+    display: none;
+}
+
+.thumbnail-img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+.video-container.scrubbing .thumbnail-img{
+    display: block;
+}
+
+.video-container.scrubbing .preview-img,
+.timeline-container:hover .preview-img{
+    display: block;
+}
+
+.video-container.scrubbing .timeline::before,
+.timeline-container:hover .timeline::before{
+    display: block;
+}
+
+.video-container.scrubbing .thumb-indicator,
+.timeline-container:hover .thumb-indicator{
+    --scale-thumb: 1;
+}
+
+.video-container.scrubbing .timeline,
+.timeline-container:hover .timeline{
+    height: 100%;
+}
+```
+
+```js
+const previewImg        = css('.preview-img')
+const thumbnailImg      = css('.thumbnail-img')
+const timelineContainer = css('.timeline-container')
+
+function handleTimelineUpdate(e){
+    const rect = timelineContainer.getBoundingClientRect()
+    const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
+    const previewImgNumber = Math.max(1, Math.floor((percent * video.duration)))
+    console.log(previewImgNumber)
+
+    const previewImgSrc =`assets/previewImgs/preview${previewImgNumber}.jpg`
+    previewImg.src = previewImgSrc
+    timelineContainer.style.setProperty('--preview-position', percent)
+
+    if(isScrubbing){
+        e.preventDefault();
+        thumbnailImg.src = previewImgSrc
+        videoContainer.style.setProperty("--progress-position", percent)
+    }
+}
+
+document.addEventListener('mousemove', e=>{ if(isScrubbing) handleTimelineUpdate(e)})
+timelineContainer.addEventListener('mousemove', handleTimelineUpdate)
+
+document.addEventListener("mouseup", e=>{if(isScrubbing) toggleScrubbing(e)})
+timelineContainer.addEventListener('mousedown', toggleScrubbing)
+
+// Scrubbing function
+let isScrubbing = false
+let wasPaused 
+function toggleScrubbing(e){
+    const rect = timelineContainer.getBoundingClientRect()
+    const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
+    
+    isScrubbing = (e.buttons & 1) === 1
+    vidConClist.toggle("scrubbing", isScrubbing)
+
+    if(isScrubbing) {
+        wasPaused = video.paused
+        video.pause()
+    }else{
+        video.currentTime = percent * video.duration
+        thumbnailImg.src = ""
+        if(!wasPaused) video.play()
+        
+    }
+
+    handleTimelineUpdate()
+}
+
+......
+
+
+video.addEventListener('timeupdate', ()=>{
+    currentTimeEl.textContent = formatTime(video.currentTime)
+    const percent = video.currentTime / video.duration
+    timelineContainer.style.setProperty('--progress-position', percent)
+})
+
+```
+
+<figure markdown='span'>
+![alt text](img/video-play-timeline.gif)
+</figure>

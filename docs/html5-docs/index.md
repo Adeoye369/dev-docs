@@ -874,3 +874,57 @@ div.ex2 {
   pointer-events: auto;
 }
 ```
+
+
+## Working with CSS transition
+
+```html
+<body>
+    <div class="header-container">
+        <h1> Hello Test </h1>
+    </div>
+    
+    <div class="video-container">
+        <div class="video current" ></div>
+        <div class="video" ></div>
+    </div>
+
+</body>
+```
+
+```css
+*, *::before, *::after{
+    box-sizing: border-box;
+}
+...
+
+.video-container{
+    display: flex; justify-content: left;
+    gap: 10px;
+}
+
+
+/* Transition test happens here */
+.video{
+
+    background-color: chocolate;
+    border-radius: 8px;
+    
+    height: 100px;
+    width: 200px;
+    transition: width 300ms ease-in-out;
+    
+}
+
+.video:hover{
+    background-color: chartreuse;
+    border-radius: 25px;
+    width: 400px;
+}
+
+```
+
+<figure markdown='span'>
+    
+![alt text](img/css-transition.gif)
+</figure>

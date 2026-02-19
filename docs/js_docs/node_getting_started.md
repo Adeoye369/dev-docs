@@ -180,6 +180,19 @@ try {
 Returns a list of files in directory
 ![alt text](img/image-2.png)
 
+### Showing version on npm
+
+```bash
+ npm list body-parser
+
+ ## Result
+
+├── body-parser@2.2.0
+└─┬ express@5.1.0
+  └── body-parser@2.2.0 deduped
+```
+
+
 ### Append Text to file `appendFile`
 
 If file does not exist in the directory, it creates a new one

@@ -1,5 +1,5 @@
 
-# Basic Querying
+# SQL
 
 # CREATING, INSERT, UPDATE A TABLE
 

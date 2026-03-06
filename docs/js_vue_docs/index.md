@@ -1,6 +1,13 @@
 
 # introduction to Vue
 
+## Useful VSCode Plugin
+
+- Error Lens
+- HTML CSS snippet
+- Tailwind CSS Intellisense
+- ESLint
+
 Getting started
 
 - `npm create vue@latest`

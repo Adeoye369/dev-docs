@@ -215,3 +215,161 @@ const createOrder = async () => {
 };
 
 ```
+
+## URL States
+
+| URL State	| route.query.edit	| !!route.query.edit	| Result
+|-----------|-------------------|--------------------|----------
+|`?edit=true` | 	`"true"` | 	`true`	 | **Edit Mode**
+| ?edit=1	| `"1"` |	`true` | 	**Edit Mode**
+|(No query) | 	`undefined` |	`false` | 	**Add Mode**
+| `?edit=`	| `""`	| `false` | 	**Add Mode**
+
+
+## The "Key-Changing" Technique (Best for Full Resets)
+By adding a :key to your <router-view> (usually in App.vue), 
+you force Vue to destroy the old component and create a brand new one every time the URL changes. 
+This automatically resets all ref and reactive form data to their initial values.
+
+```html
+<!-- In App.vue -->
+<router-view :key="$route.fullPath"></router-view>
+<!-- OR -->
+<RouterView :key="$route.fullPath"/>
+```
+
+## Difference between `useRoute()` and `useRouter()` in vue
+
+In Vue Router (Composition API), the difference is simple: 
+one is for **"reading"** and the other is for **"doing."**
+
+### 1. useRoute (The "Reader")
+
+Use this when you need to look at information about the current page. 
+It returns a reactive object containing the URL details.
+What you get: `path`, `params`, `query`, `hash`, and `name`.
+
+Common Use Case: Getting an ID from the URL or checking for an `edit=true` query.
+
+```js
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
+console.log(route.params.id); // "123"
+console.log(route.query.edit); // "true"
+```
+
+
+### 2. useRouter (The "Doer")
+
+Use this when you want to change the page or move the user somewhere else. 
+It represents the router "engine."
+What you get: Methods like `push()`, `replace()`, `go()`, and `back()`.
+Common Use Case: Redirecting to a "Success" page after a form submission.
+
+```js
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+const goToHome = () => {
+  router.push('/home'); // Moves the user to the home page
+};
+```
+
+
+### Comparison Table
+
+| **Feature** |`useRoute` |`useRouter`
+|----------|-----------|---------------|
+| **Purpose** |Information about the **Current Route** | The **Router Instance** itself
+| Think of it as... | **A Map** (shows where you are) | **The Driver** (takes you somewhere)
+| Key Properties | `params`, `query`, `path` | `push()`, `replace()`, `resolve()`
+| Reactivity | **Yes** (updates when URL changes) | **No** (the methods stay the same)
+
+
+Pro-tip: If you are in a watcher, you'll likely watch `route.path `to trigger logic when the user moves, 
+and then use `router.push() `to redirect them if needed.
+
+##  Using Dynamic Params (Clean URL)
+
+If your error route is defined with a dynamic segment like path: `'/error/:code'`, 
+you can pass the code as a param.
+
+```js
+// Route: { path: '/server-error/:code', name: 'Error' }
+router.push({ 
+  name: 'Error', 
+  params: { code: 500 } 
+});
+```
+
+## use case for defineProps and defineEmits
+
+Here we use `props = defineProps({productId ...})` props to pass the id to the component. 
+Then we use `emits = defineEmits(['refresh'])` to tell the parent page to refresh the page
+when it has successfully delete the product
+
+```html title="DeleteProductBtn.vue"
+<script setup>
+import axios from 'axios';
+
+const props = defineProps({
+    productId: Number
+})
+
+const emits = defineEmits(['refresh'])
+
+// Delete Action 
+const deleteProduct = async (productID) => {
+  if (!confirm('Are you sure you want to delete this?')) return;
+  try {
+      const res = await axios.post("/api/admin/delete-product", {productId : productID})
+      console.log(res.data)
+
+      // Reload page on success
+      if(res.status === 200)
+          // Refresh the page to load update the list
+          emits('refresh')
+
+  } catch (error) {
+      console.error(error)  
+  }
+
+}
+</script>
+
+<template>
+    <button class="btn" @click="deleteProduct(productId)"> Delete </button>
+</template>
+```
+
+In the parent vue file here is how it looks
+
+```html
+<script setup>
+// Get the Products from the Admin server
+async function getAdminProducts(){
+...
+}
+
+
+onMounted( ()=>{
+    getAdminProducts()
+})
+
+</script>
+<template>
+
+    <main>
+        <div class="main-content__desc" v-if="hasProducts">
+        
+            <h1>Admin - Products</h1>
+            <!-- <p>List of all the products...</p> -->
+            <div class="grid">
+              <article class="card product-item" v-for="product in prods">
+            ...
+                                
+                         <DeleteProductBtn :productId ="product.id" @refresh="getAdminProducts" />
+                    </div>
+              </article>
+```

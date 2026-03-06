@@ -3,7 +3,7 @@
 
 ## Getting the Days, Hours, Minutes and Secs Passed 
 
-```js
+```kotlin
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
 
@@ -19,7 +19,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                val now = LocalDateTime.now()
+                val now = LocalDateTime.now() // from java not kotlin
                         lastClickDate?.let { prev ->
                             val duration = Duration.between(prev, now)
 

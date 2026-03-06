@@ -825,7 +825,7 @@ The full codes can be found here:
  [Texture.h](099_abstraction01_src/Texture.h){target="blank"}         
  [Renderer.h](099_abstraction01_src/Renderer.h){target="blank"}         
  [Main.cpp](099_abstraction01_src/Main.cpp){target="blank"}         
- [basic01.shader](099_abstraction01_src/[basic01.shader){target="blank"}         
- [basic02.shader](099_abstraction01_src/[basic02.shader){target="blank"}         
+ [basic01.shader](099_abstraction01_src/basic01.shader){target="blank"}         
+ [basic02.shader](099_abstraction01_src/basic02.shader){target="blank"}         
 
 ![Output of the abstraction](img/image-28.png)

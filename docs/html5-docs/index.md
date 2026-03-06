@@ -878,6 +878,11 @@ div.ex2 {
 
 ## Working with CSS transition
 
+<figure markdown='span'>
+    
+![alt text](img/css-transition.gif)
+</figure>
+
 ```html
 <body>
     <div class="header-container">
@@ -924,7 +929,77 @@ div.ex2 {
 
 ```
 
+## Adding Focus on hover kindof
+
 <figure markdown='span'>
     
-![alt text](img/css-transition.gif)
+![Transition demo gif](img/css-transition-02.gif)
 </figure>
+
+```html
+<ul class="task-list">
+        <li
+          class="task"
+          v-for="task in tasks"
+          ...
+        >
+          <template v-if="editingId !== task.id">
+            <!-- once the completed checkbox is true, 2-WAY binding ... -->
+            <input class="item check" type="checkbox" v-model="task.completed" />
+
+            <!-- ...the "done" class is actived -->
+            <span class="item" @click="startEdit(task)">{{ task.text }}</span>
+
+            <button class="item delete hover-btn" @click="deleteTask(task.id)">X</button>
+          </template>
+
+. . . .
+
+<style scoped>
+.hover-btn {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    visibility 0.3s,
+    opacity 0.3s;
+}
+
+.task:hover .hover-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+.task {
+  background-color: azure;
+  transition: background-color 0.3s;
+}
+
+.task:hover {
+  background-color: bisque;
+}
+</style>
+```
+
+```html title='Gemini Example'
+<template>
+  <div class="button-container">
+    <p>Hover over me to see the button!</p>
+    <button class="hover-button">Click Me</button>
+  </div>
+</template>
+
+<style scoped>
+.hover-button {
+  /* Initially hide the button (keeps its space) */
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.3s, opacity 0.3s;
+}
+
+.button-container:hover .hover-button {
+  /* Show the button when the container is hovered */
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+```

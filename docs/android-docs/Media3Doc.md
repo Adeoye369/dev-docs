@@ -1,6 +1,16 @@
 
 # Media3, Exoplayer, Video Edit Doc
 
+Here are the basic dependencies that are needed
+
+```kts
+    implementation("androidx.media3:media3-common-ktx:1.9.2")
+    implementation("androidx.media3:media3-ui-compose:1.9.2")
+    implementation("androidx.media3:media3-ui-compose-material3:1.9.2")
+    implementation("androidx.media3:media3-exoplayer:1.9.2")
+    implementation("androidx.compose.runtime:runtime:1.8.0-alpha01") // Or newer
+```
+
 ## Basic Exoplayer Setup
 
 ```kotlin title="MediaPickerScreen.kt"

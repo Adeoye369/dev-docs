@@ -1240,3 +1240,62 @@ const deleteJob =() =>{
 <figure markdown='span'>
 ![alt text](img/Vue-Delete-Job.gif)
 </figure>
+
+## Importing Images
+
+Importing all the images into the pages
+
+```js
+// import all the images in image directory
+const imgs = import.meta.glob('@/img/*.jpg', { eager: true, import: 'default' })
+console.log(imgs)
+```
+
+## Using Btn as slot with Variable Setup
+
+<figure markdown='span'>
+![alt text](img/VueButtonUsage.gif)
+</figure>
+
+```html title='RoundedButton.vue'
+<script setup>
+defineProps({
+  btnType: { type: String, default: 'text-black bg-gray-200' },
+})
+
+const btnTypes = {
+  default: 'bg-blue-100 text-blue-500 hover:bg-blue-200',
+  info: 'bg-blue-500 text-blue-100 hover:bg-blue-400',
+  danger: 'bg-red-500 text-red-100 hover:bg-red-400',
+  completed: 'bg-green-500 text-green-100 hover:bg-green-400',
+  warning: 'bg-yellow-500 text-yellow-100 hover:bg-yellow-400',
+}
+
+defineEmits(['clickbtn'])
+</script>
+<template>
+  <div>
+    <button
+      :class="[btnTypes[btnType] ?? btnTypes.default, 'px-3 py-0.5']"
+      @click="$emit('clickbtn')"
+      class="simple-btn"
+    >
+      <slot></slot>
+    </button>
+  </div>
+</template>
+
+```
+
+### Usage of the Btn
+
+```html
+ <RoundedButton btnType="info" @clickbtn="console.log('BTN CLICKED')">
+        Buy Course
+      </RoundedButton>
+
+  <RoundedButton btnType="danger" @clickbtn="winAlert"> Report</RoundedButton>
+   
+   <RoundedButton btnType="warning">buy</RoundedButton>
+      
+```

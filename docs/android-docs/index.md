@@ -1,9 +1,26 @@
 
 # Android Dev Note
 
+## Basic Image Handling
+
+```kotlin
+    Image(painter = painterResource(R.drawable.pose_pic),
+            contentDescription = "Pose Pic",
+
+            // Basic Tint
+//            colorFilter = ColorFilter.tint(color=Color.Blue.copy(alpha=0.5f), blendMode = BlendMode.Lighten)
+
+            // Using Complex Matrix
+//            colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply{setToSaturation(0f)})
+
+            // multiplying image
+//            colorFilter = ColorFilter.lighting(multiply = Color.Green, add = Color.Black)
+        )
+```
+
 ## Importing Image Resources
 
-```js
+```kotlin
 
 @Composable
 fun ImageCard( painter: Painter, contentDesc: String, title:String,  modifier: Modifier = Modifier){

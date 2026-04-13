@@ -1,5 +1,17 @@
 # Server Operations
 
+## Recommended Status Codes
+
+**401 Unauthorized:** This is the primary code for authentication failure. It indicates that the request lacks valid credentials for the target resource.
+
+**403 Forbidden:** Used when the user is successfully authenticated but lacks the necessary permissions to access a specific resource (e.g., a standard user trying to access an admin panel). It is also sometimes used for accounts that are suspended or blocked.
+
+**400 Bad Request:** Appropriate for malformed login requests, such as missing required fields (e.g., an empty password field) or invalid syntax in the request body.
+
+**422 Unprocessable Entity:** Frequently used in modern APIs to indicate semantic errors, such as a password that does not meet security requirements or an email format that is valid but not found in the system.
+
+**429 Too Many Requests:** Used for rate-limiting after multiple failed login attempts to prevent brute-force attacks.
+
 ## Runing Json server
 
 1. Install `json-server` using `npm i json-server`
@@ -32,11 +44,12 @@
                 ...
             }
     ```
+
 4. Create new terminal in vscode `ALT + CTRL + (~)`
 then run `npm run server1` server1 being the name you decide.
 
 5. Install Axios `npm i axios`  that will be used to run CRUD operation
-6. In the *JobListings.vue* do the following 
+6. In the *JobListings.vue* do the following
 
     ```html title="JobListings.vue" hl_lines="2 3 7-9 18-26 36"
     <script setup>

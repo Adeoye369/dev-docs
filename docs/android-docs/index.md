@@ -303,3 +303,162 @@ Column(modifier = modifier.padding(16.dp),
 
 
 ```
+
+## .let{...} usage
+
+1. What does it do?
+   - **uri? (Safe Call):** The question mark checks if uri is null. If uri is null, the entire expression returns null and skips the block entirely, preventing a NullPointerException.
+
+    -**.let (Scope Function):** If uri is not null, let executes the block of code inside {}.
+
+   - **it (Context Object):** Inside the {} block, the non-null uri
+  object is referenced by the keyword `it`.
+
+```kotlin
+// Example: Selecting an image
+val getResult = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+    // 'uri' can be null if the user cancelled
+    uri?.let {
+        // This code only runs if 'uri' is NOT null.
+        // 'it' refers to the non-null Uri object.
+        imageView.setImageURI(it) 
+    }
+}
+```
+
+## .apply{...} usage
+
+1. Initializing Views or Objects (Replacing Builder Pattern)
+
+    Instead of repeating the variable name multiple times,
+    apply makes initialization cleaner.
+
+    ```kotlin
+    // Without apply
+    val textView = TextView(context)
+    textView.text = "Hello"
+    textView.textSize = 20f
+    textView.setTextColor(Color.BLACK)
+
+    // With apply
+    val textView = TextView(context).apply {
+        text = "Hello"
+        textSize = 20f
+        setTextColor(Color.BLACK)
+    }
+    ```
+
+2. Configuring Intent Extras or Bundles
+
+    ```kotlin
+    val intent = Intent(this, SecondActivity::class.java).apply {
+        putExtra("KEY_ID", 101)
+        putExtra("KEY_NAME", "Kotlin")
+    }
+    launcher.launch(intent)
+
+    ```
+
+3. Modifying Properties of a Recently Created Object
+
+```kotlin
+
+```
+
+## .also{...} usage
+
+### Key Characteristics
+
+**Context Object:** Inside the curly braces, the object is referred to as it by default (or you can give it a custom name).
+
+**Return Value:** It always returns the object it was called on, regardless of what the code inside the block does.
+
+**Mnemonic:** Read it as "do this to the object, and also do the following...".
+
+### Common Use Cases in Android
+
+**Logging and Debugging:** You can peek at a variable's value in a chain of calls without breaking the chain.
+
+```kotlin
+val result = getAppData()
+    .also { println("Data received: $it") } // Logs the data
+    .map { it.toUiModel() }               // Continues with original data
+```
+
+**Side Effects during Initialization:** Performing additional tasks, like adding an object to a list or starting a background process, immediately after creating it.
+```kotlin
+data class User(val name: String, var email: String = "")
+
+fun main() {
+    // Using .also to log an object after initialization
+    val user = User("Alice").also {
+        // SIDE EFFECT: Logging/Validation happens here
+        println("Initializing user: $it")
+        
+        // Setting a default value
+        it.email = "alice@example.com"
+    }
+    
+    println("Final User: $user")
+}
+```
+
+**Validation:** Checking an object's state before it is returned or used further in the code.
+
+```kotlin
+data class User(val name: String, val age: Int)
+
+fun createUser(name: String, age: Int): User {
+    return User(name, age).also { user -> // or _ and just use `it`
+        // Validation logic
+        require(user.name.isNotBlank()) { "Name cannot be blank" }
+        require(user.age >= 18) { "User must be an adult" }
+        
+        // Logging as a secondary side effect
+        println("Validated user: ${user.name}")
+    }
+}
+```
+
+### .also vs. .apply
+
+While both return the original object, they differ in how you access that object:
+`.also` uses `it`: **Best for actions that refer to the object as a whole** (like logging).
+`.apply` uses `this`: **Best for object configuration where you want to call the object's methods or set properties directly** (like `this.color = "Red"`).
+
+### Comparison with Java
+
+```java
+List<String> names = getNames();
+System.out.println("Processing: " + names); // Extra lines of code
+save(names); 
+```
+
+```kotlin
+val names = getNames()
+    .also { println("Processing: $it") } // Peeks at the data "on the side"
+    .also { save(it) } // Can even chain multiple side effects
+```
+
+## let{it ...}, apply{this ...}, also{it ...} more examples
+
+```kotlin
+kotlin
+// 1. apply: Great for setting up the View's properties directly
+val myTextView = TextView(context).apply {
+    text = "Hello World"
+    setTextColor(Color.RED)
+    setOnClickListener { /* click logic */ }
+}
+
+// 2. also: Perfect for logging the View after it's initialized
+myTextView.also {
+    Log.d("UI_DEBUG", "TextView created with text: ${it.text}")
+}
+
+// 3. let: Excellent for safely handling nullable data for the UI
+val username: String? = fetchUser()
+username?.let {
+    myTextView.text = "Welcome, $it!" // Only sets text if username is not null
+}
+```

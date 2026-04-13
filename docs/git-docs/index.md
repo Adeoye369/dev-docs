@@ -71,7 +71,16 @@ git remote show origin
 git remote -v   
 
 # Add remote to your remote list
-git remote add <name> <url>
+git remote add <name> <url> // git remote add origin1 https/github.com/user/proj
+
+# UPDATING AN EXISTING ORIGIN
+#Use this if you want to change the URL of a repository that is already linked (e.g., you moved your project to a new URL or switched from HTTPS to SSH)
+git remote set-url origin <NEW_URL>
+git remote -v   # Verify after update
+
+# First Push: After setting the origin, push your code and set the upstream tracking branch:
+git push -u origin main
+
 ```
 
 ## fetch, merge and pull
@@ -95,6 +104,21 @@ git pull origin L8-start
 git push <remote_name> <branch_name>
 git push origin main
 ```
+
+### Why use git fetch?
+
+**Safety:** It does not modify your local files or current working branch.
+**Review:** It allows you to inspect changes before deciding to integrate them.
+**Comparison:** You can compare your local branch to the remote version using `git diff main..origin/main`.
+
+### Integrating Changes
+
+After fetching, if you want to apply the downloaded changes to your current branch, you must manually merge or rebase them:
+
+1. Switch to your branch: `git checkout main`
+2. Merge the fetched changes:` git merge origin/main `
+
+**Note on `git pull`**: While `git pull` is often used to get updates, it actually performs two steps: it runs `git fetch` followed immediately by `git merge`. Use `git fetch` instead if you want to avoid potential merge conflicts before you are ready to resolve them.
 
 ## Undo a Git merge COMMIT that hasn't been pushed yet
 

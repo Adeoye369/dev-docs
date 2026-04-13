@@ -129,3 +129,53 @@ fun SaveFileToInternalDir() {
         }
     }
     ```
+
+## Reading User-Selected Directories using the Storage Access Framework (SAF)
+
+```kotlin
+
+/**
+ * Read User-Selected Directories (SAF)
+ * ===================================
+ * To access public folders like "Downloads" or custom directories, use "ActivityResultContracts.OpenDocumentTree".
+ * This returns a Uri that you can use to list files via "DocumentFile" */
+
+@Composable
+fun ListSelectedDir(){
+
+    val context = LocalContext.current
+    var directoryUri by remember{ mutableStateOf<Uri?>(null) }
+
+    val fileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        directoryUri = uri
+    }
+
+    Box(modifier=Modifier.fillMaxSize().background(Color(0.251f, 0.384f, 0.298f, 1.0f)), contentAlignment = Alignment.Center) {
+        Column() {
+            Button(onClick = { fileLauncher.launch(null) }) { Text("Select Folder")}
+            SelectedFolderContent(context, directoryUri)
+        }
+    }
+
+
+}
+
+/**
+ * List Files from the Selected URI* */
+@Composable
+fun SelectedFolderContent(context: Context, uri: Uri?,){
+    val documentFile = uri?.let { DocumentFile.fromTreeUri(context, it) }
+
+    val files = documentFile?.listFiles() ?: emptyArray()
+
+    LazyColumn {
+        items(files) { file ->
+            Text(text = "${if (file.isDirectory) "📁" else "📄"} ${file.name}")
+        }
+    }
+
+}
+
+```

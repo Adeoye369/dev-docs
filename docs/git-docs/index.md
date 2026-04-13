@@ -25,35 +25,40 @@ git push -u origin main
 ```
 
 ## Rename branch and Push
+
 ```bash
  git branch -m master main # Rename local branch:
  git push origin main
 ```
 
 ## Deleting Branch from Remote
+
 ```bash
 git push origin --delete master
 ```
+
 **Delete Locally:** To remove the branch from your own computer (ensure you are not currently on that branch):
+
 ```bash
 git branch -d branch_name # (Deletes only if already merged)
 git branch -D branch_name # (Force deletes even if unmerged)
 ```
 
 ## General flow of info
+
 <figure markdown='span'>
 ![alt text](img/1690188509519.png)
 </figure>
 
 ## Git Basics commands
 
-Get started with git 
+Get started with git
 
 ```bash
 git init # to initial git repo.
 ```
 
-once changes has been made in the working directory 
+once changes has been made in the working directory
 call:
 
 ```bash

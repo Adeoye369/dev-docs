@@ -11,6 +11,8 @@ git add README.md
 git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/Adeoye369/web-learn.git
+
+#If this is your first time pushing this branch, use the `-u` flag to set the upstream tracking relationship. This allows you to simply use `git push` in the future
 git push -u origin main
 ```
 
@@ -22,7 +24,23 @@ git branch -M main
 git push -u origin main
 ```
 
-General flow of info
+## Rename branch and Push
+```bash
+ git branch -m master main # Rename local branch:
+ git push origin main
+```
+
+## Deleting Branch from Remote
+```bash
+git push origin --delete master
+```
+**Delete Locally:** To remove the branch from your own computer (ensure you are not currently on that branch):
+```bash
+git branch -d branch_name # (Deletes only if already merged)
+git branch -D branch_name # (Force deletes even if unmerged)
+```
+
+## General flow of info
 <figure markdown='span'>
 ![alt text](img/1690188509519.png)
 </figure>

@@ -1,5 +1,27 @@
 # Git Documentation
 
+## GitHub Instruction
+
+### create a new repository on the command line
+
+```bash
+echo "# web-learn" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Adeoye369/web-learn.git
+git push -u origin main
+```
+
+### …or push an existing repository from the command line
+
+```bash
+git remote add origin https://github.com/Adeoye369/web-learn.git
+git branch -M main
+git push -u origin main
+```
+
 General flow of info
 <figure markdown='span'>
 ![alt text](img/1690188509519.png)

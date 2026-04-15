@@ -349,3 +349,97 @@ fun formatDuration(millis: Long): String{
 
 }
 ```
+
+## Loading All video List from Device using MediaStore Api
+
+```kotlin
+fun isAndroid10andAbove() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+
+fun createBitmapLocal(): ImageBitmap{
+    // create mutable bitmap
+    val bitmap = createBitmap(100, 100) // from `androidx.core` i.e. kotlins
+
+    // set color with canvas
+    val canvas = Canvas(bitmap) // Canvas/Color are from `android.gr` navtives 
+    canvas.drawColor(Color.BLUE)
+
+    return bitmap.asImageBitmap()
+}
+
+@Composable
+fun ListVideoMediaStore(){
+    val context = LocalContext.current
+    val videoFiles = getVideo(context)
+    LazyColumn {
+        items(videoFiles) { video ->
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.padding(vertical = 5.dp)) {
+                    val imageBitmap = getVideoThumbnail(video.uri, context)?.asImageBitmap()
+                    Image(bitmap = imageBitmap as ImageBitmap, contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(100.dp))
+
+                    Column() {
+                        Text(video.name, style = MaterialTheme.typography.bodyLarge,maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text("${ video.duration }")
+                    }
+                }
+            }
+        }
+    }
+}
+
+data class Video(val uri: Uri, val name: String, val duration: Int)
+fun getVideo(context: Context): List<Video>{
+    // video list
+    val videoList = mutableListOf<Video>()
+
+    // Select collection based on android version {Basically Table}
+    val collection =
+        if (isAndroid10andAbove())
+            MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        else
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+
+    // Projection are basic, synonymous to fields column
+    val projection = arrayOf(
+        MediaStore.Video.Media._ID,
+        MediaStore.Video.Media.DISPLAY_NAME,
+        MediaStore.Video.Media.DURATION
+    )
+
+
+    // Query the context
+    context.contentResolver.query(
+        collection, projection,
+        null, null,
+        "${ MediaStore.Video.Media.DATE_ADDED } DESC"
+    )?.use{cursor ->
+        val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+        val nameCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
+        val durationCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
+
+        while (cursor.moveToNext()){
+            val id = cursor.getLong(idCol)
+            val contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+            videoList.add(Video(contentUri,  cursor.getString(nameCol), cursor.getInt(durationCol)) )
+        }
+    }
+
+    return videoList
+}
+
+fun getVideoThumbnail(uri : Uri, context: Context): Bitmap? {
+
+    val retriever = MediaMetadataRetriever()
+    return try {
+            retriever.setDataSource(context, uri)
+            retriever.getFrameAtTime(2000000) // get frame at 2sec (in microseconds)
+
+    }catch (e: Exception){
+        null
+    }finally {
+        retriever.release()
+    }
+}
+```

@@ -462,3 +462,58 @@ username?.let {
     myTextView.text = "Welcome, $it!" // Only sets text if username is not null
 }
 ```
+
+## Nullability in Kotlin
+
+In Kotlin, (selectedRelativePath!!.isNotEmpty()) is a conditional check used to ensure a nullable variable is **not null AND not an empty string ("")**, asserting that it will not be null at that moment.
+
+- **`selectedRelativePath`**: A variable of type String? (nullable string), meaning it can hold a string or null.
+  
+- **!! (Not-null assertion operator)**: This forces the compiler to treat the variable as non-null. If selectedRelativePath is null, this will throw a NullPointerException.
+
+**`.isNotEmpty()`**: A standard function that returns true if the string length is greater than 0
+
+```kotlin
+fun main() {
+    var selectedRelativePath: String? = "/home/user/file.txt"
+
+    // Example 1: Non-null and non-empty (Passes)
+    if (selectedRelativePath!!.isNotEmpty()) {
+        println("Path is: $selectedRelativePath") // Output: Path is: /home/user/file.txt
+    }
+
+    // Example 2: Empty string (Fails isNotEmpty, returns false)
+    selectedRelativePath = ""
+    if (selectedRelativePath!!.isNotEmpty()) {
+        println("This will not print")
+    } else {
+        println("Path is empty") // Output: Path is empty
+    }
+
+    // Example 3: Null (Throws NullPointerException)
+    selectedRelativePath = null
+    try {
+        if (selectedRelativePath!!.isNotEmpty()) {
+            println("This will not print")
+        }
+    } catch (e: NullPointerException) {
+        println("Caught error: $e") // Output: Caught error: java.lang.NullPointerException
+    }
+}
+```
+
+### Safer, Idiomatic Alternatives
+
+Using !! is risky. Kotlin developers prefer these safer alternatives:
+
+1. `!selectedRelativePath.isNullOrEmpty()`(Recommended): Returns true if not null AND not empty.
+
+    ```kotlin
+    if (!selectedRelativePath.isNullOrEmpty()) { ... }
+    ```
+
+2. `selectedRelativePath?.isNotEmpty() == true:` Safe call. Returns false if the variable is null.
+
+    ```kotlin
+    if (selectedRelativePath?.isNotEmpty() == true) { ... }
+    ```

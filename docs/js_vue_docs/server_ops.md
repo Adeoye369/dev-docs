@@ -120,3 +120,89 @@ export default defineConfig({
 })
 
 ```
+
+## Sending Email Via Nodemail and SendGrid
+
+install the following dependencies
+
+```bash
+npm i nodemailer  dotenv
+```
+
+### Setup mailing utility function
+
+```js title="mailer.js"
+import nodemailer from "nodemailer"
+import "dotenv/config"
+
+const transport = nodemailer.createTransport({
+        host: "smtp.sendgrid.net",
+        port: 587,  // Recommended for STARTTLS
+        secure: false, // must be false
+        auth:{
+            user: "apikey",  // This is exactly "apikey" for everyone
+            pass: process.env.SENDGRID_API_KEY // Your secret key (SG.xxx)
+        }
+   }
+)
+
+/**
+ * Sends an email using the SMTP transporter.
+ * @param {string} to - Recipient email
+ * @param {string} subject - Email subject line
+ * @param {string} html - HTML body content
+ */
+const sendMail = (mailInfo) =>{
+
+    transport.sendMail({
+        from: process.env.SENDER_EMAIL,
+        ...mailInfo
+    })
+}
+
+/** 
+ * Alternatively, you can do
+const sendMail = (to, subject, html) =>{
+
+    transport.sendMail({
+        from: process.env.SENDER_EMAIL,
+        to, 
+        subject,
+        html
+    })
+}
+*/
+export default sendMail
+```
+
+Then in your route directory you can call `sendMail()`
+
+```js
+export async function postSignup(req, res){
+
+    try {
+    
+        const{email, password, confirmPassword } = req.body
+     
+       . . .
+
+                // sendMail to user
+                await sendMail({
+                    to : email,
+                    subject: "Welcome to Node 05 community",
+                    html:`<strong>Welcome, ${email}</strong>, to the Node 05 Test Community.\n
+                    We will like you to verify that this is actually your email`
+                })
+                //OR await sendMail(to=email, subject="...", html="<>SomeHtml<>")
+
+                res.json({userDetails: user, message: "NEW USER CREATED"})
+            }
+        
+    } catch (error) {
+      res.status(500).json({
+        message: "Failed to Signup : "+ error.response.body || error
+    })  
+    }
+
+}
+```

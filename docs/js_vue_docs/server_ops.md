@@ -206,3 +206,70 @@ export async function postSignup(req, res){
 
 }
 ```
+
+## Basics of Express Validator
+
+```js
+import * as express from 'express';
+import { query, matchedData, validationResult } from 'express-validator';
+const app = express();
+
+app.use(express.json());
+
+app.get('/hello', body('person').notEmpty().escape(), 
+  (req, res) => {
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      const data = matchedData(req);   
+      return res.send(`Hello, ${data.person}!`);
+    }
+
+    res.send({ errors: result.array() });
+  });
+
+app.listen(3000);
+```
+
+## Show Message Count Down
+
+```js
+const message = ref('')
+const isMsgVisible = ref(false)
+
+const showMessage = (timeInSec) =>{
+    isMsgVisible.value = true
+    message.value = route.query?.signupMsg || ""
+
+    if(isMsgVisible){
+        setTimeout(()=>{
+                isMsgVisible.value = false
+        }, timeInSec*1000)
+    }
+
+}
+
+. . .
+
+// it can also be @click button
+onMounted(()=>{
+    showMessage(5)
+})
+
+. . .
+// call use the
+        <transition name='fade'>
+              <div v-if="message && isMsgVisible" style="color: #ff00aa; background-color: #220022; padding: 10px;">
+                  <p>{{ message }}</p>
+              </div>
+        </transition>
+
+// css
+<style>
+  .fade-enter-active, .fade-leave-active { 
+    transition: opacity 0.5s; 
+}
+.fade-enter-from, .fade-leave-to { 
+    opacity: 0; 
+}
+</style>
+```

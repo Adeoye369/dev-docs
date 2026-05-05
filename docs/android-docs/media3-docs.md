@@ -443,3 +443,185 @@ fun getVideoThumbnail(uri : Uri, context: Context): Bitmap? {
     }
 }
 ```
+
+## Loading Select Video in a FilePath or Directory using MediaStore
+
+### Get Video Via MediaStore
+
+```kotlin
+data class Video( val uri: Uri, val name: String, val duration: Int)
+/**
+ * @param {Context} context                  - Current App Context
+ * @param {String?} selectedRelativePath     - Selected path by user
+ * @return {List<Video>}                     - List of Video Data */
+fun getVideo(context: Context, selectedRelativePath: String? = null): List<Video>{
+    // video list
+    val videoList = mutableListOf<Video>()
+
+
+    // Select collection based on android version {Basically Table}
+
+    val collection =  // search all External Volume directory {Database}
+        if (isAndroid11andAbove()) MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+
+    // Projection are basic, synonymous to {fields column}
+    val projection = arrayOf(
+        MediaStore.Video.Media._ID,
+        MediaStore.Video.Media.DISPLAY_NAME,
+        MediaStore.Video.Media.DURATION
+    )
+
+
+
+    // Filter for files located specifically in the Selected directory
+    val selection = if(selectedRelativePath?.isNotEmpty() == true) "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?" else null
+    val selectionArgs = if(selectedRelativePath?.isNotEmpty() == true ) arrayOf("${selectedRelativePath}/%") else null
+
+    // Query the context
+    context.contentResolver.query(
+        collection,
+        projection,
+        selection,
+        selectionArgs,
+        "${ MediaStore.Video.Media.DATE_ADDED } DESC"
+    )?.use{cursor ->
+        val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+        val nameCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
+        val durationCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
+
+        while (cursor.moveToNext()){
+
+            val contentUri = ContentUris.withAppendedId(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                cursor.getLong(idCol)
+            )
+
+            videoList.add(
+                Video(
+                    uri = contentUri,
+                    name = cursor.getString(nameCol),
+                    duration = cursor.getInt(durationCol)
+                )
+            )
+        }
+    }
+
+    return videoList
+}
+```
+
+### Helper functions for UI to loadThumbnail and getPath from URI
+
+```kotlin
+fun getVideoThumbnail(uri : Uri, context: Context): Bitmap? {
+
+   return if(isAndroid10andAbove()){
+        try {
+            context.contentResolver.loadThumbnail(uri, Size(320, 240), null)
+        }catch (e: Exception){
+            null
+        }
+    } else{
+        val retriever = MediaMetadataRetriever()
+        try {
+            retriever.setDataSource(context, uri)
+            retriever.getFrameAtTime(2000000) // get frame at 2sec (in microseconds)
+
+        }catch (e: Exception){
+            null
+        }finally {
+            retriever.release()
+        }
+    }
+
+
+}
+
+
+fun getRelativePathFromDocumentTreeUri(treeUri: Uri): String? {
+    val path = treeUri.path ?: return null
+
+    // SAF URIs often look like /tree/primary:Folder01/subFolder01/MyFolder
+    // We need only the "Folder01/subFolder01/MyFolder" path
+    return if(path.contains(":")){
+       val split =  path.split(":")
+        if(split.size > 1) return split[1] else null
+    } else null
+
+}
+```
+
+### UI to Selected files and load it 
+
+```kotlin
+@Composable
+fun ListVideoMediaStoreScreen(){
+    val context = LocalContext.current
+    var videoFiles : List<Video> by remember { mutableStateOf(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var selectedRelativePath: String? by remember { mutableStateOf("") }
+
+    var fileLaucher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocumentTree()
+    ) {
+        uri ->
+        uri?.let {
+            context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            selectedRelativePath = getRelativePathFromDocumentTreeUri(it)
+            Log.d("MVM", "Selected Uri: ${it.path}")
+        }
+
+    }
+
+
+//    val videoFiles = getVideo(context)
+    LaunchedEffect(videoFiles, selectedRelativePath) {
+            isLoading = true
+            videoFiles = withContext(Dispatchers.IO) {
+                getVideo(context, selectedRelativePath)
+            }
+
+            isLoading = false
+    }
+
+    if(isLoading) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(strokeWidth = 10.dp, modifier = Modifier.size(200.dp))
+        }
+    }
+    else
+        LazyColumn {
+
+            items(videoFiles) { video ->
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.padding(vertical = 5.dp)) {
+
+                        val imageBitmap = getVideoThumbnail(video.uri, context)?.asImageBitmap()
+
+                        Image(bitmap = imageBitmap as ImageBitmap, contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                             modifier = Modifier.size(100.dp)
+                                    )
+                        Column{
+                            Text(video.name, style = MaterialTheme.typography.bodyLarge,maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text("${ video.duration }")
+                        }
+                    }
+                }
+            }
+
+    }
+
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
+        IconButton(onClick = {
+            fileLaucher.launch(null)
+        }) {
+            Icon(Icons.Default.AddCircle, "",
+                modifier = Modifier.size(200.dp))
+        }
+    }
+}
+
+
+```

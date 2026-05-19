@@ -1299,3 +1299,69 @@ defineEmits(['clickbtn'])
    <RoundedButton btnType="warning">buy</RoundedButton>
       
 ```
+
+## Viewing Uploading progress
+
+```html
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+
+// Reactive State
+const title = ref('');
+const description = ref('');
+const videoFile = ref(null);
+const progress = ref(0);
+const uploading = ref(false);
+const previewUrl = ref(null);
+
+// Handle file selection
+const onFileChange = (e) => {
+  videoFile.value = e.target.files[0];
+};
+
+// Submit form with progress tracking
+const submitUpload = async () => {
+  if (!videoFile.value) return;
+
+  const formData = new FormData();
+  formData.append('title', title.value);
+  formData.append('description', description.value);
+  formData.append('video', videoFile.value);
+
+  uploading.value = true;
+  try {
+    const { data } = await axios.post('http://localhost:3000/upload', formData, {
+      onUploadProgress: (p) => {
+        progress.value = Math.round((p.loaded * 100) / p.total);
+      }
+    });
+    // Set preview URL returned from backend
+    previewUrl.value = `http://localhost:3000/previews/${data.previewFile}`;
+  } catch (err) {
+    console.error("Upload failed", err);
+  } finally {
+    uploading.value = false;
+  }
+};
+</script>
+
+<template>
+  <form @submit.prevent="submitUpload">
+    <input v-model="title" placeholder="Title" />
+    <input type="file" @change="onFileChange" accept="video/*" />
+    
+    <div v-if="uploading">
+      <progress :value="progress" max="100"></progress> {{ progress }}%
+    </div>
+
+    <button type="submit" :disabled="uploading">Upload</button>
+  </form>
+
+  <div v-if="previewUrl">
+    <h3>Generated Preview:</h3>
+    <video :src="previewUrl" controls width="400"></video>
+  </div>
+</template>
+
+```

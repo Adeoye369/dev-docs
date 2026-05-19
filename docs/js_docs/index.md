@@ -312,3 +312,92 @@ fruits.map((i)=>i[0].toUpperCase()+i.slice(1)) // First letter Cap.
 //['Apple', 'Orange', 'Mango']
 
 ```
+
+## Replacing Space in a String
+
+1. Using `replaceAll()` (Recommended)
+    This is the simplest modern method to replace every space in a string without using complex expressions.
+
+    ```js
+    const text = "hello world from js";
+    const result = text.replaceAll(' ', '_');
+    // Output: "hello_world_from_js"
+    ```
+
+2. Using `replace()` with Regex.
+   If you use a standard string with `replace()`, it will only replace the first space. To replace all of them, use a Regular Expression with the global (g) flag.
+   Standard spaces only: Use `/ /g`.All whitespace (tabs, newlines, etc.): Use `/\s/g`
+
+   ```js
+    const text = "hello world from js";
+    const result = text.replace(/\s+/g, '_'); 
+    const result = text.replace(/ /g, '_'); 
+    // Output: "hello_world_from_js"
+   ```
+
+3. Use code with caution.3. Using `split()` and `join()`
+  This is a classic "hack" that works in older browsers.
+  You split the string into an array at every space and then join those array elements back together with an underscore.
+
+  ```js
+  const text = "hello world from js";
+  const result = text.split(' ').join('_');
+  // Output: "hello_world_from_js"
+  ```
+
+## Get Extension from filename
+
+1. Using split() and pop() (Simplest)
+    This is the most common one-liner for frontend JavaScript.
+    It splits the string into an array at every dot and returns the last element.
+
+    ```js
+    const filename = "image.test.jpg";
+    const extension = filename.split('.').pop();
+    // Output: "jpg"
+    ```
+
+    **Warning: If there is no dot, it returns the entire filename.**
+
+2. Using `substring()` and `lastIndexOf()` (Robust)
+   This method is more reliable for handling edge cases, such as files with no extension or hidden files (like `.gitignore`).
+
+    ```js
+      function getExtension(filename) {
+        const i = filename.lastIndexOf('.');
+        return (i < 1) ? "" : filename.substr(i + 1);
+      }
+
+      console.log(getExtension("archive.tar.gz")); // "gz"
+      console.log(getExtension(".gitignore"));     // "" (avoiding index 0)
+      console.log(getExtension("README"));         // "" (no dot found)
+    ```
+
+3. Using Node.js `path.extname()`
+   If you are working in a Node.js environment, use the built-in path module for the most accurate results.
+
+   ```js
+    const path = require('path');
+    const extension = path.extname('index.html');
+    // Output: ".html" (Note: includes the dot)
+   ```
+
+## Date Time in format YYYYMMDD_HHMMSS
+
+To get the date and time in the YYYYMMDD_HHMMSS format using JavaScript,
+you can use the toISOString() method or manual extraction for more control.
+
+### Using toISOString() (Fastest)
+
+This method leverages the standard ISO format and uses `replace()` to remove unwanted characters. 
+Note that `toISOString()` always returns the time in UTC.
+
+```javascript
+const now = new Date();
+const formatted = now.toISOString()
+  .replace(/[-T:]/g, '')     // Remove -, T, and :
+  .split('.')[0]             // Remove milliseconds
+  .replace(/(\d{8})/, '$1_'); // Insert underscore after the 8th digit
+
+console.log(formatted); // Example: "20260507_182845"
+```

@@ -25,6 +25,8 @@ Here we are going to just handle add only uri to the database.
     hiltNav="1.3.0"
     roomVersion = "2.8.4"
 
+    materialIcons = "1.7.8" # Default material Icons
+
 
     [libraries]
 
@@ -37,6 +39,8 @@ Here we are going to just handle add only uri to the database.
     androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
     androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
     androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
+
+    androidx-material-icons = { group = "androidx.compose.material", name="material-icons-core", version.ref = "materialIcons" }
 
     # . . . Remaining Others
 
@@ -240,7 +244,10 @@ Go back to **data** package and add `VideoRepoImpl` Implementation of our interf
         override fun getVideoList(): Flow<List<Video>> {
             return videoDao.getAllVideos().map { flow ->
                 flow.map { entity ->
-                    Video( uri = entity.uri)
+                    Video( 
+                    id = entity.id,
+                    uri = entity.uri
+                    )
                 }
             }
         }

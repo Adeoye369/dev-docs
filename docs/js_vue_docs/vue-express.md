@@ -373,3 +373,221 @@ onMounted( ()=>{
                     </div>
               </article>
 ```
+
+## [ADVANCE] Pagination with Node Express(BackEnd) and Vuejs (FrontEnd)
+
+```js
+
+// ROUTE
+shopRouter.get('/products', shop.getShopProducts)
+
+. . .
+// CONTROLLER
+// Updated getShopProducts Controller
+export const getShopProducts = async (req, res) => {
+    try {
+
+        // Extract and parse pagination parameters from the query string
+        const page = parseInt(req.query.page) 
+        const pageSize = parseInt(req.query.pageSize) 
+        const offset = (page - 1) * pageSize;
+
+        const {count, rows} = await Product.findAndCountAll(
+            {
+                limit: pageSize,
+                offset: offset,
+                order: [['createdAt', 'DESC']], // Optional: Keeps order consistent across pages
+            
+                // Tells Sequelize to fetch related User data
+                include: [{
+                    model: User, 
+                    attributes: ['name', 'email'] // Only pull the fields you need
+                    }]
+             }
+        );
+
+        // Map through products to move User fields to the top level
+        const flattenedProducts =  flattenProducts(rows)
+
+        res.json({
+            prods: flattenedProducts,
+            hasProducts: flattenedProducts.length > 0,
+            currentPage: page,
+            totalItems: count,
+            totalPages: Math.ceil(count / pageSize),
+        });
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching products" });
+    }
+};
+
+```
+
+```html
+<script setup>
+import ...;
+
+
+
+
+// Reactive state to hold your data
+const prods = ref([]);
+
+const hasProducts = ref(false);
+const isLoading = ref(true);
+
+// Reactive State Variables
+const currentPage = ref(1);
+const totalPages = ref(1);
+const totalItems = ref(0)
+const pageSize = 3;
+const BUTTON_RANGE = 2
+
+
+
+
+// Computed Property for dynamic button range (-2 and +2)
+const visiblePages = computed(() => {
+  const current = currentPage.value;
+  const max = totalPages.value;
+  
+  let start = Math.max(1, current - BUTTON_RANGE);
+  let end = Math.min(max, current + BUTTON_RANGE);
+
+  const pages = [];
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
+
+const fetchProducts = async (pageNumber) => {
+
+  if (pageNumber < 1 || pageNumber > totalPages.value) return;
+  try {
+    // Replace with your actual backend URL
+    const response = await axios.get('/api/products', 
+      {
+        params: {
+          page: pageNumber,
+          pageSize: pageSize
+        }
+      }
+    )
+    prods.value = response.data.prods;
+    hasProducts.value = response.data.hasProducts;
+    currentPage.value = response.data.currentPage;
+    totalItems.value = response.data.totalItems
+    totalPages.value = response.data.totalPages;
+  } catch (error) {
+    console.error("Error loading products:", error.response.data);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  authStore.initAuth()
+  fetchProducts(1);
+});
+
+
+
+</script>
+
+<template>
+  <main>
+    <div class="main-content__desc">
+      
+      <template v-if="hasProducts" style="position: relative">
+        <!-- Good: Will safely wait until user object is populated -->
+      <h2 v-if="authStore.user">Welcome, {{ authStore.user?.name || authStore.user.email }}</h2>
+        <h2 v-else >Welcome to Productsy!</h2>
+        
+        <h4 style="position: absolute; right: 10px">
+          total Items: <span>{{ totalItems }}</span>
+        </h4>
+        <div class="grid">
+          
+          
+          <ProductView v-for="product in prods" 
+          :key="product.id" 
+          :product = product 
+          :isAdmin="false"/>
+
+        </div>
+
+        <!-- Advanced Pagination Controls -->
+    <div class="pagination-controls" v-if="totalPages > 1">
+      
+      <!-- First Page Button -->
+      <button v-if="!visiblePages.includes(1)"
+        @click="fetchProducts(1)" 
+        :class="{ active: currentPage === 1 }"
+      >
+        <<
+      </button>
+
+      <!-- Dynamic Page Numbers -->
+      <button 
+        v-for="page in visiblePages" 
+        :key="page" 
+        @click="fetchProducts(page)"
+        :class="{ active: currentPage === page }"
+      >
+        {{ page }}
+      </button>
+
+      <!-- Last Page Button -->
+      <button v-if="!visiblePages.includes(totalPages)"
+        @click="fetchProducts(totalPages)" 
+        :class="{ active: currentPage === totalPages }"
+      >
+        >> ({{ totalPages }})
+      </button>
+
+    </div>
+
+      </template>
+
+      <!-- Logic: replaces <% } else { %> -->
+      <template v-else>
+        <h2>No Product in Cart</h2>
+        <div>
+          <button class="btn btn__add_item">
+            <router-link to="/admin-add-product">Add Item</router-link>
+          </button>
+        </div>
+      </template>
+    </div>
+  </main>
+
+  <EndPage/>
+</template>
+
+<style scoped>
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+button {
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+button.active {
+  background-color: #42b983;
+  color: white;
+  border-color: #42b983;
+  font-weight: bold;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+</style>
+
+```

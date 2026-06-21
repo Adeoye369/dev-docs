@@ -404,3 +404,8 @@ fun VideoListScreen(
 <figure markdown='span' style="width: 250px">
 ![alt text](img/VideoFrameAddVideo.gif)
 </figure>
+
+
+## Fixing player
+
+By splitting this into a VideoListViewModel (for your data list) and a VideoPlayerViewModel (for video playback), a fresh ExoPlayer instance is created every time you open a video and is properly destroyed and released when you go back to the list.

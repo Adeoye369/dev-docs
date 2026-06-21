@@ -44,6 +44,48 @@ git branch -d branch_name # (Deletes only if already merged)
 git branch -D branch_name # (Force deletes even if unmerged)
 ```
 
+## fetch, merge and pull
+
+```bash
+git fetch <remote> # fetch all remote
+git fetch <remote> <branch> # fetch only specific branch
+# use `git fetch origin <remote-branch-name>`  fetching from the remote branch without merge
+git fetch origin L8-start # fetch from L8-start branch
+
+#After fetching, you need to merge the changes from the remote-tracking branch
+#into your current local branch.
+git merge origin/L8-start
+git merge --abort # to abort merge
+
+# combined fetch & merge from origin
+git pull <remote_name> <branch_name>
+git pull origin L8-start
+
+# Updated file from the origin
+git push <remote_name> <branch_name>
+git push origin main
+```
+
+### Why use git fetch?
+
+**Safety:** It does not modify your local files or current working branch.
+**Review:** It allows you to inspect changes before deciding to integrate them.
+**Comparison:** You can compare your local branch to the remote version using `git diff main..origin/main`.
+
+### Integrating Changes
+
+After fetching, if you want to apply the downloaded changes to your current branch, you must manually merge or rebase them:
+
+1. Switch to your branch: `git checkout main`
+2. Merge the fetched changes:` git merge origin/main `
+
+**Note on `git pull`**: While `git pull` is often used to get updates, it actually performs two steps: it runs `git fetch` followed immediately by `git merge`. Use `git fetch` instead if you want to avoid potential merge conflicts before you are ready to resolve them.
+
+## Undo a Git merge COMMIT that hasn't been pushed yet
+
+if you accidentally merge a branch or you just want to under branch that has been **merged and commited
+**
+
 ## General flow of info
 
 <figure markdown='span'>
@@ -127,48 +169,6 @@ git remote -v   # Verify after update
 git push -u origin main
 
 ```
-
-## fetch, merge and pull
-
-```bash
-git fetch <remote> # fetch all remote
-git fetch <remote> <branch> # fetch only specific branch
-# use `git fetch origin <remote-branch-name>`  fetching from the remote branch without merge
-git fetch origin L8-start # fetch from L8-start branch
-
-#After fetching, you need to merge the changes from the remote-tracking branch
-#into your current local branch.
-git merge origin/L8-start
-git merge --abort # to abort merge
-
-# combined fetch & merge from origin
-git pull <remote_name> <branch_name>
-git pull origin L8-start
-
-# Updated file from the origin
-git push <remote_name> <branch_name>
-git push origin main
-```
-
-### Why use git fetch?
-
-**Safety:** It does not modify your local files or current working branch.
-**Review:** It allows you to inspect changes before deciding to integrate them.
-**Comparison:** You can compare your local branch to the remote version using `git diff main..origin/main`.
-
-### Integrating Changes
-
-After fetching, if you want to apply the downloaded changes to your current branch, you must manually merge or rebase them:
-
-1. Switch to your branch: `git checkout main`
-2. Merge the fetched changes:` git merge origin/main `
-
-**Note on `git pull`**: While `git pull` is often used to get updates, it actually performs two steps: it runs `git fetch` followed immediately by `git merge`. Use `git fetch` instead if you want to avoid potential merge conflicts before you are ready to resolve them.
-
-## Undo a Git merge COMMIT that hasn't been pushed yet
-
-if you accidentally merge a branch or you just want to under branch that has been **merged and commited
-**
 
 ```bash
 git reset --hard <commit_sha>

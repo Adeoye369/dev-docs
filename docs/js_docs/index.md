@@ -401,3 +401,34 @@ const formatted = now.toISOString()
 
 console.log(formatted); // Example: "20260507_182845"
 ```
+
+## You Spread operator and Rest Operator
+
+The spread operator in JavaScript can be very useful.
+For example to create a copy of an object:
+
+```js
+const firstObject = {id: 0, name: 'John'};
+const secondObject = {...firstObject};
+
+console.log(firstObject);
+console.log(secondObject);
+
+// { id: 0, name: 'John'}
+// { id: 0, name: 'John'
+```
+
+### Excluding a property from an Object 
+
+But did you know you can also use rest operation( ... on the left side or as param) to exclude an object property?
+
+```js
+const firstObject = {id: 0, firstName: 'John', lastName: 'Smith', age: 77 };
+// take every property except age:
+const {age, ...secondObject} = firstObject;
+
+console.log(firstObject);
+console.log(secondObject);
+// { id: 0, firstName: 'John', lastName: 'Smith', age: 77 }
+// { id: 0, firstName: 'John', lastName: 'Smith' }
+```

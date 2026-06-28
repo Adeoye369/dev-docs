@@ -1,6 +1,28 @@
 # Basics of NodeJs
 
-Creating a new node app
+## Basic Setup - Fixing Execution Error
+
+Their are some situation where `npm` is not functioning due to windows security issue, even though you already have it installed.
+
+FIX:
+
+- Run **Windows Powershell** as an **Admin**
+
+Pass the following code
+
+```sh
+# Global wide fix
+Set-ExecutionPolicy RemoteSigned
+
+# For Just the Current User
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Press Y yes, or A yes to All
+Then you should be able to run code normally
+
+
+## Creating a new node app
 
 ```sh
 # Require you answer follow up quest

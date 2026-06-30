@@ -418,7 +418,7 @@ console.log(secondObject);
 // { id: 0, name: 'John'
 ```
 
-### Excluding a property from an Object 
+### Excluding a property from an Object
 
 But did you know you can also use rest operation( ... on the left side or as param) to exclude an object property?
 

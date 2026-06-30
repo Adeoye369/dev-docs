@@ -28,6 +28,7 @@ MKDIR or MD for cmd.exe
 - `md  some1\some2\some3_2` create another folder in already created folder
 
 ## Move Files/Directory in power shell
+
 cmd - `move-item <source directory or file> -destination <destination directory>`
 
 
@@ -63,7 +64,7 @@ Getting list of environment variable
 ![alt text](img/image.png)
 </figure>
 
-Setting environment variable
+### Setting environment variable (TEMPORARY)
 
 ```shell
 >>> $env:USER_PC_ID = '455323'
@@ -73,3 +74,27 @@ Setting environment variable
 <figure markdown="span">
 ![alt text](img/image-1.png)
 </figure>
+
+## Setting Permanent Environment Variable
+
+### USER LEVEL
+
+Permanent (User Level)This affects only your Windows user account. It persists across restarts and applies to all new terminal windows. It does not require Administrator privileges.Run these commands sequentially:
+
+```powershell
+$currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+[Environment]::SetEnvironmentVariable("Path", $currentPath + ";C:\path\to\your\folder", "User")
+```
+
+### SYSTEM WIDE
+
+```powershell
+$currentPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+[Environment]::SetEnvironmentVariable("Path", $currentPath + ";C:\path\to\your\folder", "Machine")
+```
+
+### Remove from Environment Variable
+
+```powershell
+[Environment]::SetEnvironmentVariable("ENV_NAME", "", "Machine") # Set it to "" or $null
+```

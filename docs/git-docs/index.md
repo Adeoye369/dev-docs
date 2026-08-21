@@ -21,7 +21,7 @@
     git config --get remote.origin.url
 
     ```
-
+- Then `git push` it will ask for your credentials to login and thats it
 
 ## GitHub Instruction
 

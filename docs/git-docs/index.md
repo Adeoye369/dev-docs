@@ -1,10 +1,33 @@
 # Git Documentation
 
+## Getting started
+- Download and Install the Git installer in the [offficial site](https://git-scm.com/)
+- Configure your Git Identity :
+    ```powershell
+    # Set your name
+    git config --global user.name "Your Name" 
+
+    # (Use the same email as your GitHub Account)
+    git config --global user.email "your_email@example.com" 
+
+    # Set the default branch name: 
+    #(Ensures compatibility with GitHub's default naming scheme)
+    git config --global init.defaultBranch main 
+
+    # Verify your settings by running:
+    git config --global --list
+
+    # To obtain only the remote URL:
+    git config --get remote.origin.url
+
+    ```
+
+
 ## GitHub Instruction
 
 ### create a new repository on the command line
 
-```bash
+```powershell
 echo "# web-learn" >> README.md
 git init
 git add README.md

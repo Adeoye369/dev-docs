@@ -11,8 +11,11 @@
 
 3. Launch a Mkdocs template in your directory.
       - Go to *terminal (tab) > new terminal*  or *CTRL + SHIFT + `*
-      - In your terminal, Install mkdocs using `pip install mkdocs-material` \(`pip` is python package manager install by default in python 3.4 and above)
+      - In your terminal, Install mkdocs using `pip install mkdocs` \(`pip` is python package manager install by default in python 3.4 and above)
+      (NOTE : You will to add the Python script *C:\..\pythoncore-3.14-64\Scripts* Directory into your `ENVIRONMENT PATH` for mkdocs command to work)
+      - You can also run `pip install mkdocs-material`
       - Create a new site using `mkdocs new .`
+
   
   Basically You get the following commands:
   

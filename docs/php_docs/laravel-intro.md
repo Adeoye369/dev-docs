@@ -106,3 +106,4 @@ with all the functions intact, we run in the powershell
 ```bash
  composer run dev
 ```
+![alt text](<Screenshot 2026-08-21 043800.png>)

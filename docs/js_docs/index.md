@@ -402,6 +402,94 @@ const formatted = now.toISOString()
 console.log(formatted); // Example: "20260507_182845"
 ```
 
+## Object Destructuring
+
+**Destructuring assignment** is a special JavaScript syntax introduced in ES6 that allows you to "unpack" values from arrays or properties from objects directly into distinct variables. It makes your code cleaner, more readable, and reduces the need for repetitive boilerplate code
+
+Object destructuring extracts values based on the **property keys** inside the object. *The variable names on the left must match the key names on the right*
+
+### Example 1
+
+```js
+const user = {
+  name: "Alex",
+  age: 28,
+  country: "Nigeria"
+};
+
+// 1. Basic Destructuring
+const { name, age } = user;
+console.log(name); // "Alex"
+console.log(age);  // 28
+
+// 2. Renaming Variables (Using Aliases)
+const { country: userLocation } = user;
+console.log(userLocation); // "Nigeria"
+
+// 3. Setting Default Values (Falls back if property doesn't exist i.e. undefined)
+const { theme = "dark", lang } = user;
+console.log(theme); // "dark"
+console.log(lang); // "undefined"
+
+```
+
+### Example 2
+
+Let's say we have some deeply nested data like we might get back from a JSON api:
+
+```js
+const wes = {
+  first: 'Wes',
+  last: 'Bos',
+  links: {
+    social: {
+      twitter: 'https://twitter.com/wesbos',
+      facebook: 'https://facebook.com/wesbos.developer',
+    },
+    web: {
+      blog: 'https://wesbos.com'
+    }
+  }
+};
+```
+
+I want to be able to pull out Twitter and Facebook URLs here. I could do this like it's 1994 and we're all running around with walkmans:
+
+```js
+const twitter = wes.links.social.twitter;
+const facebook = wes.links.social.facebook;
+// Annoying!
+```
+
+We can use destructuring to do it one better!
+
+```js
+const { twitter, facebook } = wes.links.social;
+console.log(twitter, facebook); // logs the 2 variables
+```
+
+
+## Array Destructuring
+
+Array destructuring extracts values based on their **position (index)** in the array. You use square brackets on the left side of the assignment
+
+```js
+const colors = ["red", "green", "blue"];
+
+// 1. Basic Destructuring
+const [firstColor, secondColor] = colors;
+console.log(firstColor);  // "red"
+console.log(secondColor); // "green"
+
+// 2. Skipping Elements (Leave an empty space between commas)
+const [primary, , tertiary] = colors;
+console.log(primary);  // "red"
+console.log(tertiary); // "blue"
+
+
+
+```
+
 ## You Spread operator and Rest Operator
 
 The spread operator in JavaScript can be very useful.
@@ -418,17 +506,61 @@ console.log(secondObject);
 // { id: 0, name: 'John'
 ```
 
-### Excluding a property from an Object
+## Using Rest operator on Array and Object
 
 But did you know you can also use rest operation( ... on the left side or as param) to exclude an object property?
 
 ```js
-const firstObject = {id: 0, firstName: 'John', lastName: 'Smith', age: 77 };
-// take every property except age:
-const {age, ...secondObject} = firstObject;
 
-console.log(firstObject);
-console.log(secondObject);
-// { id: 0, firstName: 'John', lastName: 'Smith', age: 77 }
-// { id: 0, firstName: 'John', lastName: 'Smith' }
+// *** ARRAY REST OPERATOR
+const colors = ["red", "green", "blue"];
+// 3. Using the Rest Parameter (... syntax to collect remaining items)
+const [first, ...restOfColors] = colors;
+console.log(first);        // "red"
+console.log(restOfColors); // ["green", "blue"]
+
+// *** OBJECT REST OPERATOR
+const userDetails = {id: 0, firstName: 'John', lastName: 'Smith', age: 77 };
+
+// take every property except age:
+const {age,     ...userInfoPrivacy } = userDetails;
+const {age, id, ...userBasicInfo} = userDetails; 
+
+console.log(userDetails); // { id: 0, firstName: 'John', lastName: 'Smith', age: 77 }
+console.log(userInfoPrivacy); // { id: 0, firstName: 'John', lastName: 'Smith' }
+console.log(userBasicInfo); // {firstName: 'John', lastName: 'Smith'}
+
+```
+!!! note
+    `age` and `id` variable is still accessible within the scope.
+
+## Advance use case
+
+### Function Parameter Destructuring
+Instead of passing an entire object to a function and using dot notation everywhere, you can destructure the properties directly inside the function signature
+
+```js
+const product = { id: 101, title: "Laptop", price: 999 };
+
+function displayProduct({ title, price }) {
+  console.log(`${title} costs $${price}`);
+}
+
+displayProduct(product); // "Laptop costs $999"
+
+```
+
+### Swapping Variables
+
+You can swap the values of two variables in a single line without using a temporary third variable
+
+```js
+let a = 1;
+let b = 5;
+
+[a, b] = [b, a];
+
+console.log(a); // 5
+console.log(b); // 1
+
 ```

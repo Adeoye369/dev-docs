@@ -30,7 +30,7 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/w
 ### Creating Controller Class & Methods
  - First create a new Controller - Here is what hold functions (Actions) that connects both the **View(Vue in our case)** and the **Router** use the `php artisan make:controller <ControllerClassName>`  in our case, we will make `HomeController`
 
-- It will create `HomeController.php` class in the *App/Http/Controller* directory in your project folder.
+- It will create `HomeController.php` class in the *App/Http/Controllers* directory in your project folder.
 
 ```php title="HomeController.php"
 <?php
@@ -61,7 +61,7 @@ class HomeController extends Controller
 
 ### Creating the Vue Files
 
-All vue views and located in *Resources/js/pages* inside here we will create a *User*  folder for handling the basic views
+All vue views are located in *Resources/js/pages* inside here we will create  a *User*  folder for handling the basic views, Then create `Index.vue` file inside it
 
 ```vue title="Index.vue"
 <script setup>
@@ -106,4 +106,71 @@ with all the functions intact, we run in the powershell
 ```bash
  composer run dev
 ```
-![alt text](<Screenshot 2026-08-21 043800.png>)
+![Finished Sample](<img/Screenshot 2026-08-21 043800.png>)
+
+
+## Using Default Layout
+
+Create a new vue template that say `BaseLayout.vue`
+
+```vue title="BaseLayout.vue"
+
+<script setup>
+import { ref } from 'vue';
+import { Link } from '@inertiajs/vue3';
+ const timer = ref(0);
+setInterval(()=>{timer.value++}, 1000)
+</script>
+<template>
+    <div class="flex flex-col  min-h-screen w-full">
+        <main class="bg-blue-500 flex flex-col justify-center items-center grow">
+            <!-- Where the content will goto -->
+            <slot></slot> 
+        </main>
+        <footer 
+            class="h-10 bg-gray-400 w-full flex justify-center" >
+                <h3>Footer ©️{{ new Date().getFullYear() }}</h3>
+        </footer>
+    </div>
+</template>
+ 
+```
+
+Then import it into the vue file that will make use of it
+
+
+```vue title="BaseLayout.vue"
+<script>
+import Layout from "./components/BaseLayout.vue";
+defineOptions({layout: BaseLayout});
+</script>
+
+<template>
+<!-- Content here goes into Layout Slot -->
+</template>
+
+```
+
+### Using Global Default Layout
+
+Go to your `App.ts or .js`  add the following hilighted codes
+
+```ts hl_lines="2 12"
+import { createInertiaApp } from '@inertiajs/vue3';
+import Layout from './pages/components/MainLayout.vue';
+
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+createInertiaApp({
+    title: (title) => (title ? `${title} - ${appName}` : appName),
+    progress: {
+        color: '#4B5563',
+    },
+
+    layout: ()=> MainLayout
+});
+```
+
+!!! note
+    If another layout is imported in a specific vue template, **it will override the global Default layout**
+

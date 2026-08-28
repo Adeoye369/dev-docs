@@ -1,5 +1,9 @@
 {
     "workbench.colorTheme": "Monokai",
     "workbench.preferredDarkColorTheme": "Dark Modern",
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "disabled",
+
+    "markdown.copyFiles.destination": {
+        "**/*.md": "img/"
+    }
 }

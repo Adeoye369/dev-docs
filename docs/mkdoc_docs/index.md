@@ -13,8 +13,19 @@
       - Go to *terminal (tab) > new terminal*  or *CTRL + SHIFT + `*
       - In your terminal, Install mkdocs using `pip install mkdocs` \(`pip` is python package manager install by default in python 3.4 and above)
       (NOTE : You will to add the Python script *C:\..\pythoncore-3.14-64\Scripts* Directory into your `ENVIRONMENT PATH` for mkdocs command to work)
-      - You can also run `pip install mkdocs-material`
-      - Create a new site using `mkdocs new .`
+      - You will mostly need to install the following plugins:
+        - Mkdocs Material - `pip install mkdocs-material`
+        - Mkdocs Awesome pages - `pip install mkdocs-awesome-pages-plugin`
+
+!!! note
+    Remember to add `awesome-pages` in your `mkdocs.yml`
+      ```yaml
+      plugins:
+        - search
+        - awesome-pages
+      ```
+
+  - Create a new site using `mkdocs new .`
 
   
   Basically You get the following commands:
@@ -77,3 +88,87 @@ jobs:
 - Then `git push origin main` push it to main branch
 
 In your github go to *action tab*, under it you see *settings* side nav, select .. gh-pages
+
+## Using Admonitions 
+
+You can create notes, warnings, and success blocks in MkDocs by using *Admonitions* with three exclamation marks (!!!) followed by the block type.
+
+### 1. Enable the Extension
+
+First, add the extension to your ```mkdocs.yml``` configuration file:
+
+```yaml
+markdown_extensions:
+  - admonition
+  - pymdownx.details # Optional: for collapsible blocks
+  - pymdownx.superfences # Optional: for nested content
+
+```
+
+### 2. Basic Syntax
+
+```markdown
+!!! note
+    This is a standard note block.
+
+!!! warning
+    This is a warning block for important cautions.
+
+!!! success
+    This is a success block for successful outcomes.
+```
+
+!!! warning
+    Make sure the `!!! <admonition>` starts the beginning of the line (no spaces or tab) or else it won't work.
+    For it content, make sure its tabs starts exact a beginning of the admonition text for it to properly recognize 
+    it belongs under it.
+
+
+### 3. Common Types
+
+- Note : `!!! note (general information)`
+- Warning: `!!! warning (important cautions)`
+- Success: `!!! success (successful outcomes)`
+- Tip: `!!! tip (helpful hints)`
+- Danger: `!!! danger (critical warnings)`
+
+### 4. Custom Titles
+You can change or remove the default title by adding text in quotes:
+
+```markdown
+!!! warning "Custom Warning Title"
+    Be careful with this specific step.
+
+!!! note ""
+    This block has no title at all.
+
+```
+
+## Setting Up Auto Create Image Directory for Mkdocs
+
+- Open your project's *settings.json* file (press `Ctrl+`, or `Cmd+,`, then click the Open Settings (JSON) icon in the top right)
+- Add the `markdown.copyFiles.destination` rule to point your images to your docs image folder (e.g., `docs/img`)
+
+```json
+{
+  "markdown.copyFiles.destination": {
+    "**/*.md": "img/"
+  }
+}
+```
+alternatively
+
+```json
+    "markdown.copyFiles.destination": {
+        "**/*.md": "${fileExtName}/${fileName}"
+    }
+
+     "markdown.copyFiles.destination": {
+        "**/*.md": "${fileExtName}/${documentDirName}_${fileName}"
+    }
+```
+
+
+!!! note
+    `**/*.md` means whichever markdown directory & file you are in,  an *img* folder is created if not already exist and paste copyfiled img inside
+

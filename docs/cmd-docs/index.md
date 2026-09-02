@@ -98,3 +98,82 @@ $currentPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
 ```powershell
 [Environment]::SetEnvironmentVariable("ENV_NAME", "", "Machine") # Set it to "" or $null
 ```
+
+### Environment Variable for Docker
+
+1. Create the Environment VariablePermanently
+
+  Run this command in PowerShell to save the path into your Windows user environment variables. You only need to run this **once**:
+  ```powershell
+  [System.Environment]::SetEnvironmentVariable('DOCKER','C:\Program Files\Docker\Docker\Docker Desktop.exe','User') # or Machine
+  ```
+
+2. Restart PowerShell
+
+  Close your current PowerShell window and open a new one so it loads the new variable.
+
+3. How to Launch It
+
+  Now that the path is safely stored inside $env:DK, you can launch Docker Desktop using either of these tiny, ultra-short commands:
+
+  - Option A (Using `&`)
+    ```powershell
+    & $env:DOCKER
+    ```
+  - Option B (Using `start-process` or `start`):
+        ```powershell
+      start $env:DOCKER # or Start-Process or start-process
+      ```
+
+### Stopping Docker from Running
+
+```powershell
+Stop-Process -Name "Docker Desktop" 
+Stop-Process -Name "Docker Desktop" -Force
+
+# Alternatively (Short version)
+ kill -Name "Docker Desktop" 
+ kill -n "Docker Desktop" 
+
+ ## Fancy - (Probably not worth it though)
+ kill -n (gi $env:docker).basename 
+ ## gi - Get-Item 
+ ## Basename -last string after the last '\' without extension name  which is "Docker Desktop" in our case
+```
+
+
+
+### Modifying the Already Existing Variable Via Powershell
+
+1. Copy and rename the variable 
+
+  This Block of code automatically reads the path stored in your old variable name (e.g., DOCKER_PATH), creates the new one (e.g., DK_PATH), and then safely deletes the old one from Windows:
+
+  ```powershell
+  # 1. Get the current value of the old variable
+  $oldValue = [System.Environment]::GetEnvironmentVariable('DOCKER_PATH', 'User')
+
+  # 2. Save it under the new variable name
+  [System.Environment]::SetEnvironmentVariable('DK_PATH', $oldValue, 'User')
+
+  # 3. Delete the old variable name from Windows
+  [System.Environment]::SetEnvironmentVariable('DOCKER_PATH', $null, 'User')
+
+  ```
+
+2. Restart PowerShell
+
+  Close your current terminal window and open a new one. Windows needs this fresh session to drop the old name and register the new one.
+
+3. Verify the change
+
+  To confirm that the rename worked perfectly, you can list out your new variable to see if it holds the correct path:
+  
+  ```powershell
+  $env:DK_PATH
+  ```
+
+
+
+
+

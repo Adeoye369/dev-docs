@@ -174,3 +174,73 @@ createInertiaApp({
 !!! note
     If another layout is imported in a specific vue template, **it will override the global Default layout**
 
+## Installing laravel debugbar
+
+### Debugbar
+Run `composer require --dev barryvdh/laravel-debugbar `
+
+### Ide helper
+Run `composer require --dev barryvdh/laravel-ide-helper`
+
+## Working With Database
+
+```bash
+php artisan make:controller <ControllerName>
+```
+
+If you would like to generate a database migration when you generate the model, 
+you may use the `--migration` or `-m` option:
+```bash
+php artisan make:model <ModelName> 
+php artisan make:model <ModelName> --migration
+```
+
+```bash
+# Generate a model and a FlightFactory class...
+php artisan make:model Flight --factory
+php artisan make:model Flight -f
+
+# Generate a model and a FlightSeeder class...
+php artisan make:model Flight --seed
+php artisan make:model Flight -s
+
+# Generate a model and a FlightController class...
+php artisan make:model Flight --controller
+php artisan make:model Flight -c
+
+# Generate a model, FlightController resource class, and form request classes...
+php artisan make:model Flight --controller --resource --requests
+php artisan make:model Flight -crR
+
+# Generate a model and a FlightPolicy class...
+php artisan make:model Flight --policy
+
+# Generate a model and a migration, factory, seeder, and controller...
+php artisan make:model Flight -mfsc
+
+# Shortcut to generate a model, migration, factory, seeder, policy, controller, and form requests...
+php artisan make:model Flight --all
+php artisan make:model Flight -a
+
+# Generate a pivot model...
+php artisan make:model Member --pivot
+php artisan make:model Member -p
+```
+
+
+```bash
+php artisan migrate
+php artisan migrate:rollback
+
+# ⚠️NERVER USE IN PRODUCTION - REFRESH DESTROYS DATA
+php artisan migrate:refresh 
+php artisan migrate:refresh --seed
+
+```
+
+```bash
+php artisan make:factory ListingFactory
+php artisan make:factory ProductFactory 
+
+php artisan db:seed
+```

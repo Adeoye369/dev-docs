@@ -123,3 +123,21 @@ margin:0 auto;
     
 }
 ```
+
+## Positioning image in bg
+
+![Image of bg Image Framing](img/chrome_b4TMR17vmH.png)
+
+```css
+div.side{ 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: center;
+}
+
+div.poll-img{
+    width: 100px; height: 100px;
+    background:  url("images/poll-image.png") no-repeat center / contain;
+}
+```
